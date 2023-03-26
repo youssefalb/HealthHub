@@ -3,9 +3,170 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+// ========= OUR CODE =========
+
+
+
+model Person {
+  id          Int           @id @default(autoincrement())
+  fname       String
+  lname       String
+  sex         String
+  national_id String        @unique
+
+  labStaff LabStaff?
+  clinicStaff ClinicStaff?
+  patient Patient?
+
+}
+
+model LabStaff {
+  person          Person          @relation(fields: [lab_employee_id], references: [id], onDelete: Cascade)
+  lab_employee_id Int             @id
+
+  labSupervisor LabSupervisor?
+  labAssistant LabAssistant?
+}
+
+model ClinicStaff {
+  person             Person         @relation(fields: [clinic_employee_id], references: [id], onDelete: Cascade)
+  clinic_employee_id Int            @id
+
+  doctor Doctor?
+  receptionist Receptionist?
+}
+
+
+model Doctor {
+  clinicStaff ClinicStaff @relation(fields: [employee_id], references: [clinic_employee_id], onDelete: Cascade)
+  employee_id Int         @id
+  
+  visits Visit[]
+
+  @@map("doctors")
+}
+
+model Receptionist {
+  clinicStaff ClinicStaff @relation(fields: [employee_id], references: [clinic_employee_id], onDelete: Cascade)
+  employee_id Int         @id
+
+  visits Visit[]
+}
+
+model LabSupervisor {
+  labStaff    LabStaff @relation(fields: [employee_id], references: [lab_employee_id], onDelete: Cascade)
+  employee_id Int      @id
+
+  laboratoryExaminations LaboratoryExamination[]
+
+}
+
+model LabAssistant {
+  labStaff    LabStaff @relation(fields: [employee_id], references: [lab_employee_id], onDelete: Cascade)
+  employee_id Int      @id
+
+  laboratoryExaminations LaboratoryExamination[]
+}
+
+model Patient {
+  person       Person @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  patient_id    Int    @id
+  insurance_id String @unique
+
+  visits Visit[]
+}
+
+
+model Visit {
+  visit_id Int @id @default(autoincrement())
+  description String 
+  diagnosis String
+  status Status @default(REGISTERED)
+
+  doctor Doctor @relation(fields: [doctor_id], references: [employee_id])
+  doctor_id Int
+  patient Patient @relation(fields: [patient_id], references: [patient_id])
+  patient_id Int
+  receptionist Receptionist @relation(fields: [receptionist_id], references: [employee_id])
+  receptionist_id Int
+
+  physicalExaminations PhysicalExamination[]
+  laboratoryExaminations LaboratoryExamination[]
+
+}
+
+enum Status {
+  REGISTERED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+
+// ========= EXAMINATIONS ===========
+model Examination {
+  examination_id Int @id @default(autoincrement())
+  Result String
+
+  physicalExamination PhysicalExamination?
+  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
+  exam_code    Int
+  laboratoryExamination LaboratoryExamination?
+  }
+
+model PhysicalExamination {
+  examination    Examination @relation(fields: [physical_exam_id], references: [examination_id], onDelete: Cascade)
+  physical_exam_id Int @id
+
+  visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
+  visit_id Int
+
+}
+
+model ExaminationDictionary {
+  code Int @id 
+  type String
+  description String
+  examination Examination[]
+}
+
+enum ExaminationStatus {
+  ORDERED
+  COMPLETED
+  CANCELLED
+  APPROVED
+  REJECTED
+}
+
+model LaboratoryExamination {
+  examination    Examination @relation(fields: [laboratory_exam_id], references: [examination_id], onDelete: Cascade)
+  laboratory_exam_id Int @id
+  doctorNotice String
+  examinationStatus ExaminationStatus
+  supervisorNotice String
+  DateOfApprovalXorRejection DateTime
+  DateOfExecutionXorCancelling DateTime
+
+  visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
+  visit_id Int
+
+  lab_assistant  LabAssistant @relation(fields: [lab_assistant_id], references: [employee_id], onDelete: Cascade)
+  lab_assistant_id Int
+
+  lab_supervisor  LabSupervisor @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
+  lab_supervisor_id Int
+
+}
+
+
+
+
+
+//========= OLD PREDEFINED CODE =============
 
 model Post {
   id        Int     @id @default(autoincrement())

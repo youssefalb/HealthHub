@@ -1,10 +1,10 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import ReactMarkdown from "react-markdown";
-import Layout from "../../components/Layout";
+import Layout from "../../../components/Layout";
 import Router from "next/router";
-import { PostProps } from "../../components/Post";
-import prisma from '../../lib/prisma'
+import { PostProps } from "../../../components/Post";
+import prisma from '../../../lib/prisma'
 import { useSession } from "next-auth/react";
 
 
@@ -49,9 +49,10 @@ const Post: React.FC<PostProps> = (props) => {
   if (!props.published) {
     title = `${title} (Draft)`;
   }
+  
 
-  return (
-    <Layout>
+  return ( 
+  <Layout>  
       <div>
         <h2>{title}</h2>
         <p>By {props?.author?.name || "Unknown author"}</p>
@@ -71,7 +72,7 @@ const Post: React.FC<PostProps> = (props) => {
 
         .actions {
           margin-top: 2rem;
-        }
+        }Ò
 
         button {
           background: #ececec;
