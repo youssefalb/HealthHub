@@ -24,7 +24,6 @@ export default function Layout({ children }) {
   return (
     <div className='min-h-screen flex flex-col'>
       <header className='bg-purple-200 sticky top-0 flex h-8 justify-center items-center font-semibold uppercase'>
-      <img src={hospitalIcon} />
       </header>
       <div className='flex flex-col md:flex-row flex-1'>
         <aside className='bg-gray-200 w-full md:w-60'>
