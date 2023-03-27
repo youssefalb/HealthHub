@@ -14,9 +14,10 @@ datasource db {
 model Person {
   id          Int           @id @default(autoincrement())
   fname       String
-  lname       String
-  sex         String
-  national_id String        @unique
+  lname       String?
+  sex         String?
+  email       String?
+  nationalID String        @unique
 
   labStaff LabStaff?
   clinicStaff ClinicStaff?

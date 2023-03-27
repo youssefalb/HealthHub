@@ -29,7 +29,8 @@
 , "components/Layout.js"  ],
   "ts-node": {
     "compilerOptions": {
+      "jsx": "react-jsx",
       "module": "commonjs"
     }
-  }
+  },
 }
