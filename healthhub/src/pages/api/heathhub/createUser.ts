@@ -1,12 +1,11 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from '../../../../lib/prisma'
+import { NextApiRequest, NextApiResponse } from 'next'
 
-const prisma = new PrismaClient()
-
-export default async function createUser(req, res) {
+export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const { fname, lname, sex , email, nationalID} = req.body
-  
+    console.log(fname)
     try {
-      const user = await prisma.user.create({
+      const user = await prisma.person.create({
         data: {
           fname: fname,
           lname: lname,
@@ -15,9 +14,8 @@ export default async function createUser(req, res) {
           nationalID: nationalID,
         },
       })
-      res.status(200).json(user)
+    res.status(200).json(user)
     } catch (error) {
-      console.error(error.message)
-      res.status(500).json({ error: 'Error creating user' })
+     res.status(500).json({ error: error.message })
     }
   }

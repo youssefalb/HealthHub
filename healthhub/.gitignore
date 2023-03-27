@@ -13,6 +13,7 @@ migrations/
 # testing
 /coverage
 
+.idea/*
 # next.js
 /.next/
 /out/

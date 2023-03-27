@@ -8,6 +8,8 @@ import { getSession } from 'next-auth/react'
 // Optional fields in body: content
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   const { title, content } = req.body;
+  res.status(401).send({ message: req.body })
+  console.log(title)
 
   const session = await getSession({ req });
   if (session) {
@@ -20,6 +22,5 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     });
     res.json(result);
   } else {
-    res.status(401).send({ message: 'Unauthorized' })
   }
 }
