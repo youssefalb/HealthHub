@@ -13,11 +13,11 @@ datasource db {
 
 model Person {
   id          Int           @id @default(autoincrement())
-  fname       String
-  lname       String?
-  sex         String?
-  email       String?
-  nationalID String        @unique
+  fname       String        @db.VarChar(32)
+  lname       String?       @db.VarChar(32)
+  sex         String?       @db.VarChar(32)
+  email       String?       @db.VarChar(64)
+  nationalID String        @unique @db.VarChar(11)
 
   labStaff LabStaff?
   clinicStaff ClinicStaff?
@@ -155,11 +155,11 @@ model LaboratoryExamination {
   visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
 
-  lab_assistant  LabAssistant @relation(fields: [lab_assistant_id], references: [employee_id], onDelete: Cascade)
-  lab_assistant_id Int
+  lab_assistant  LabAssistant? @relation(fields: [lab_assistant_id], references: [employee_id], onDelete: Cascade)
+  lab_assistant_id Int?
 
-  lab_supervisor  LabSupervisor @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
-  lab_supervisor_id Int
+  lab_supervisor  LabSupervisor? @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
+  lab_supervisor_id Int?
 
 }
 
@@ -168,68 +168,58 @@ model LaboratoryExamination {
 
 
 //========= OLD PREDEFINED CODE =============
-
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
-model Account {
-  id                 Int     @id @default(autoincrement())
-  userId             Int     @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  oauth_token_secret String?
-  oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           Int      @id @default(autoincrement())
-  sessionToken String   @unique @map("session_token")
-  userId       Int      @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model User {
-  id            Int       @id @default(autoincrement())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  accounts      Account[]
-  sessions      Session[]
-
-  @@map(name: "users")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verificationtokens")
-}
+//
+//model Account {
+//  id                 Int     @id @default(autoincrement())
+//  userId             Int     @map("user_id")
+//  type               String
+//  provider           String
+//  providerAccountId  String  @map("provider_account_id")
+//  refresh_token      String?
+//  access_token       String?
+//  expires_at         Int?
+//  token_type         String?
+//  scope              String?
+//  id_token           String?
+//  session_state      String?
+//  oauth_token_secret String?
+//  oauth_token        String?
+//
+//  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//
+//  @@unique([provider, providerAccountId])
+//  @@map("accounts")
+//}
+//
+//model Session {
+//  id           Int      @id @default(autoincrement())
+//  sessionToken String   @unique @map("session_token")
+//  userId       Int      @map("user_id")
+//  expires      DateTime
+//  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//
+//  @@map("sessions")
+//}
+//
+//model User {
+//  id            Int       @id @default(autoincrement())
+//  name          String?
+//  email         String?   @unique
+//  emailVerified DateTime? @map("email_verified")
+//  image         String?
+//  createdAt     DateTime  @default(now()) @map(name: "created_at")
+//  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+//  accounts      Account[]
+//  sessions      Session[]
+//
+//  @@map(name: "users")
+//}
+//
+//model VerificationToken {
+//  identifier String
+//  token      String   @unique
+//  expires    DateTime
+//
+//  @@unique([identifier, token])
+//  @@map("verificationtokens")
+//}
