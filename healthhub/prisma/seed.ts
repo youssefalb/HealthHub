@@ -6,8 +6,20 @@ const userData: Prisma.PersonCreateInput[] = [
   {
     fname: "Viktor",
     lname: "Didyk",
-    nationalID: "Kanada",
+    nationalID: "USA",
     patient: {create:{insurance_id: "123456789"}}
+  },
+  {
+    fname: "Viktor",
+    lname: "Didyk",
+    nationalID: "UA",
+    patient: {create:{insurance_id: "123458"}}
+  },
+  {
+    fname: "Viktor",
+    lname: "Didyk",
+    nationalID: "MA",
+    patient: {create:{insurance_id: "987456"}}
   },
   {
     fname: "Andrii",
@@ -39,14 +51,41 @@ const userData: Prisma.PersonCreateInput[] = [
   }
   ]
 
-const visitData: Prisma.VisitCreateInput[] = [
+  const visitData: Prisma.VisitCreateInput[] = [
     {
-    description: "19y old teenager came to hospital late night having ukrainian passport and egyptian with ukrainian as help",
-    diagnosis : "The god knows",
-    status: "COMPLETED",
-    doctor: {connect: {person: {connect: {fname: "Youssef"}}}
-    }
-]
+      description: "First visit",
+      diagnosis: "Common cold",
+      doctor: { connect: { employee_id: 7 } },
+      patient: { connect: { patient_id: 1 } },
+      receptionist: { connect: { employee_id: 4 } },
+    },
+    {
+      description: "Follow-up visit",
+      diagnosis: "Sprained ankle",
+      doctor: { connect: { employee_id: 7 } },
+      patient: { connect: { patient_id: 2 } },
+      receptionist: { connect: { employee_id: 4 } },
+    },
+    {
+      description: "Yearly check-up",
+      diagnosis: "Healthy",
+      doctor: { connect: { employee_id: 7 } },
+      patient: { connect: { patient_id: 3 } },
+      receptionist: { connect: { employee_id: 4 } },
+    },
+  ];
+  const labExaminationData: Prisma.LaboratoryExaminationCreateInput[] = [
+    {
+     examination: {create: {examinationDictionary: {create: {code: 548,type:"Covid test", description: "Covid test"}}}},
+     doctorNotice: "Patient is anemic",
+      examinationStatus: "ORDERED",
+      supervisorNotice: "",
+      DateOfApprovalXorRejection: '2023-03-29T16:30:00.000Z',
+      DateOfExecutionXorCancelling: '2023-03-29T16:30:00.000Z',
+      visit: { connect: { visit_id: 1 } },
+      lab_assistant: { connect: { employee_id: 5 } },
+    },
+  ]
 
 async function main() {
   console.log(`Start seeding ...`)
@@ -56,6 +95,21 @@ async function main() {
     })
     console.log(`Created user with id: ${user.id}`)
   }
+  for (const v of visitData) {  
+    const visit = await prisma.visit.create({
+      data: v,
+    })
+    console.log(`Created visit with id: ${visit.visit_id}`)
+  }
+  for (const l of labExaminationData) { 
+    const labExamination = await prisma.laboratoryExamination.create({
+      data: l,
+    })
+    console.log(`Created labExamination with id: ${labExamination.laboratory_exam_id}`)
+  }
+
+
+
   console.log(`Seeding finished.`)
 }
 

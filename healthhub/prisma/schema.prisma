@@ -123,7 +123,7 @@ enum Status {
 // ========= EXAMINATIONS ===========
 model Examination {
   examination_id Int @id @default(autoincrement())
-  Result String
+  result String?
 
   physicalExamination PhysicalExamination?
   examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
@@ -147,7 +147,7 @@ model PhysicalExamination {
 model ExaminationDictionary {
   code Int @id 
   type String
-  description String
+  description String?
   examination Examination[]
 
   @@map("examinationDictionaries")
@@ -167,8 +167,8 @@ model LaboratoryExamination {
   doctorNotice String
   examinationStatus ExaminationStatus
   supervisorNotice String
-  DateOfApprovalXorRejection DateTime
-  DateOfExecutionXorCancelling DateTime
+  DateOfApprovalXorRejection DateTime?
+  DateOfExecutionXorCancelling DateTime?
 
   visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
