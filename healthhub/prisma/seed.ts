@@ -2,56 +2,56 @@ import { PrismaClient, Prisma } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const userData: Prisma.UserCreateInput[] = [
+const userData: Prisma.PersonCreateInput[] = [
   {
-    name: 'Alice',
-    email: 'alice@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Join the Prisma Slack',
-          content: 'https://slack.prisma.io',
-          published: true,
-        },
-      ],
-    },
+    fname: "Viktor",
+    lname: "Didyk",
+    nationalID: "Kanada",
+    patient: {create:{insurance_id: "123456789"}}
   },
   {
-    name: 'Nilu',
-    email: 'nilu@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Follow Prisma on Twitter',
-          content: 'https://www.twitter.com/prisma',
-          published: true,
-        },
-      ],
-    },
+    fname: "Andrii",
+    lname: "Bobchuk",
+    sex:   "yes",
+    nationalID: "Poland",
+    clinicStaff: {create: {receptionist: {create:{}}}}
   },
   {
-    name: 'Mahmoud',
-    email: 'mahmoud@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Ask a question about Prisma on GitHub',
-          content: 'https://www.github.com/prisma/prisma/discussions',
-          published: true,
-        },
-        {
-          title: 'Prisma on YouTube',
-          content: 'https://pris.ly/youtube',
-        },
-      ],
-    },
+      fname: "Mike",
+      lname: "Smaluch",
+      sex: "sometimes",
+      nationalID: "Belarussia",
+      labStaff: {create: {labAssistant: {create:{}}}}
   },
+  {
+      fname: "Asser",
+      lname: "Elfeki",
+      sex: "polsl",
+      nationalID: "Netherland",
+      labStaff: {create: {labSupervisor: {create: {}}}}
+  },
+  {
+      fname: "Youssef",
+      lname: "Al Bali",
+      sex: "always",
+      nationalID: "Morocco",
+      clinicStaff: {create: {doctor: {create: {}}}}
+  }
+  ]
+
+const visitData: Prisma.VisitCreateInput[] = [
+    {
+    description: "19y old teenager came to hospital late night having ukrainian passport and egyptian with ukrainian as help",
+    diagnosis : "The god knows",
+    status: "COMPLETED",
+    doctor: {connect: {person: {connect: {fname: "Youssef"}}}
+    }
 ]
 
 async function main() {
   console.log(`Start seeding ...`)
   for (const u of userData) {
-    const user = await prisma.user.create({
+    const user = await prisma.person.create({
       data: u,
     })
     console.log(`Created user with id: ${user.id}`)
