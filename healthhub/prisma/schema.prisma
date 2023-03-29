@@ -22,7 +22,7 @@ model Person {
   labStaff LabStaff?
   clinicStaff ClinicStaff?
   patient Patient?
-
+@@map("persons")
 }
 
 model LabStaff {
@@ -31,6 +31,8 @@ model LabStaff {
 
   labSupervisor LabSupervisor?
   labAssistant LabAssistant?
+
+@@map("labStaffs")
 }
 
 model ClinicStaff {
@@ -39,6 +41,8 @@ model ClinicStaff {
 
   doctor Doctor?
   receptionist Receptionist?
+
+@@map("clinicStaffs")
 }
 
 
@@ -56,6 +60,8 @@ model Receptionist {
   employee_id Int         @id
 
   visits Visit[]
+
+  @@map("receptionists")
 }
 
 model LabSupervisor {
@@ -64,6 +70,7 @@ model LabSupervisor {
 
   laboratoryExaminations LaboratoryExamination[]
 
+  @@map("labSupervisors")
 }
 
 model LabAssistant {
@@ -71,6 +78,8 @@ model LabAssistant {
   employee_id Int      @id
 
   laboratoryExaminations LaboratoryExamination[]
+
+  @@map("labAssistants")
 }
 
 model Patient {
@@ -79,6 +88,8 @@ model Patient {
   insurance_id String @unique
 
   visits Visit[]
+
+  @@map("patients")
 }
 
 
@@ -98,6 +109,7 @@ model Visit {
   physicalExaminations PhysicalExamination[]
   laboratoryExaminations LaboratoryExamination[]
 
+  @@map("visits")
 }
 
 enum Status {
@@ -117,6 +129,8 @@ model Examination {
   examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
   exam_code    Int
   laboratoryExamination LaboratoryExamination?
+  
+  @@map("examinations")
   }
 
 model PhysicalExamination {
@@ -126,13 +140,17 @@ model PhysicalExamination {
   visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
 
+  @@map("physicExaminations")
 }
+
 
 model ExaminationDictionary {
   code Int @id 
   type String
   description String
   examination Examination[]
+
+  @@map("examinationDictionaries")
 }
 
 enum ExaminationStatus {
@@ -161,6 +179,8 @@ model LaboratoryExamination {
   lab_supervisor  LabSupervisor? @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
   lab_supervisor_id Int?
 
+
+  @@map("laboratoryExaminations")
 }
 
 
