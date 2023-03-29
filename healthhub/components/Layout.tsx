@@ -23,8 +23,19 @@ export default function Layout({ children }) {
 
   return (
     <div className='min-h-screen flex flex-col'>
-      <header className='bg-purple-200 sticky top-0 flex h-8 justify-center items-center font-semibold uppercase'>
-      </header>
+      <header className='bg-purple-200 top-0 flex justify-between items-center font-semibold'>
+        <div className='ml-4'>
+          <span className='text-lg'>Healthhub</span>
+        </div>
+        <div className='mr-10 items-center'>
+          <Link href='/login' passHref>
+            <button className='px-4 py-1 text-white bg-gray-400 rounded-lg mr-2'>Login</button>
+          </Link>
+          <Link href='/register' passHref>
+            <button className='px-4 py-1 text-white bg-gray-400 rounded-lg'>Register</button>
+          </Link>
+        </div>
+  </header>
       <div className='flex flex-col md:flex-row flex-1'>
         <aside className='bg-gray-200 w-full md:w-60'>
           <nav>
