@@ -121,21 +121,21 @@ enum Status {
 
 
 // ========= EXAMINATIONS ===========
-model Examination {
-  examination_id Int @id @default(autoincrement())
-  result String?
-
-  physicalExamination PhysicalExamination?
-  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
-  exam_code    Int
-  laboratoryExamination LaboratoryExamination?
-  
-  @@map("examinations")
-  }
+//model Examination {
+//  examination_id Int @id @default(autoincrement())
+//  result String?
+//
+//  physicalExamination PhysicalExamination?
+//  laboratoryExamination LaboratoryExamination?
+//  
+//  @@map("examinations")
+//  }
+//
 
 model PhysicalExamination {
-  examination    Examination @relation(fields: [physical_exam_id], references: [examination_id], onDelete: Cascade)
-  physical_exam_id Int @id
+  physical_exam_id Int @id @default(autoincrement())
+  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
+  exam_code    Int
 
   visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
@@ -162,13 +162,14 @@ enum ExaminationStatus {
 }
 
 model LaboratoryExamination {
-  examination    Examination @relation(fields: [laboratory_exam_id], references: [examination_id], onDelete: Cascade)
-  laboratory_exam_id Int @id
+  laboratory_exam_id Int @id @default(autoincrement())
   doctorNotice String
   examinationStatus ExaminationStatus
   supervisorNotice String
   DateOfApprovalXorRejection DateTime?
   DateOfExecutionXorCancelling DateTime?
+  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
+  exam_code    Int
 
   visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
