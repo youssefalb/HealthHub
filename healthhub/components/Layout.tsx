@@ -1,7 +1,18 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+//import logotype from './images/logotype.png'
 import hospitalIcon from '../public/hospital.png'
 
+// Just a black line to style header nicely
+const ColoredLine = ({ color }) => (
+  <hr
+      style={{
+          color: color,
+          backgroundColor: color,
+          height: 1
+      }}
+  />
+);
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -23,19 +34,21 @@ export default function Layout({ children }) {
 
   return (
     <div className='min-h-screen flex flex-col'>
-      <header className='bg-purple-200 top-0 flex justify-between items-center font-semibold'>
-        <div className='ml-4'>
-          <span className='text-lg'>Healthhub</span>
+      <header className='bg-white top-0 flex justify-between items-center font-semibold'>
+        <div className='ml-8 w-52'>
+          <img src="./images/logotype.png" alt=""></img>
         </div>
+        
         <div className='mr-10 items-center'>
-          <Link href='/login' passHref>
-            <button className='px-4 py-1 text-white bg-gray-400 rounded-lg mr-2'>Login</button>
+          <Link href='/components/login' passHref>
+            <button className='px-8 py-1 text-white bg-blue-400 rounded-2xl mr-2 my-3'>Login</button>
           </Link>
           <Link href='/register' passHref>
-            <button className='px-4 py-1 text-white bg-gray-400 rounded-lg'>Register</button>
+            <button className='px-8 py-1 text-blue-400 bg-white border border-blue-400 rounded-2xl mr-2 my-3'>Register</button>
           </Link>
         </div>
   </header>
+  <ColoredLine color="black" />
       <div className='flex flex-col md:flex-row flex-1'>
         <aside className='bg-gray-200 w-full md:w-60'>
           <nav>
