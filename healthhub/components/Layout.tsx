@@ -40,7 +40,7 @@ export default function Layout({ children }) {
         </div>
         
         <div className='mr-10 items-center'>
-          <Link href='/components/login' passHref>
+          <Link href='/login' passHref>
             <button className='px-8 py-1 text-white bg-blue-400 rounded-2xl mr-2 my-3'>Login</button>
           </Link>
           <Link href='/register' passHref>
