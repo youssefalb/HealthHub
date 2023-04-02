@@ -4,9 +4,9 @@ import Layout from "../../components/Layout";
 import '../styles/globals.css'
 
 
-function App({ Component, pageProps, session }) {
+function App({ Component, pageProps }) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={pageProps.session}>
         <Layout>
         <Component {...pageProps} />
         </Layout>

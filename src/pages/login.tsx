@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { FormEventHandler, useState } from 'react';
+import { NextResponse, NextRequest } from 'next/server'
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit:FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    // Add your login logic here
+    signIn('credentials', {
+        email: email,
+        password: password,
+        callbackUrl: "/"
+    })
   };
 
     return (
@@ -14,8 +21,8 @@ const Login = () => {
             <form onSubmit={handleSubmit} className='flex flex-col mt-5 w-96'>
                 <input
 
-                    type='username'
-                    placeholder='Username'
+                    type='email'
+                    placeholder='Email'
                     className='p-2 mb-2 rounded-lg'
                     value={email}   
                     onChange={(e) => setEmail(e.target.value)}
