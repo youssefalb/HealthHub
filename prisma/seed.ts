@@ -2,23 +2,31 @@ import { PrismaClient, Prisma } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const userData: Prisma.PersonCreateInput[] = [
+const userData: Prisma.UserCreateInput[] = [
   {
     fname: "Viktor",
     lname: "Didyk",
     nationalID: "USA",
+    email: "vity5.diduk@gmail.com",
+    password: "password123",
     patient: {create:{insurance_id: "123456789"}}
   },
   {
     fname: "Viktor",
     lname: "Didyk",
     nationalID: "UA",
+    email: "vity5.diduk@gmail.co",
+    password: "password123",
+
     patient: {create:{insurance_id: "123458"}}
   },
   {
     fname: "Viktor",
     lname: "Didyk",
     nationalID: "MA",
+    email: "ity5.diduk@gmail.com",
+    password: "password123",
+
     patient: {create:{insurance_id: "987456"}}
   },
   {
@@ -26,27 +34,39 @@ const userData: Prisma.PersonCreateInput[] = [
     lname: "Bobchuk",
     sex:   "yes",
     nationalID: "Poland",
+    email: "v.diduk@gmail.com",
+    password: "password123",
+
     clinicStaff: {create: {receptionist: {create:{}}}}
   },
   {
-      fname: "Mike",
-      lname: "Smaluch",
-      sex: "sometimes",
-      nationalID: "Belarussia",
-      labStaff: {create: {labAssistant: {create:{}}}}
+    fname: "Mike",
+    lname: "Smaluch",
+    sex: "sometimes",
+    nationalID: "Belarussia",
+    email: "vit.diduk@gmail.com",
+    password: "password123",
+
+    labStaff: {create: {labAssistant: {create:{}}}}
   },
   {
-      fname: "Asser",
-      lname: "Elfeki",
-      sex: "polsl",
-      nationalID: "Netherland",
-      labStaff: {create: {labSupervisor: {create: {}}}}
+    fname: "Asser",
+    lname: "Elfeki",
+    sex: "polsl",
+    nationalID: "Netherland",
+    email: "v.iduk@gmail.com",
+    password: "password123",
+
+    labStaff: {create: {labSupervisor: {create: {}}}}
   },
   {
       fname: "Youssef",
       lname: "Al Bali",
       sex: "always",
       nationalID: "Morocco",
+      email: "vity5.dik@gmail.com",
+      password: "password123",
+
       clinicStaff: {create: {doctor: {create: {}}}}
   }
   ]
@@ -74,23 +94,24 @@ const userData: Prisma.PersonCreateInput[] = [
       receptionist: { connect: { employee_id: 4 } },
     },
   ];
-  const labExaminationData: Prisma.LaboratoryExaminationCreateInput[] = [
-    {
-     examination: {create: {examinationDictionary: {create: {code: 548,type:"Covid test", description: "Covid test"}}}},
-     doctorNotice: "Patient is anemic",
-      examinationStatus: "ORDERED",
-      supervisorNotice: "",
-      DateOfApprovalXorRejection: '2023-03-29T16:30:00.000Z',
-      DateOfExecutionXorCancelling: '2023-03-29T16:30:00.000Z',
-      visit: { connect: { visit_id: 1 } },
-      lab_assistant: { connect: { employee_id: 5 } },
-    },
-  ]
+//  const labExaminationData: Prisma.LaboratoryExaminationCreateInput[] = [
+//    {
+//     examination: {create: {examinationDictionary: {create: {code: 548,type:"Covid test", description: "Covid test"}}}},
+//     doctorNotice: "Patient is anemic",
+//      examinationStatus: "ORDERED",
+//      supervisorNotice: "",
+//      DateOfApprovalXorRejection: '2023-03-29T16:30:00.000Z',
+//      DateOfExecutionXorCancelling: '2023-03-29T16:30:00.000Z',
+//      visit: { connect: { visit_id: 1 } },
+//      lab_assistant: { connect: { employee_id: 5 } },
+//    },
+//  ]
+//
 
-async function main() {
+  async function main() {
   console.log(`Start seeding ...`)
   for (const u of userData) {
-    const user = await prisma.person.create({
+    const user = await prisma.user.create({
       data: u,
     })
     console.log(`Created user with id: ${user.id}`)
@@ -101,12 +122,12 @@ async function main() {
     })
     console.log(`Created visit with id: ${visit.visit_id}`)
   }
-  for (const l of labExaminationData) { 
-    const labExamination = await prisma.laboratoryExamination.create({
-      data: l,
-    })
-    console.log(`Created labExamination with id: ${labExamination.laboratory_exam_id}`)
-  }
+//  for (const l of labExaminationData) { 
+//    const labExamination = await prisma.laboratoryExamination.create({
+//      data: l,
+//    })
+//    console.log(`Created labExamination with id: ${labExamination.laboratory_exam_id}`)
+//  }
 
 
 
