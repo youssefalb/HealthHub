@@ -60,14 +60,14 @@ const userData: Prisma.UserCreateInput[] = [
     labStaff: {create: {labSupervisor: {create: {}}}}
   },
   {
-      fname: "Youssef",
-      lname: "Al Bali",
-      sex: "always",
-      nationalID: "Morocco",
-      email: "vity5.dik@gmail.com",
-      password: "password123",
+    fname: "Youssef",
+    lname: "Al Bali",
+    sex: "always",
+    nationalID: "Morocco",
+    email: "vity5.dik@gmail.com",
+    password: "password123",
 
-      clinicStaff: {create: {doctor: {create: {}}}}
+    clinicStaff: {create: {doctor: {create: {}}}}
   }
   ]
 

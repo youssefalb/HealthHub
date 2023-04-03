@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   web:
+    image: claudeperrin228/healthhub:latest
     build:
       context: ./
       target: runner
