@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const { fname, lname, email, password, insurance_id, national_id } = req.body
     console.log(email)
     const user = await prisma.user.findUnique({
-        where : {
+        where: {
             email: email
         }
     })
@@ -17,12 +17,12 @@ export default async function handler(req, res) {
                 email: email,
                 password: password,
                 nationalID: national_id,
-                patient: {create:{insurance_id: insurance_id }}
+                patient: { create: { insurance_id: insurance_id } }
             }
         })
         res.status(200).json({ result })
     } else {
-      res.status(401).json({ result: null })
+        res.status(401).json({ result: null })
     }
 
 }
