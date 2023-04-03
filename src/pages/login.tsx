@@ -18,20 +18,23 @@ const Login = () => {
   };
 
     return (
-        <div className='flex flex-col items-center justify-center min-h-screen py-2 -mt-56 px-14 text-center'>
-            <form onSubmit={handleSubmit} className='flex flex-col mt-5 w-96'>
+        <div 
+        className="bg-gray-50 flex flex-col items-center justify-center min-h-screen text-center ">
+
+        <form onSubmit={handleSubmit} className='align-middle bg-white p-2 m-2 flex min-h-96 min-w-96 flex-grow flex-col rounded-xl'>
+         <p className='font-semibold text-black text-lg p-8'>Hello</p>
                 <input
 
                     type='email'
                     placeholder='Email'
-                    className='p-2 mb-2 rounded-lg'
+                    className='p-2 m-2 rounded-2xl bg-gray-100'
                     value={email}   
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     type='password'
                     placeholder='Password'
-                    className='p-2 mb-2 rounded-lg'
+                    className='p-2 m-2 rounded-2xl bg-gray-100'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
 
@@ -39,11 +42,14 @@ const Login = () => {
 
                 <button
                     type='submit'
-                    className='p-2 mt-2 bg-purple-400 rounded-lg'
+                    className='p-2 mt-2 bg-teal rounded-lg'
                 >
-                    Login
+                    <span className="font-semibold bg-black text-purple-600 mx-6 text-sm">"Login"</span>
                 </button>
             </form>
+
+            
+           
         </div>
     );
 };

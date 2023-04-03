@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-//import logotype from './images/logotype.png'
-import hospitalIcon from '../public/hospital.png'
 
 // Just a black line to style header nicely
 const ColoredLine = ({ color }) => (
@@ -50,16 +48,16 @@ export default function Layout({ children }) {
   </header>
   <ColoredLine color="black" />
       <div className='flex flex-col md:flex-row flex-1'>
-        <aside className='bg-gray-200 w-full md:w-60'>
+        <aside className='bg-gray-100 w-full md:w-60'>
           <nav>
             <ul>
               {menuItems.map(({ href, title }) => (
                 <li className='m-2' key={title}>
                   <Link href={href} passHref>
-                <div className={`flex p-2 bg-white hover:bg-gray-400 cursor-pointer rounded-xl ${
-                        router.asPath === href && 'bg-indigo-200'
+                <div className={`flex p-2 bg-gray-50 hover:bg-gray-200 cursor-pointer rounded-lg ${
+                        router.asPath === href && 'bg-gray-200 text-blue-400'
                       }`}>
-                    <span className="font-semibold text-blue-600">{title}</span>
+                    <span className="font-semibold text-gray-600 mx-6 text-sm">{title}</span>
                     </div>
                   </Link>
                 </li>
