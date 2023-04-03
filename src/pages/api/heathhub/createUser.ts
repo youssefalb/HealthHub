@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const { fname, lname, sex , email, nationalID} = req.body
-    console.log(fname)
     try {
       const user = await prisma.person.create({
         data: {

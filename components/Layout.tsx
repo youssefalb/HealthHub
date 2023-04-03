@@ -38,10 +38,10 @@ export default function Layout({ children }) {
         </div>
         
         <div className='mr-10 items-center'>
-          <Link href='/login' passHref>
+          <Link href='/auth/login' passHref>
             <button className='px-8 py-1 text-white bg-blue-400 rounded-2xl mr-2 my-3'>Login</button>
           </Link>
-          <Link href='/register' passHref>
+          <Link href='/auth/register' passHref>
             <button className='px-8 py-1 text-blue-400 bg-white border border-blue-400 rounded-2xl mr-2 my-3'>Register</button>
           </Link>
         </div>
