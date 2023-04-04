@@ -75,25 +75,21 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
-        session: async ({ session, token }) => {
-            if (session?.user) {
-                session.user.id = token.uid;
-                session.user.email = token.email;
-                console.log("SESSION CALLBACK")
-                console.log(session)
-            }
-            return session;
-        },
-        jwt: async ({ user, token }) => {
-            if (user) {
-                token.uid = user.id;
-                token.email = user.email;
+        session: async ({ session, user,token }) => {
+            session.user["id"] = token.id
 
-                console.log("JWT CALLBACK")
-                console.log(token)
-                console.log(user)
+            console.log("===SESSION===")
+            console.log(session)
+            return session
+        },
+        jwt: async ({ account, user, token }) => {
+            if (account) {
+                token.accessToken = account.access_token
+                token.id = user.id
             }
-            return token;
+            console.log("===JWT===")
+            console.log(token)
+            return token
         },
     },
 };
