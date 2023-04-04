@@ -43,10 +43,11 @@ export const authOptions: NextAuthOptions = {
                     headers: { "Content-Type": "application/json" }
                 })
                 const user = await res.json()
+                const temp = user.user
 
                 // If no error and we have user data, return it
-                if (res.ok && user) {
-                    return user
+                if (res.ok && temp) {
+                    return temp
                 }
                 // Return null if user data could not be retrieved
                 return null
@@ -77,12 +78,20 @@ export const authOptions: NextAuthOptions = {
         session: async ({ session, token }) => {
             if (session?.user) {
                 session.user.id = token.uid;
+                session.user.email = token.email;
+                console.log("SESSION CALLBACK")
+                console.log(session)
             }
             return session;
         },
         jwt: async ({ user, token }) => {
             if (user) {
                 token.uid = user.id;
+                token.email = user.email;
+
+                console.log("JWT CALLBACK")
+                console.log(token)
+                console.log(user)
             }
             return token;
         },
