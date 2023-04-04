@@ -1,4 +1,12 @@
 import prisma from '../../../../lib/prisma'
+import bcrypt from 'bcrypt'
+
+//create a hashing function
+const hashPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    return hash
+}
 
 
 export default async function handler(req, res) {
@@ -9,18 +17,22 @@ export default async function handler(req, res) {
             email: email
         }
     })
+
+    
     if (!user) {
+        const hashedPassword = await hashPassword(password)
+        console.log(hashedPassword)
         const result = await prisma.user.create({
             data: {
                 fname: fname,
                 lname: lname,
                 email: email,
-                password: password,
+                password: hashedPassword,
                 nationalID: national_id,
                 patient: { create: { insurance_id: insurance_id } }
             }
         })
-        res.status(200).json({ result })
+       res.status(200).json({ result })
     } else {
         res.status(401).json({ result: null })
     }
