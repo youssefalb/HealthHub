@@ -75,8 +75,8 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
-        session: async ({ session, user,token }) => {
-            session.user["id"] = token.id
+        session: async ({ session, token }) => {
+            session.user.id = token.id
 
             console.log("===SESSION===")
             console.log(session)
