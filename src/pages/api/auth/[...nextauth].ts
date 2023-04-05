@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "../../../../lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
+import console from "console";
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, authOptions);
 export default authHandler;
@@ -78,6 +79,7 @@ export const authOptions: NextAuthOptions = {
         session: async ({ session, token }) => {
             session.user.id = token.id
 
+            session.user.name = token.name
             console.log("===SESSION===")
             console.log(session)
             return session
@@ -86,7 +88,9 @@ export const authOptions: NextAuthOptions = {
             if (account) {
                 token.accessToken = account.access_token
                 token.id = user.id
+                token.name = user.fname + " " + user.lname
             }
+
             console.log("===JWT===")
             console.log(token)
             return token

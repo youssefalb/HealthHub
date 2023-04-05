@@ -1,9 +1,5 @@
 import React from "react";
-import type { GetServerSideProps } from "next";
-import Layout from "../../components/Layout";
-import prisma from '../../lib/prisma'
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { getToken } from "next-auth/jwt";
 
 function index() {
 
@@ -12,7 +8,7 @@ function index() {
     if (session) {
         return (
             <div>
-                <p>Welcome back commander {session.user.email}</p>
+                <p>Welcome back commander {session.user.name}</p>
                 <button onClick={() => signOut()}>Sign out </button>
 
             </div>
