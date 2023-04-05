@@ -2,6 +2,7 @@
 import { signIn } from 'next-auth/react';
 import { FormEventHandler, useState, useMemo } from 'react';
 import  CustomTextInput  from '../../../components/CustomComponents/CustomTextInput';
+import React from 'react';
 
 
 export default function Register() {

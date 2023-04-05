@@ -9,6 +9,15 @@ datasource db {
 }
 
 // ========= OUR CODE =========
+enum Role{
+  PATIENT
+  DOCTOR
+  LAB_SUPERVISOR 
+  LAB_ASSISTANT
+  RECEPTIONIST
+}
+
+
 model User {
   id          Int           @id @default(autoincrement())
   fname       String        @db.VarChar(32)
@@ -18,13 +27,16 @@ model User {
   password    String        
   emailVerified DateTime?   @map("email_verified")
   nationalID String         @unique @db.VarChar(11)
-  
+  role Role     @default(PATIENT)
   sessions Session[]
 
-  labStaff LabStaff?
-  clinicStaff ClinicStaff?
+  doctor Doctor? 
+  receptionist Receptionist? 
+  lab_assistant LabAssistant?
+  lab_supervisor LabSupervisor?
   patient Patient?
-@@map("users")
+
+  @@map("users")
 }
 
 
@@ -49,31 +61,9 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-// =============================================
-
-model LabStaff {
-  user          User          @relation(fields: [lab_employee_id], references: [id], onDelete: Cascade)
-  lab_employee_id Int             @id
-
-  labSupervisor LabSupervisor?
-  labAssistant LabAssistant?
-
-@@map("labStaffs")
-}
-
-model ClinicStaff {
-  user             User         @relation(fields: [clinic_employee_id], references: [id], onDelete: Cascade)
-  clinic_employee_id Int            @id
-
-  doctor Doctor?
-  receptionist Receptionist?
-
-@@map("clinicStaffs")
-}
-
 
 model Doctor {
-  clinicStaff ClinicStaff @relation(fields: [employee_id], references: [clinic_employee_id], onDelete: Cascade)
+  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
   employee_id Int         @id
   
   visits Visit[]
@@ -82,7 +72,7 @@ model Doctor {
 }
 
 model Receptionist {
-  clinicStaff ClinicStaff @relation(fields: [employee_id], references: [clinic_employee_id], onDelete: Cascade)
+  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
   employee_id Int         @id
 
   visits Visit[]
@@ -91,7 +81,7 @@ model Receptionist {
 }
 
 model LabSupervisor {
-  labStaff    LabStaff @relation(fields: [employee_id], references: [lab_employee_id], onDelete: Cascade)
+  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
   employee_id Int      @id
 
   laboratoryExaminations LaboratoryExamination[]
@@ -100,8 +90,8 @@ model LabSupervisor {
 }
 
 model LabAssistant {
-  labStaff    LabStaff @relation(fields: [employee_id], references: [lab_employee_id], onDelete: Cascade)
-  employee_id Int      @id
+  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  employee_id Int   @id
 
   laboratoryExaminations LaboratoryExamination[]
 
