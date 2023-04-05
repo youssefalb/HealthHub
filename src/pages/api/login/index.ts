@@ -1,15 +1,8 @@
 import prisma from '../../../../lib/prisma'
 //import { getSession } from 'next-auth/react'
-
+import { comparePassword } from '../../../utils/hashPassword'
 import bcrypt from 'bcrypt'
 
-
-//create a function that compares the password with the hash
-async function comparePassword(password, hash) {
-    const result = await bcrypt.compare(password, hash)
-    return result
-
-}
 
 export default async function handler(req, res) {
     const { email, password } = req.body

@@ -1,13 +1,7 @@
 import prisma from '../../../../lib/prisma'
-import bcrypt from 'bcrypt'
+import {hashPassword}  from '../../../utils/hashPassword'
 
 //create a hashing function
-const hashPassword = async (password) => {
-    const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(password, salt)
-    return hash
-}
-
 
 export default async function handler(req, res) {
     const { fname, lname, email, password, insurance_id, national_id } = req.body
