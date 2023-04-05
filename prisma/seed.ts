@@ -39,8 +39,8 @@ async function seed() {
       nationalID: "Poland",
       email: "v.diduk@gmail.com",
       password: await hashPassword("password123"),
-  
-      clinicStaff: {create: {receptionist: {create:{}}}}
+      role: "RECEPTIONIST",
+      receptionist: {create: {}}
     },
     {
       fname: "Mike",
@@ -49,8 +49,8 @@ async function seed() {
       nationalID: "Belarussia",
       email: "vit.diduk@gmail.com",
       password: await hashPassword("password123"),
-  
-      labStaff: {create: {labAssistant: {create:{}}}}
+      role: "DOCTOR",
+      doctor: {create: {}}
     },
     {
       fname: "Asser",
@@ -59,8 +59,8 @@ async function seed() {
       nationalID: "Netherland",
       email: "v.iduk@gmail.com",
       password: await hashPassword("password123"),
-  
-      labStaff: {create: {labSupervisor: {create: {}}}}
+      role: "LAB_ASSISTANT",
+      lab_assistant: {create:{}}
     },
     {
       fname: "Youssef",
@@ -69,8 +69,8 @@ async function seed() {
       nationalID: "Morocco",
       email: "vity5.dik@gmail.com",
       password: await hashPassword("password123"),
-  
-      clinicStaff: {create: {doctor: {create: {}}}}
+      role: "DOCTOR",
+      doctor: {create: {}}
     }
   ]
   const visitData: Prisma.VisitCreateInput[] = [
@@ -130,7 +130,7 @@ async function seed() {
 
   async function main() {
   console.log(`Start seeding ...`)
-  seed()
+  await seed()
   console.log(`Seeding finished.`)
 //  for (const l of labExaminationData) { 
 //    const labExamination = await prisma.laboratoryExamination.create({
