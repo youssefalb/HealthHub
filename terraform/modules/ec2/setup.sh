@@ -22,6 +22,6 @@ services:
     image: claudeperrin228/healthhub:latest
     ports:
       - '3000:3000'
-" >> docker-compose.yml
+" >> ./docker-compose.yml
 
-sudo docker compose pull; sudo docker compose up
+sudo docker compose -p "healthhub" pull; sudo docker compose -p "healthhub" up
