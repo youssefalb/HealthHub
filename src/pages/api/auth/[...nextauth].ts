@@ -47,7 +47,8 @@ export const authOptions: NextAuthOptions = {
                 const temp = user.user
 
                 // If no error and we have user data, return it
-                if (res.ok && temp) {
+                
+                if (res.ok && temp && temp.emailVerified) {
                     return temp
                 }
                 // Return null if user data could not be retrieved
@@ -80,8 +81,6 @@ export const authOptions: NextAuthOptions = {
             session.user.id = token.id
 
             session.user.name = token.name
-            console.log("===SESSION===")
-            console.log(session)
             return session
         },
         jwt: async ({ account, user, token }) => {
@@ -89,10 +88,8 @@ export const authOptions: NextAuthOptions = {
                 token.accessToken = account.access_token
                 token.id = user.id
                 token.name = user.fname + " " + user.lname
+                console.log(token)
             }
-
-            console.log("===JWT===")
-            console.log(token)
             return token
         },
     },
