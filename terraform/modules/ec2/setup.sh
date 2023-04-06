@@ -15,4 +15,13 @@ curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compos
 chmod +x /usr/local/bin/docker-compose
 
 # Run container
+echo "
+version: '3.8'
+services:
+  web:
+    image: claudeperrin228/healthhub:latest
+    ports:
+      - '3000:3000'
+" >> docker-compose.yml
 
+sudo docker compose pull; sudo docker compose up
