@@ -3,18 +3,23 @@ import Layout from "../../components/Layout";
 import Router from "next/router";
 
 const Draft: React.FC = () => {
+  // Define state variables for the title and content of the blog post.
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  // Define a function to submit the blog post.
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
+      // Define the body of the blog post.
       const body = { title, content }; 
+      // Send the request to the /api/post endpoint.
       await fetch(`/api/post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      // Redirect to the drafts page.
       await Router.push("/drafts");
     } catch (error) {
       console.error(error);
