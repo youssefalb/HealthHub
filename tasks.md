@@ -1,7 +1,7 @@
 - readme in each directory 
 - comment existing code and missing parts 
-- understand nuxtAuth 
-- resturcture directory archeticture 
+- understand nextAuth 
+- resturcture directory architecture  
 - list apis and describe them 
 - create all pages 
 - FE 
