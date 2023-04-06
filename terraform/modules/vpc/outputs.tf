@@ -8,7 +8,7 @@ output "vpc_id" {
   value       = aws_vpc.vpc.id
 }
 
-output "private_db_subnet_group" {
-  description = ""
-  value       = aws_db_subnet_group.private_db_subnet_group.id
-}
+//output "private_db_subnet_group" {
+//  description = ""
+//  value       = aws_db_subnet_group.private_db_subnet_group.id
+//}

@@ -21,13 +21,13 @@ module "security_group" {
   instance_name = var.instance_name
 }
 
-module "rds" {
-  source = "./modules/rds"
-  subnet = module.vpc.private_db_subnet_group
-  rds_sg_id = module.security_group.rds_sg
-  username = var.username
-  password = var.password
-}
+//module "rds" {
+//  source = "./modules/rds"
+//  subnet = module.vpc.private_db_subnet_group
+//  rds_sg_id = module.security_group.rds_sg
+//  username = var.username
+//  password = var.password
+//}
 
 module "ec2_app" {
   source = "./modules/ec2"
