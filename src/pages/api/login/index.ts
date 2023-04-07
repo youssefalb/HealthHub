@@ -1,9 +1,8 @@
-import prisma from '../../lib/prisma'
+import prisma from '../../../../lib/prisma'
 //import { getSession } from 'next-auth/react'
-import { comparePassword } from '../../lib/hashPassword'
-// import { NextResponse } from 'next/server'
+import { comparePassword } from '../../../utils/hashPassword'
 
-export default async function POST(req, res) {
+export default async function handler(req, res) {
     const { email, password } = req.body
     console.log(email)
     const user = await prisma.user.findUnique({
@@ -11,11 +10,9 @@ export default async function POST(req, res) {
             email: email
         }
     })
-    console.log("here we are");
-    
+
     // compare hashes
     if (user && await comparePassword(password, user.password)) {
-    
         res.status(200).json({ user })
     } else {
         res.status(401).json({ result: null })
