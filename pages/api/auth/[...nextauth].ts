@@ -2,9 +2,10 @@ import { NextApiHandler } from "next";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import console from "console";
+
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, authOptions);
 export default authHandler;
@@ -47,7 +48,7 @@ export const authOptions: NextAuthOptions = {
                 const temp = user.user
 
                 // If no error and we have user data, return it
-                
+
                 if (res.ok && temp && temp.emailVerified) {
                     return temp
                 }
@@ -70,8 +71,8 @@ export const authOptions: NextAuthOptions = {
     ],
     pages: {
         //TODO: Custom pages for errors/signOut
-        signIn: "/auth/login",
-        //error: "/api/error"
+        signIn: "/login",
+        // error: "/error"
         //signOut: "/api/signout"
     },
     adapter: PrismaAdapter(prisma),
@@ -81,14 +82,18 @@ export const authOptions: NextAuthOptions = {
             session.user.id = token.id
 
             session.user.name = token.name
+
+            console.log("session:" + session)
             return session
+
         },
         jwt: async ({ account, user, token }) => {
             if (account) {
                 token.accessToken = account.access_token
-                token.id = user.id
-                token.name = user.fname + " " + user.lname
-                console.log(token)
+                token.id = user?.id
+                token.name = user?.fname + " " + user.lname
+                console.log("token" + token)
+
             }
             return token
         },

@@ -1,14 +1,16 @@
+"use client"
+
 import React from "react";
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession, signIn, signOut, getSession } from 'next-auth/react'
 
 function index() {
 
     //TODO: Sessions are not stored in db when logging via credentials
-    const { data: session } = useSession();
+    const { data: session } = getSession();
     if (session) {
         return (
             <div>
-                <p>Welcome back commander {session.user.name}</p>
+                <p>Welcome back commander {session.user?.name}</p>
                 <button onClick={() => signOut()}>Sign out </button>
 
             </div>

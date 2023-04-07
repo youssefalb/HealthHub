@@ -1,0 +1,7 @@
+- readme in each directory 
+- comment existing code and missing parts 
+- understand nextAuth 
+- restrurcture directory architecture  
+- list apis and describe them 
+- create all pages 
+- FE 
