@@ -11,6 +11,7 @@ async function seed() {
       lname: "Didyk",
       nationalID: "USA",
       email: "vity5.diduk@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       patient: {create:{insurance_id: "123456789"}}
     },
@@ -28,6 +29,7 @@ async function seed() {
       lname: "Didyk",
       nationalID: "MA",
       email: "ity5.diduk@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
   
       patient: {create:{insurance_id: "987456"}}
@@ -38,6 +40,7 @@ async function seed() {
       sex:   "yes",
       nationalID: "Poland",
       email: "v.diduk@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "RECEPTIONIST",
       receptionist: {create: {}}
@@ -48,6 +51,7 @@ async function seed() {
       sex: "sometimes",
       nationalID: "Belarussia",
       email: "vit.diduk@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "DOCTOR",
       doctor: {create: {}}
@@ -58,6 +62,7 @@ async function seed() {
       sex: "polsl",
       nationalID: "Netherland",
       email: "v.iduk@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "LAB_ASSISTANT",
       lab_assistant: {create:{}}
@@ -68,6 +73,7 @@ async function seed() {
       sex: "always",
       nationalID: "Morocco",
       email: "vity5.dik@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "DOCTOR",
       doctor: {create: {}}
