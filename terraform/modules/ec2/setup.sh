@@ -15,6 +15,8 @@ curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compos
 chmod +x /usr/local/bin/docker-compose
 
 # Run container
+ec2_ip=$(curl https://checkip.amazonaws.com) 
+
 echo "
 version: '3.8'
 services:
@@ -22,6 +24,7 @@ services:
     image: claudeperrin228/healthhub:latest
     ports:
       - '3000:3000'
+    command: sh -c 'echo NEXTAUTH_URL=http://${ec2_ip}:3000 >> .env && node server.js'
 " >> ./docker-compose.yml
 
 sudo docker compose -p "healthhub" pull; sudo docker compose -p "healthhub" up
