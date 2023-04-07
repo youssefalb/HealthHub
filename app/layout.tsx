@@ -1,3 +1,5 @@
+//fix this SHIT
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

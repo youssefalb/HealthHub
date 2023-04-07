@@ -3,8 +3,8 @@
 import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getCsrfToken, getProviders } from "next-auth/react"
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../api/auth/[...nextauth]";
-import  CustomTextInput  from '../../../components/CustomComponents/CustomTextInput';
+import { authOptions } from "./api/auth/[...nextauth]"
+import  CustomTextInput  from '../components/CustomComponents/CustomTextInput';
 import React from 'react';
 
 export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -33,19 +33,19 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
 
 
 //middleware
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//     const session = await getServerSession(context.req, context.res, authOptions);
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const session = await getServerSession(context.req, context.res, authOptions);
 
-//     if (session) {
-//         return { redirect: { destination: "/" } }
-//     }
+    if (session) {
+        return { redirect: { destination: "/" } }
+    }
 
-//     const providers = await getProviders();
+    const providers = await getProviders();
 
-//     return {
-//         props: {
-//             providers: providers ?? [],
-//             csrfToken: await getCsrfToken(context),
-//         },
-//     }
-// }
+    return {
+        props: {
+            providers: providers ?? [],
+            csrfToken: await getCsrfToken(context),
+        },
+    }
+}

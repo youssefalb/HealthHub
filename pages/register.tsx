@@ -1,7 +1,7 @@
 //create a register page
 import { signIn } from 'next-auth/react';
 import { FormEventHandler, useState, useMemo } from 'react';
-import  CustomTextInput  from '../../../components/CustomComponents/CustomTextInput';
+import  CustomTextInput  from '../components/CustomComponents/CustomTextInput';
 import React from 'react';
 
 

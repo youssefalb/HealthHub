@@ -1,6 +1,7 @@
-import prisma from '../../../lib/prisma'
-import { hashPassword } from '../../../lib/hashPassword'
-import sendVerificationEmail from "../sendVerficationEmail";
+
+import prisma from '../../lib/prisma'
+import { hashPassword } from '../../lib/hashPassword'
+import sendVerificationEmail from "./sendVerficationEmail";
 
 
 //create a hashing function
