@@ -1,6 +1,6 @@
-import prisma from '../../../../lib/prisma'
+import prisma from '../../../lib/prisma'
 //import { getSession } from 'next-auth/react'
-import { comparePassword } from '../../../utils/hashPassword'
+import { comparePassword } from '../../../lib/hashPassword'
 
 export default async function handler(req, res) {
     const { email, password } = req.body

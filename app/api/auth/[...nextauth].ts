@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import console from "console";
 
@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 const temp = user.user
 
                 // If no error and we have user data, return it
-                
+
                 if (res.ok && temp && temp.emailVerified) {
                     return temp
                 }

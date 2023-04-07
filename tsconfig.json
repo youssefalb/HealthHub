@@ -1,40 +1,47 @@
 {
+  "compilerOptions": {
+    //  "typeRoots": [
+    //     "./src/types"
+    // ],
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/Layout.js",
+    ".next/types/**/*.ts"
+  ],
+  "ts-node": {
     "compilerOptions": {
-        //  "typeRoots": [
-        //     "./src/types"
-        // ],
-        "target": "es5",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": false,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true
-    },
-    "exclude": [
-        "node_modules"
-    ],
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        "components/Layout.js"
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "jsx": "react-jsx",
-            "module": "commonjs"
-        }
+      "jsx": "react-jsx",
+      "module": "commonjs"
     }
+  }
 }
