@@ -1,16 +1,16 @@
 import { SessionProvider } from "next-auth/react";
 import Layout from "../../components/Layout";
 import '../styles/globals.css'
-import AppStore from '../../context/user'
+import { UserProvider } from '../../context/user'
 
 
 function App({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
         <Layout>
-        <AppStore>
-        <Component {...pageProps} />
-        </AppStore>
+          <UserProvider >
+            <Component {...pageProps} />
+          </UserProvider>
         </Layout>
     </SessionProvider>
     )
