@@ -10,6 +10,9 @@ export default async function handler(req, res) {
     const results = await prisma.laboratoryExamination.findMany({
         where: {
             visit_id: Number(id)
+        },
+        include: {
+            examinationDictionary: true
         }
     })
     console.log(results)
