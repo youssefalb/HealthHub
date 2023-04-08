@@ -26,7 +26,7 @@ export default function Layout({ children }) {
         },
         {
             href: '/contact',
-            title: 'Contact',
+            title: 'Conatact developers',
         },
     ];
 
