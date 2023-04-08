@@ -4,7 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "../../../../lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
-import console from "console";
+import GoogleProvider from "next-auth/providers/google"
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, authOptions);
 export default authHandler;
@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 const temp = user.user
 
                 // If no error and we have user data, return it
-                
+
                 if (res.ok && temp && temp.emailVerified) {
                     return temp
                 }
@@ -65,6 +65,17 @@ export const authOptions: NextAuthOptions = {
                 },
             },
             from: process.env.SMTP_FROM,
+        }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_ID,
+            clientSecret: process.env.GOOGLE_SECRET,
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
         })
 
     ],
@@ -77,18 +88,32 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
+        async signIn({ user, account, profile, email, credentials }) {
+            if (account.provider === "google") {
+
+                user.fname = profile.given_name
+                user.lname = profile.family_name
+                user.image = profile.picture
+                if(profile.email_verified == true)
+                    user.emailVerified = new Date()
+
+                delete user.name
+                console.log("===SIGNIN===")
+                console.log(profile)
+                console.log(user)
+            }
+            return true
+        },
         session: async ({ session, token }) => {
             session.user.id = token.id
-
             session.user.name = token.name
             return session
         },
-        jwt: async ({ account, user, token }) => {
+        jwt: async ({ profile, account, user, token }) => {
             if (account) {
                 token.accessToken = account.access_token
                 token.id = user.id
                 token.name = user.fname + " " + user.lname
-                console.log(token)
             }
             return token
         },

@@ -4,7 +4,6 @@ import { comparePassword } from '../../../utils/hashPassword'
 
 export default async function handler(req, res) {
     const { email, password } = req.body
-    console.log(email)
     const user = await prisma.user.findUnique({
         where: {
             email: email
@@ -12,7 +11,11 @@ export default async function handler(req, res) {
     })
 
     // compare hashes
-    if (user && await comparePassword(password, user.password)) {
+    let compareResult = false;
+    if(password && user.password)
+        compareResult = await comparePassword(password,user.password)
+    
+    if (user && compareResult) {
         res.status(200).json({ user })
     } else {
         res.status(401).json({ result: null })

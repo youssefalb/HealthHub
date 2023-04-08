@@ -34,7 +34,7 @@ export default function Layout({ children }) {
         <div className='min-h-screen flex flex-col'>
             <header className='bg-white top-0 flex justify-between items-center font-semibold'>
                 <div className='ml-8 w-52'>
-                    <img src="./images/logotype.png" alt=""></img>
+                    <img src="/images/logotype.png" alt=""></img>
                 </div>
 
                 <div className='mr-10 items-center'>
