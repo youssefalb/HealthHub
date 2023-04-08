@@ -1,13 +1,12 @@
+import { IncrementalCache } from 'next/dist/server/lib/incremental-cache'
 import prisma from '../../../../lib/prisma'
 
-//I think we should make this endpoint returning only for
-// a single visit each time and loop through the visits in the frontend
-//I think this is the best way to do it, but I'm not sure
+
 
 export default async function handler(req, res) {
     const { id } = req.query
     console.log(Number(id))
-    const results = await prisma.laboratoryExamination.findMany({
+    const results = await prisma.physicalExamination.findMany({
         where: {
             visit_id: Number(id)
         },
