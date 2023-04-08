@@ -1,13 +1,23 @@
 import React from "react";
 import { useSession, signIn, signOut } from 'next-auth/react'
-import {useUserContext, useUpdateUserContext} from '../../context/user'
+import {useUserContext, useUpdateUserContext, initialState} from '../../context/user'
+
+
 
 function index() {
-
-
  // Getting user object using useUserContext Hook
     const user = useUserContext();
     const setUser = useUpdateUserContext(); 
+
+
+    function handleSignOut() {
+        // console.log("signing out MF");
+        // setUser(initialState);
+        localStorage.removeItem('userInfo');
+        // localStorage.clear();
+        signOut();
+    }
+    
 
 // we have data retrieved from global context, and can be used 
 
@@ -18,7 +28,7 @@ function index() {
             <div>
                 <p>{session.user.name} + {user.name} hekllooooo </p>
             <p>Welcome back commander {session.user.name}</p>
-                <button onClick={() => signOut()}>Sign out </button>
+                <button onClick={() => handleSignOut()}>Sign out </button>
 
             </div>
         )
