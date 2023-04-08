@@ -1,5 +1,5 @@
 import prisma from '../../../../lib/prisma'
-import {hashPassword}  from '../../../utils/hashPassword'
+import {hashPassword}  from '../../../../lib/hashPassword'
 import sendVerificationEmail from "../sendVerficationEmail";
 
 
