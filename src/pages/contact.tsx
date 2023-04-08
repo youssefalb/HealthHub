@@ -3,7 +3,7 @@ function Contact() {
     {
       name: "Andriy Bobchuk",
       position: "Front-end Developer",
-      avatarUrl: "/images/andriy.png",
+      avatarUrl: "/images/andriy.jpg",
       githubUrl: "https://github.com/andriybobchuk",
     },
     {
