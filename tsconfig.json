@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        //  "typeRoots": [
-        //     "./src/types"
-        // ],
+         "typeRoots": [
+            "./src/types"
+        ],
         "target": "es5",
         "lib": [
             "dom",
@@ -22,6 +22,20 @@
         "jsx": "preserve",
         "incremental": true
     },
+    "paths": {
+        "@/components/*": ["./components/*"],
+        "@/lib/*": ["./lib/*"],
+        "@/styles/*": ["./src/styles/*"],
+        "@/prisma/*": ["./prisma/*"],
+        "@/context/*": ["./context/*"],
+        "@/commonPages/*": ["./src/pages/*"],
+        "@/doctors/*" : ["./src/pages/doctor/*"],
+        "@/patients/*" : ["./src/pages/patient/*",],
+        "@/admin/*" : ["./src/pages/admin/*"],
+        "@/auth/*" : ["./src/pages/auth/*"],
+        "@registerar" : ["./src/pages/registrar/*"],
+        "@labstaff" : ["./src/pages/labstaff/*"],
+    },
     "exclude": [
         "node_modules"
     ],
@@ -29,8 +43,10 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        "components/Layout.js"
-, "context/localStorage.js", "context/localStorage.js"    ],
+        "components/Layout.js", 
+        "context/localStorage.js", 
+        "context/localStorage.js",
+    ],
     "ts-node": {
         "compilerOptions": {
             "jsx": "react-jsx",
