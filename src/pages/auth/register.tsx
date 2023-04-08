@@ -24,21 +24,32 @@ export default function Register() {
         console.log(fname);
     };
     return (
-        <div className='flex flex-col items-center justify-center min-h-screen py-2 -mt-56 px-14 text-center'>
-            <form onSubmit={handleSubmit} className='flex flex-col mt-5 w-96'>
-                <CustomTextInput type='text' name='fname' placeholder='First name' onChange={(e) => setFname(e.target.value)}  />
+        <div className="bg-gray-50 min-h-screen">
+      <div className="container mx-auto py-8">
+        <h1 className="text-4xl font-bold text-center mb-4 mt-1">Welcome to HealthHub!</h1>
+        <p className="text-lg text-center">
+          Please, provide us with all the necessary data to proceed.
+        </p>
+        <div className='flex items-center justify-center mt-10 '>
+            <form onSubmit={handleSubmit} className='shadow-md p-10 bg-white p-2 m-2 flex flex-col rounded-xl justify-center'>
+            <div className='grid grid-cols-2 gap flex flew'>
+            <CustomTextInput type='text' name='fname' placeholder='First name' onChange={(e) => setFname(e.target.value)}  />
                 <CustomTextInput type='text' name='lname' placeholder='Last name' onChange={(e) => setLname(e.target.value)}  />
                 <CustomTextInput type='email' name='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)}  />
                 <CustomTextInput type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)}  />
                 <CustomTextInput type='text' name='national_id' placeholder='National ID' onChange={(e) => setNationaId(e.target.value)}  />
                 <CustomTextInput type='text' name='insurance_id' placeholder='Insurance ID' onChange={(e) => setInsuranceId(e.target.value)}  />
+
+                </div>
                 <button
                     type='submit'
-                    className='p-2 mt-2 bg-purple-400 rounded-lg'
+                    className='p-2 mt-5 m-2 text-white font-bold bg-blue-500 rounded-2xl'
                 >
                     Register
                 </button>
             </form>
+        </div>
+        </div>
         </div>
     );
 };  
