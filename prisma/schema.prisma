@@ -17,18 +17,21 @@ enum Role{
   RECEPTIONIST
 }
 
+// ================= OAuth ================
 
 model User {
   id          Int           @id @default(autoincrement())
-  fname       String        @db.VarChar(32)
+  fname       String?       @db.VarChar(32)
   lname       String?       @db.VarChar(32)
+  image      String?        
   sex         String?       @db.VarChar(32)
-  email       String        @db.VarChar(64) @unique
-  password    String        
+  email       String?       @db.VarChar(64) @unique
+  password    String?       
   emailVerified DateTime?   @map("email_verified")
-  nationalID String         @unique @db.VarChar(11)
+  nationalID String?        @unique @db.VarChar(11)
   role Role     @default(PATIENT)
   sessions Session[]
+  accounts Account[]
 
   doctor Doctor? 
   receptionist Receptionist? 
@@ -40,7 +43,25 @@ model User {
 }
 
 
-// ================= OAuth ================
+model Account {
+  id                 Int  @id @default(autoincrement())
+  userId             Int
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
 
 model Session {
   id           Int      @id @default(autoincrement())
@@ -61,6 +82,10 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
+
+
+
+// =======================================
 
 model Doctor {
   user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)

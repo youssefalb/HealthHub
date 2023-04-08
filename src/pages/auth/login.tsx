@@ -25,6 +25,11 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
                 <button type="submit" className='px-8 py-1 text-white bg-blue-400 rounded-2xl mr-2 my-3'>Login with Email</button>
             </form>
 
+            <form method="post" action="/api/auth/signin/google" className="align-middle bg-white p-2 m-2 flex min-h-96 min-w-96 flex-grow flex-col rounded-xl">
+                <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+                <button type="submit" className='px-8 py-1 text-white bg-blue-400 rounded-2xl mr-2 my-3'>Login with Google</button>
+            </form>
+
         </div >
     )
 }

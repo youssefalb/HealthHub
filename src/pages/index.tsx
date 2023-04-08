@@ -21,7 +21,6 @@ function index() {
 
 // we have data retrieved from global context, and can be used 
 
-    console.log("user1: " + user.name);
     const { data: session } = useSession();
     if (session) {
         setUser(session.user)
