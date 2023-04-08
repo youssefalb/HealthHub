@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
          "typeRoots": [
-            "./src/types"
+            "src/types"
         ],
         "target": "es5",
         "lib": [
@@ -22,10 +22,11 @@
         "jsx": "preserve",
         "incremental": true
     },
+    // "baseUrl": "src",
     "paths": {
         "@/components/*": ["./components/*"],
         "@/lib/*": ["./lib/*"],
-        "@/styles/*": ["./src/styles/*"],
+        "@/styles/*": ["~/src/styles/*"],
         "@/prisma/*": ["./prisma/*"],
         "@/context/*": ["./context/*"],
         "@/commonPages/*": ["./src/pages/*"],
@@ -33,8 +34,8 @@
         "@/patients/*" : ["./src/pages/patient/*",],
         "@/admin/*" : ["./src/pages/admin/*"],
         "@/auth/*" : ["./src/pages/auth/*"],
-        "@registerar" : ["./src/pages/registrar/*"],
-        "@labstaff" : ["./src/pages/labstaff/*"],
+        "@/registerar/*" : ["./src/pages/registrar/*"],
+        "@/labstaff/*" : ["./src/pages/labstaff/*"],
     },
     "exclude": [
         "node_modules"
