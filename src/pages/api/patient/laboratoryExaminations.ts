@@ -1,4 +1,4 @@
-import prisma from '../../../../lib/prisma'
+import prisma from '../../../lib/prisma'
 
 //I think we should make this endpoint returning only for
 // a single visit each time and loop through the visits in the frontend
@@ -22,5 +22,5 @@ export default async function handler(req, res) {
     else {
         res.status(400).json({ message: 'No laboratory examinations found' })
     }
-        
+
 }

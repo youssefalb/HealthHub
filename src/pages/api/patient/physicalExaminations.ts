@@ -1,5 +1,5 @@
 import { IncrementalCache } from 'next/dist/server/lib/incremental-cache'
-import prisma from '../../../../lib/prisma'
+import prisma from '../../../lib/prisma'
 
 
 
@@ -21,5 +21,5 @@ export default async function handler(req, res) {
     else {
         res.status(400).json({ message: 'No laboratory examinations found' })
     }
-        
+
 }

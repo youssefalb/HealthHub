@@ -1,6 +1,6 @@
 import React from "react";
 import { useSession, signIn, signOut } from 'next-auth/react'
-import {useUserContext, useUpdateUserContext, initialState} from '../../context/user'
+import {useUserContext, useUpdateUserContext, initialState} from '../context/user'
 
 
 

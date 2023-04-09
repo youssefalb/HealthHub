@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 
@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
                 user.fname = profile.given_name
                 user.lname = profile.family_name
                 user.image = profile.picture
-                if(profile.email_verified == true)
+                if (profile.email_verified == true)
                     user.emailVerified = new Date()
 
                 delete user.name

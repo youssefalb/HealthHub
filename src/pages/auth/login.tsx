@@ -2,7 +2,7 @@ import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "nex
 import { getCsrfToken, getProviders } from "next-auth/react"
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import  CustomTextInput  from '../../../components/CustomComponents/CustomTextInput';
+import  CustomTextInput  from '../../components/CustomComponents/CustomTextInput';
 import React from 'react';
 
 export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {

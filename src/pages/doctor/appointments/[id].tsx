@@ -1,29 +1,38 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react';
-// import { delay } from '@/lib/async';
+import { useEffect, useState } from 'react';
+import { delay } from '@lib/async';
 
 
-const delay = (time) =>
-    new Promise((resolve) => {
-        setTimeout(() => resolve(1), time);
-    });
 
-const getData = async () => {
-    await delay(8000);
-    
+
+// const delay = (time) =>
+//     new Promise((resolve) => {
+//         setTimeout(() => resolve(1), time);
+//     });
+
+
+
+export default function AppointmentPage() {
+    const [loading, setloading] = useState(true);
+
+    //this hook is run on the client side after initial render
+    useEffect(  () => { //triggered on client side after rendering
+        const getData = async () => {
+        await delay(4000);
+        return null
 }
+        getData().then(() => {
+            setloading(false);
+         });
+    }, []); //empty array to make it run once
 
-export default function AppointmentPage({ params }) {
-    useEffect(() => {
-        getData();
-    }, []);
-
-    // const bla = await getData(params.id)
-    //get id from uri params and display it 
-    // const id = params.id //this is how it will be done
     const router = useRouter();
     const { id } = router.query;
 
+    if (loading) {
+        return <h1>Loading</h1>
+    }
+    else {
     return (
         <div>
             <h1 className='text-4xl font-sans'>Appointment {id}</h1>
@@ -32,6 +41,8 @@ export default function AppointmentPage({ params }) {
             </div>
         </div>
     );
+    }
+        
 }
             
 
