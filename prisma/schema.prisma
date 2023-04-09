@@ -144,8 +144,8 @@ model Visit {
   doctor_id Int
   patient Patient @relation(fields: [patient_id], references: [patient_id])
   patient_id Int
-  receptionist Receptionist @relation(fields: [receptionist_id], references: [employee_id])
-  receptionist_id Int
+  receptionist Receptionist? @relation(fields: [receptionist_id], references: [employee_id])
+  receptionist_id Int?
 
   physicalExaminations PhysicalExamination[]
   laboratoryExaminations LaboratoryExamination[]
