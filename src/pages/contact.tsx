@@ -33,8 +33,8 @@ function Contact() {
     {
       name: "Melanie Casimiro",
       position: "Front-end Developer",
-      avatarUrl: "",
-      githubUrl: "",
+      avatarUrl: "/images/melanie.jpg",
+      githubUrl: "https://github.com/melaniecasimiro",
     },
   ];
   
