@@ -1,7 +1,7 @@
-//here the Doctor can see his past appointments and make a new reservation
+//here the Doctor can see his past appointments and can change status of it
 
 
-export default function myAppointmentsPage() {
+export default function docAppointmentsPage() {
     return (
         <div>
             <h1 className='text-4xl font-sans'>My Appointments</h1>
