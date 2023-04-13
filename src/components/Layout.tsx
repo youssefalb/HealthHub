@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 // Just a black line to style header nicely
 const ColoredLine = ({ color }) => (
@@ -13,7 +12,6 @@ const ColoredLine = ({ color }) => (
 );
 
 export default function Layout({ children }) {
-    const router = useRouter();
 
     const menuItems = [
         {
