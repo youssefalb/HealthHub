@@ -1,3 +1,7 @@
+// here can see details of visit and edit it if status is "in progress "
+// modal of messages is integrated here also 
+
+
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react';
 import { delay } from '@lib/async';
