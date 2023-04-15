@@ -1,4 +1,5 @@
 
+import CustomButton from '@/components/CustomComponents/CustomButton';
 import CustomTextInput from '@/components/CustomComponents/CustomTextInput';
 import { useState } from 'react';
 
@@ -11,11 +12,11 @@ export default function CreateVisit() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = { patientId: 1, doctorId: 7, description, diagnosis};
+    const data = { patientId: 1, doctorId: 7, description, diagnosis };
     const res = await fetch(`/api/patient/createVisit`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" }
     })
 
     const results = await res.json();
@@ -23,12 +24,16 @@ export default function CreateVisit() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-        <div className='grid grid-cols-2 gap flex flew'>
-        <CustomTextInput type='text' name='description' placeholder='Description' onChange={(e) => setDescription(e.target.value)} />
-        <CustomTextInput type='text' name='diagnosis' placeholder='Diagnosis' onChange={(e) => setDiagnosis(e.target.value)} />
+    <div className="flex justify-center h-screen">
+      <form onSubmit={handleSubmit}>
+        <div className='grid-cols-2 gap flex flew'>
+          <CustomTextInput type='text' name='description' placeholder='Description' onChange={(e) => setDescription(e.target.value)} />
+          <CustomTextInput type='text' name='diagnosis' placeholder='Diagnosis' onChange={(e) => setDiagnosis(e.target.value)} />
         </div>
-      <button type="submit">Create Visit</button>
-    </form>
+        <div className="col-span-2 flex justify-center">
+          <CustomButton buttonText="Submit" onClick={handleSubmit} />
+        </div>
+      </form>
+    </div>
   );
 }

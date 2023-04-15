@@ -1,3 +1,5 @@
+import CustomButton from "@/components/CustomComponents/CustomButton";
+
 function Contact() {
   const developers = [
     {
@@ -38,6 +40,10 @@ function Contact() {
     },
   ];
   
+  function  handleGitHubButtonClick(githubUrl: string) {
+    window.open(githubUrl, '_blank');
+  }
+
     return (
       <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto py-8">
@@ -45,18 +51,16 @@ function Contact() {
         <p className="text-lg text-center mb-12">
           Best of the best.
         </p>
-<div className="grid grid-cols-3 gap-4 m-10">
+    <div className="grid grid-cols-3 gap-4 m-10">
       {developers.map((developer) => (
         <div key={developer.name} className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center p-10">
           <img src={developer.avatarUrl} alt={developer.name} className="w-32 h-32 rounded-full mb-4 object-cover" />
           <h2 className="text-lg font-bold mb-2">{developer.name}</h2>
           <p className="text-gray-500 mb-4">{developer.position}</p>
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
-            onClick={() => window.open(developer.githubUrl, '_blank')}
-          >
-            View on GitHub
-          </button>
+          <CustomButton
+                buttonText="Custom Text"
+                onClick={() => handleGitHubButtonClick(developer.githubUrl)}
+              />
         </div>
       ))}
     </div>

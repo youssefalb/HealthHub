@@ -1,5 +1,3 @@
-import { SetStateAction } from "react";
-
 interface TextInputProps {
     type: "email" | "password" | "text";
     name: string;
