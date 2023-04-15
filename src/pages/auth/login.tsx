@@ -3,12 +3,33 @@ import { getCsrfToken, getProviders } from "next-auth/react"
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import  CustomTextInput  from '../../components/CustomComponents/CustomTextInput';
-import React from 'react';
+import React, { useState } from 'react';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/router";
+
 
 export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    return (
-        
+     const router = useRouter();
+     const { verified } = router.query;
+    const [notificationShown, setNotificationShown] = useState(false);
 
+    const verificationSuccesNotification = () => {
+    toast.success('Your account has been successfully verified!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    setNotificationShown(true);
+    }
+    if (verified && !notificationShown) {
+        verificationSuccesNotification();
+    }
+    return (
         <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto py-8">
         <h1 className="text-4xl font-bold text-center mb-4 mt-1">We're happy to see you again!</h1>
@@ -40,7 +61,7 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
                 <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                 <button type="submit" className='p-2 m-2 text-white font-bold bg-blue-500 rounded-2xl'>Login with Google</button>
             </form>
-
+        <ToastContainer></ToastContainer>
         </div >
         </div >
         </div >
