@@ -10,7 +10,7 @@ function Contact() {
     },
     {
       name: "Asser Moustafa",
-      position: "Front-end Developer",
+      position: "Architect & full-stack developer",
       avatarUrl: "/images/asser.jpg",
       githubUrl: "https://github.com/AsserElfeki",
     },
