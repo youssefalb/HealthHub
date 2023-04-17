@@ -1,25 +1,26 @@
 //here the patient can see his past appointments and make a new reservation
 
 import CustomButton from "@/components/CustomComponents/CustomButton";
+import AppointmentCard from "@/components/CustomComponents/AppointmentCard";
 
 
 export default function myAppointmentsPage() {
     const appointments = [
         {
           id: 1,
-          date: 'April 20, 2023',
+          date: 'April 20, 2023, 21:54',
           doctorName: 'Dr. John Doe',
           specialization: 'Cardiologist',
         },
         {
           id: 2,
-          date: 'April 25, 2023',
+          date: 'April 25, 2023, 21:54',
           doctorName: 'Dr. Jane Smith',
           specialization: 'Dermatologist',
         },
         {
           id: 3,
-          date: 'April 30, 2023',
+          date: 'April 30, 2023, 21:54',
           doctorName: 'Dr. Robert Lee',
           specialization: 'Neurologist',
         },
@@ -32,29 +33,6 @@ export default function myAppointmentsPage() {
         </div>
     )
 }
-
-
-function AppointmentCard({ date, doctorName, specialization }) {
-    return (
-        <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
-        <div className="flex items-center">
-          <div>
-            <span className="text-blue-500 text-sm block">{date}</span>
-            <h2 className="text-lg font-bold">{doctorName}</h2>
-            <span className="text-gray-500 text-sm">{specialization}</span>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <button className="rounded-full w-10 h-10 flex items-center justify-center mr-2">
-            <img src="/images/info.png" alt="More Info Icon" className="h-11 w-11" />
-          </button>
-          <button className="rounded-full w-10 h-10 flex items-center justify-center">
-            <img src="/images/cancel.png" alt="Cancel Booking Icon" className="h-11 w-11" />
-          </button>
-        </div>
-      </div>
-    );
-  }
   
   function AppointmentsList({ appointments }) {
     if (appointments.length === 0) {

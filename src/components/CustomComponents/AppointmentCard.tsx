@@ -1,6 +1,8 @@
+import React from 'react';
 
+// Used by Patient and Registrar
 
-function AppointmentCard({ date, doctorName, specialization }) {
+const AppointmentCard = ({ date, doctorName, specialization }) => {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
         <div className="flex items-center">
@@ -21,3 +23,5 @@ function AppointmentCard({ date, doctorName, specialization }) {
       </div>
     );
   }
+
+  export default AppointmentCard;
