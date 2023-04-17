@@ -24,10 +24,11 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
         draggable: true,
         progress: undefined,
         });
-    setNotificationShown(true);
     }
     if (verified && !notificationShown) {
         verificationSuccesNotification();
+        setNotificationShown(true);
+
     }
     return (
         <div className="bg-gray-50 min-h-screen">
