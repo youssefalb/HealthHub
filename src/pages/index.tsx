@@ -9,6 +9,7 @@ function index() {
     const user = useUserContext();
     const setUser = useUpdateUserContext(); 
 
+    //console.log(user)
 
     function handleSignOut() {
         // console.log("signing out MF");
@@ -26,7 +27,7 @@ function index() {
         setUser(session.user)
         return (
             <div>
-                <p>{session.user.name} + {user.name} hekllooooo </p>
+                <p>{session.user.name} + {user.role} hekllooooo </p>
             <p>Welcome back commander {session.user.name}</p>
                 <button onClick={() => handleSignOut()}>Sign out </button>
 

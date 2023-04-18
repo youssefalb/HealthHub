@@ -7,6 +7,7 @@ declare module "next-auth" {
       id?: string
       name?: string
       email?: string
+      role?: string
     }
   }
 
@@ -15,6 +16,7 @@ declare module "next-auth" {
     lname?: string
     sex?: string
     emailVerified?: Date
+    role?: string
   }
 
   interface Profile {
@@ -29,5 +31,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string
     accessToken?: string
+    role?: string
   }
 }

@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "../../../lib/prisma";
+import prisma from "@lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 
@@ -90,7 +90,6 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
             if (account.provider === "google") {
-
                 user.fname = profile.given_name
                 user.lname = profile.family_name
                 user.image = profile.picture
@@ -99,7 +98,9 @@ export const authOptions: NextAuthOptions = {
 
                 delete user.name
                 console.log("===SIGNIN===")
-                console.log(profile)
+                console.log(profile)  
+                console.log(account)                
+                
                 console.log(user)
             }
             return true
@@ -107,6 +108,10 @@ export const authOptions: NextAuthOptions = {
         session: async ({ session, token }) => {
             session.user.id = token.id
             session.user.name = token.name
+            session.user.role = token.role
+                console.log("===SESSION===")           
+                console.log(token) 
+                console.log(session)
             return session
         },
         jwt: async ({ profile, account, user, token }) => {
@@ -114,7 +119,13 @@ export const authOptions: NextAuthOptions = {
                 token.accessToken = account.access_token
                 token.id = user.id
                 token.name = user.fname + " " + user.lname
+                token.role = user.role
             }
+                console.log("===JWT===")
+                console.log(profile)  
+                console.log(account)                
+                console.log(token) 
+                console.log(user)
             return token
         },
     },
