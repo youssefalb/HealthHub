@@ -1,7 +1,4 @@
-import { IncrementalCache } from 'next/dist/server/lib/incremental-cache'
 import prisma from '../../../lib/prisma'
-
-
 
 export default async function handler(req, res) {
     const { patientId, description, diagnosis, doctorId } = await req.body;
