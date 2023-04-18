@@ -6,6 +6,8 @@ help :(
 
 
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
+  - [ ] check methods in each endpoint and accept only accurate methods 
+  - [ ] apply RESTful conventions 
   - [ ] middleware 
   - [ ] guard apis
   - [ ] doctor endpoints

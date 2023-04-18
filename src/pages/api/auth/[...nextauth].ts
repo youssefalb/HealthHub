@@ -95,6 +95,7 @@ export const authOptions: NextAuthOptions = {
                 user.image = profile.picture
                 if (profile.email_verified == true)
                     user.emailVerified = new Date()
+                
 
                 delete user.name
                 console.log("===SIGNIN===")
@@ -109,6 +110,7 @@ export const authOptions: NextAuthOptions = {
             session.user.id = token.id
             session.user.name = token.name
             session.user.role = token.role
+            // session.accessToken = token.accessToken
                 console.log("===SESSION===")           
                 console.log(token) 
                 console.log(session)
@@ -130,3 +132,5 @@ export const authOptions: NextAuthOptions = {
         },
     },
 };
+
+

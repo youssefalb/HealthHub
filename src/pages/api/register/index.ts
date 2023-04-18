@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     if (!user) {
 
         const hashedPassword = await hashPassword(userData.password)
-        console.log(hashedPassword)
+        //console.log(hashedPassword)
         var result = null
         result = await prisma.user.create({
             data: {
@@ -30,9 +30,9 @@ export default async function handler(req, res) {
                 patient: { create: { insurance_id: userData.insurance_id } }
             }
         })
-        console.log('before Verification ${user}')
+        // console.log('before Verification ${user}')
         await sendVerificationEmail(result);
-        console.log("After Verification")
+        // console.log("After Verification")
         res.status(200).json({ result })
     } else {
         res.status(401).json({ result: null })
