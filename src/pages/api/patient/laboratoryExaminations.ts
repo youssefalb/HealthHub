@@ -29,10 +29,19 @@ export default async function handler(req, res) {
             return res.status(500).json({ success: false, message: 'Failed to retrieve laboratory examinations' });
         }
     } else if (req.method === 'POST') {
-        // Handle POST request here
+        const { visitId, exam_code } = req.body;
+        console.log(visitId, exam_code);
+        const results = await prisma.laboratoryExamination.create({
+        data: {
+            visit: { connect: { visit_id: visitId } },
+            examinationStatus: "ORDERED",
+            supervisorNotice: "Supervisor NOTICE",
+            doctorNotice: "Doctor NOTICE",
+            examinationDictionary: {connect: {code: exam_code}},
+        },
+      });
         try {
- 
-            return res.status(201).json({ success: true, data: null });
+            return res.status(201).json({ success: true, data: results });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ success: false, message: 'Failed to create laboratory examination' });

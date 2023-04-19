@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets   = ["native", "linux-musl-arm64-openssl-3.0.x", "linux-musl-arm64-openssl-1.1.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "linux-musl-arm64-openssl-1.1.x"]
 }
 
 datasource db {
@@ -9,10 +9,10 @@ datasource db {
 }
 
 // ========= OUR CODE =========
-enum Role{
+enum Role {
   PATIENT
   DOCTOR
-  LAB_SUPERVISOR 
+  LAB_SUPERVISOR
   LAB_ASSISTANT
   RECEPTIONIST
 }
@@ -20,55 +20,53 @@ enum Role{
 // ================= OAuth ================
 
 model User {
-  id          Int           @id @default(autoincrement())
-  fname       String?       @db.VarChar(32)
-  lname       String?       @db.VarChar(32)
-  image      String?        
-  sex         String?       @db.VarChar(32)
-  email       String?       @db.VarChar(64) @unique
-  password    String?       
-  emailVerified DateTime?   @map("email_verified")
-  nationalID String?        @unique @db.VarChar(11)
-  role Role     @default(PATIENT)
-  sessions Session[]
-  accounts Account[]
+  id            Int       @id @default(autoincrement())
+  fname         String?   @db.VarChar(32)
+  lname         String?   @db.VarChar(32)
+  image         String?
+  sex           String?   @db.VarChar(32)
+  email         String?   @unique @db.VarChar(64)
+  password      String?
+  emailVerified DateTime? @map("email_verified")
+  nationalID    String?   @unique @db.VarChar(11)
+  role          Role      @default(PATIENT)
+  sessions      Session[]
+  accounts      Account[]
 
-  doctor Doctor? 
-  receptionist Receptionist? 
-  lab_assistant LabAssistant?
+  doctor         Doctor?
+  receptionist   Receptionist?
+  lab_assistant  LabAssistant?
   lab_supervisor LabSupervisor?
-  patient Patient?
+  patient        Patient?
 
   @@map("users")
 }
 
-
 model Account {
-  id                 Int  @id @default(autoincrement())
-  userId             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
-
 model Session {
   id           Int      @id @default(autoincrement())
   sessionToken String   @unique @map("session_token")
   userId       Int      @map("user_id")
   expires      DateTime
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
@@ -82,23 +80,20 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-
-
-
 // =======================================
 
 model Doctor {
-  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
-  employee_id Int         @id
-  
+  user        User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  employee_id Int  @id
+
   visits Visit[]
 
   @@map("doctors")
 }
 
 model Receptionist {
-  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
-  employee_id Int         @id
+  user        User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  employee_id Int  @id
 
   visits Visit[]
 
@@ -106,8 +101,8 @@ model Receptionist {
 }
 
 model LabSupervisor {
-  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
-  employee_id Int      @id
+  user        User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  employee_id Int  @id
 
   laboratoryExaminations LaboratoryExamination[]
 
@@ -115,8 +110,8 @@ model LabSupervisor {
 }
 
 model LabAssistant {
-  user User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
-  employee_id Int   @id
+  user        User @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  employee_id Int  @id
 
   laboratoryExaminations LaboratoryExamination[]
 
@@ -124,8 +119,8 @@ model LabAssistant {
 }
 
 model Patient {
-  user       User @relation(fields: [patient_id], references: [id], onDelete: Cascade)
-  patient_id    Int    @id
+  user         User   @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  patient_id   Int    @id
   insurance_id String @unique
 
   visits Visit[]
@@ -133,21 +128,20 @@ model Patient {
   @@map("patients")
 }
 
-
 model Visit {
-  visit_id Int @id @default(autoincrement())
-  description String 
-  diagnosis String
-  status Status @default(REGISTERED)
+  visit_id    Int    @id @default(autoincrement())
+  description String
+  diagnosis   String
+  status      Status @default(REGISTERED)
 
-  doctor Doctor @relation(fields: [doctor_id], references: [employee_id])
-  doctor_id Int
-  patient Patient @relation(fields: [patient_id], references: [patient_id])
-  patient_id Int
-  receptionist Receptionist? @relation(fields: [receptionist_id], references: [employee_id])
+  doctor          Doctor        @relation(fields: [doctor_id], references: [employee_id])
+  doctor_id       Int
+  patient         Patient       @relation(fields: [patient_id], references: [patient_id])
+  patient_id      Int
+  receptionist    Receptionist? @relation(fields: [receptionist_id], references: [employee_id])
   receptionist_id Int?
 
-  physicalExaminations PhysicalExamination[]
+  physicalExaminations   PhysicalExamination[]
   laboratoryExaminations LaboratoryExamination[]
 
   @@map("visits")
@@ -159,7 +153,6 @@ enum Status {
   COMPLETED
   CANCELLED
 }
-
 
 // ========= EXAMINATIONS ===========
 //model Examination {
@@ -174,23 +167,21 @@ enum Status {
 //
 
 model PhysicalExamination {
-  physical_exam_id Int @id @default(autoincrement())
-  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
-  exam_code    Int            @unique
-
-  visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
+  physical_exam_id      Int                   @id @default(autoincrement())
+  examinationDictionary ExaminationDictionary @relation(fields: [exam_code], references: [code])
+  exam_code Int 
+  visit    Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
 
   @@map("physicExaminations")
 }
 
-
 model ExaminationDictionary {
-  code Int @id 
-  type String
-  description String?
-  physicalExam PhysicalExamination?
-  laboratoryExam LaboratoryExamination?
+  code                  Int                 @id @default(autoincrement())
+  type                  String
+  description           String?
+  PhysicalExamination   PhysicalExamination[]
+  LaboratoryExamination LaboratoryExamination[]
 
   @@map("examinationDictionaries")
 }
@@ -204,31 +195,25 @@ enum ExaminationStatus {
 }
 
 model LaboratoryExamination {
-  laboratory_exam_id Int @id @default(autoincrement())
-  doctorNotice String
-  examinationStatus ExaminationStatus
-  supervisorNotice String
-  DateOfApprovalXorRejection DateTime?
+  laboratory_exam_id           Int                   @id @default(autoincrement())
+  doctorNotice                 String
+  examinationStatus            ExaminationStatus
+  supervisorNotice             String
+  DateOfApprovalXorRejection   DateTime?
   DateOfExecutionXorCancelling DateTime?
-  examinationDictionary       ExaminationDictionary @relation(fields: [exam_code], references: [code], onDelete: Cascade)
-  exam_code    Int      @unique
-
-  visit  Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
+  examinationDictionary        ExaminationDictionary @relation(fields: [exam_code], references: [code])
+  exam_code Int 
+  visit    Visit @relation(fields: [visit_id], references: [visit_id], onDelete: Cascade)
   visit_id Int
 
-  lab_assistant  LabAssistant? @relation(fields: [lab_assistant_id], references: [employee_id], onDelete: Cascade)
+  lab_assistant    LabAssistant? @relation(fields: [lab_assistant_id], references: [employee_id], onDelete: Cascade)
   lab_assistant_id Int?
 
-  lab_supervisor  LabSupervisor? @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
+  lab_supervisor    LabSupervisor? @relation(fields: [lab_supervisor_id], references: [employee_id], onDelete: Cascade)
   lab_supervisor_id Int?
-
 
   @@map("laboratoryExaminations")
 }
-
-
-
-
 
 //========= OLD PREDEFINED CODE =============
 //model User {

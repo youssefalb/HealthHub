@@ -5,6 +5,49 @@ const prisma = new PrismaClient()
 
 async function seed() {
 
+  const examinationDictionarySeedData: Prisma.ExaminationDictionaryCreateInput[] = [
+  {
+    type: 'Physical',
+    description: 'Physical Examination',
+  },
+  {
+    type: 'Laboratory',
+    description: 'Laboratory Examination',
+  },
+  {
+    type: 'Radiology',
+    description: 'Radiology Examination',
+  },
+  {
+    type: 'Cardiology',
+    description: 'Cardiology Examination',
+  },
+  {
+    type: 'Dermatology',
+    description: 'Dermatology Examination',
+  },
+  {
+    type: 'Ophthalmology',
+    description: 'Ophthalmology Examination',
+  },
+  {
+    type: 'Gastroenterology',
+    description: 'Gastroenterology Examination',
+  },
+  {
+    type: 'Neurology',
+    description: 'Neurology Examination',
+  },
+  {
+    type: 'Endocrinology',
+    description: 'Endocrinology Examination',
+  },
+  {
+    type: 'Orthopedics',
+    description: 'Orthopedics Examination',
+  },
+  // Add more seed data as needed
+];
   const userData: Prisma.UserCreateInput[] = [
     {
       fname: "Viktor",
@@ -105,7 +148,7 @@ async function seed() {
 
    const labExaminationData: Prisma.LaboratoryExaminationCreateInput[] = [
      {
-      examinationDictionary: {create: {code: 548,type:"Covid test", description: "Covid test"}},
+      examinationDictionary: {create: {type:"Covid test", description: "Covid test"}},
       doctorNotice: "Patient is anemic",
        examinationStatus: "ORDERED",
        supervisorNotice: "",
@@ -114,8 +157,8 @@ async function seed() {
        visit: { connect: { visit_id: 1 } },
        lab_assistant: { connect: { employee_id: 6 } },
      },
-         {
-      examinationDictionary: {create: {code: 228,type:"Heart test", description: "Heart issues"}},
+    {
+      examinationDictionary: {create: {type:"Heart test", description: "Heart issues"}},
       doctorNotice: "Patient have some problems with his heart",
        examinationStatus: "ORDERED",
        supervisorNotice: "",
@@ -127,18 +170,18 @@ async function seed() {
    ]
 const pyshicalExaminationData: Prisma.PhysicalExaminationCreateInput[] = [
   {
-    examinationDictionary: {create: {code: 123,type:"Covid test", description: "Covid test"}},
+    examinationDictionary: {create: {type:"Covid test", description: "Covid test"}},
     visit: { connect: { visit_id: 1 } },
   },
 
   {
-    examinationDictionary: {create: {code: 124,type:"Heart", description: "Heart problems"}},
+    examinationDictionary: {create: {type:"Heart", description: "Heart problems"}},
     visit: { connect: { visit_id: 2 } },
   },
 ]
   for (const user of userData) {
     const u = await prisma.user.create({ data: user })
-    console.log(`Created user with email: ${u.id}`)
+    console.log(`Created user with id: ${u.id}`)
   }
 
   for (const visit of visitData) {
@@ -153,8 +196,10 @@ const pyshicalExaminationData: Prisma.PhysicalExaminationCreateInput[] = [
     const p = await prisma.physicalExamination.create({ data: physicalExamination })
     console.log(`Created physicalExamination with id: ${p.physical_exam_id}`)
   }
-
-
+  for (const examinationDictionary of examinationDictionarySeedData) {
+    const e = await prisma.examinationDictionary.create({ data: examinationDictionary })
+    console.log(`Created examinationDictionary with id: ${e.code}`)
+  }
 }
 
 
