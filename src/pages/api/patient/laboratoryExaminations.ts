@@ -4,23 +4,40 @@ import prisma from '../../../lib/prisma'
 // a single visit each time and loop through the visits in the frontend
 //I think this is the best way to do it, but I'm not sure
 
-export default async function handler(req, res) {
-    const { id } = req.query
-    console.log(Number(id))
-    const results = await prisma.laboratoryExamination.findMany({
-        where: {
-            visit_id: Number(id)
-        },
-        include: {
-            examinationDictionary: true
-        }
-    })
-    console.log(results)
-    if (results.length != 0) {
-        res.status(200).json(results)
-    }
-    else {
-        res.status(400).json({ message: 'No laboratory examinations found' })
-    }
 
+export default async function handler(req, res) {
+    if (req.method === 'GET') {
+        try {
+            const { id } = req.query;
+            console.log(Number(id));
+            const results = await prisma.laboratoryExamination.findMany({
+                where: {
+                    visit_id: Number(id),
+                },
+                include: {
+                    examinationDictionary: true,
+                },
+            });
+            console.log(results);
+            if (results.length !== 0) {
+                return res.status(200).json(results);
+            } else {
+                return res.status(400).json({ message: 'No laboratory examinations found' });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false, message: 'Failed to retrieve laboratory examinations' });
+        }
+    } else if (req.method === 'POST') {
+        // Handle POST request here
+        try {
+ 
+            return res.status(201).json({ success: true, data: null });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false, message: 'Failed to create laboratory examination' });
+        }
+    } else {
+        return res.status(400).json({ success: false, message: 'Invalid request method' });
+    }
 }
