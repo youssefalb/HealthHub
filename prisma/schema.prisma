@@ -133,7 +133,7 @@ model Visit {
   description String
   diagnosis   String
   status      Status @default(REGISTERED)
-
+  date DateTime 
   doctor          Doctor        @relation(fields: [doctor_id], references: [employee_id])
   doctor_id       Int
   patient         Patient       @relation(fields: [patient_id], references: [patient_id])

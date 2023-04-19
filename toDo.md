@@ -11,3 +11,6 @@ help :(
   - [ ] middleware 
   - [ ] guard apis
   - [ ] doctor endpoints
+  - [ ] Make the side bar a compenent and make it interactive according to user
+  - [ ] Make the appointements page reachable from the sidebar
+  - [ ] Make appointements list compenent

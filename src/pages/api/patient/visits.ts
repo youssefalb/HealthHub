@@ -1,17 +1,18 @@
 import prisma from "../../../lib/prisma";
 
 
-//Get with patient Id for now
+//Doctorname date and description
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { patientId, description, diagnosis, doctorId } = req.body;
+      const { patientId, description, diagnosis, doctorId, date } = req.body;
 
       const results = await prisma.visit.create({
         data: {
           description: description,
           diagnosis: diagnosis,
+          date: date,
           doctor: { connect: { employee_id: doctorId } },
           patient: { connect: { patient_id: patientId } },
         },
@@ -30,13 +31,23 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     try {
-      const { id } = req.body
+      const { id } = req.query
+      console.log('Somthinggggggggggggggggggggggggggg')
+      console.log('req BODYYY', id);
       const results = await prisma.visit.findMany({
         where: {
-            patient_id: id
-        }
+            patient_id: Number(id),
+        },
+        include: {
+          doctor: {
+            include: {  
+              user: true,
+            },
+          }
+        },
+
     });
-      console.log(results);
+      //console.log(results);
       if (results.length !== 0) {
         return res.status(200).json(results);
       }

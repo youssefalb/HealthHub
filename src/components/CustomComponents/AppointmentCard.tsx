@@ -2,14 +2,14 @@ import React from 'react';
 
 // Used by Patient and Registrar
 
-const AppointmentCard = ({ date, doctorName, specialization }) => {
+const AppointmentCard = ({ date, doctorName, description }) => {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
         <div className="flex items-center">
           <div>
             <span className="text-blue-500 text-sm block">{date}</span>
             <h2 className="text-lg font-bold">{doctorName}</h2>
-            <span className="text-gray-500 text-sm">{specialization}</span>
+            <span className="text-gray-500 text-sm">{description}</span>
           </div>
         </div>
         <div className="flex items-center">

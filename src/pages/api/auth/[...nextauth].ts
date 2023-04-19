@@ -111,9 +111,9 @@ export const authOptions: NextAuthOptions = {
             session.user.name = token.name
             session.user.role = token.role
             // session.accessToken = token.accessToken
-                console.log("===SESSION===")           
-                console.log(token) 
-                console.log(session)
+                // console.log("===SESSION===")           
+                // console.log(token) 
+                // console.log(session)
             return session
         },
         jwt: async ({ profile, account, user, token }) => {
@@ -123,11 +123,11 @@ export const authOptions: NextAuthOptions = {
                 token.name = user.fname + " " + user.lname
                 token.role = user.role
             }
-                console.log("===JWT===")
-                console.log(profile)  
-                console.log(account)                
-                console.log(token) 
-                console.log(user)
+              //  console.log("===JWT===")
+                // console.log(profile)  
+                // console.log(account)                
+                // console.log(token) 
+                // console.log(user)
             return token
         },
     },

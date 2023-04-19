@@ -126,6 +126,7 @@ async function seed() {
     {
       description: "First visit",
       diagnosis: "Common cold",
+      date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employee_id: 7 } },
       patient: { connect: { patient_id: 1 } },
       receptionist: { connect: { employee_id: 4 } },
@@ -133,6 +134,7 @@ async function seed() {
     {
       description: "Follow-up visit",
       diagnosis: "Sprained ankle",
+      date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employee_id: 7 } },
       patient: { connect: { patient_id: 2 } },
       receptionist: { connect: { employee_id: 4 } },
@@ -140,6 +142,7 @@ async function seed() {
     {
       description: "Yearly check-up",
       diagnosis: "Healthy",
+      date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employee_id: 7 } },
       patient: { connect: { patient_id: 3 } },
       receptionist: { connect: { employee_id: 4 } },
