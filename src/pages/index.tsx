@@ -11,28 +11,27 @@ function index() {
 
     //console.log(user)
 
-    function handleSignOut() {
-        // console.log("signing out MF");
-        // setUser(initialState);
-        localStorage.removeItem('userInfo');
-        // localStorage.clear();
-        signOut();
-    }
-    
 
 // we have data retrieved from global context, and can be used 
 
     const { data: session } = useSession();
     if (session) {
         setUser(session.user)
-        return (
-            <div>
-                <p>{session.user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back commander {session.user.name}</p>
-                <button onClick={() => handleSignOut()}>Sign out </button>
-
-            </div>
-        )
+        if (session.user.role == "DOCTOR") {
+            return doctorIndex(user) 
+        }
+        else if (session.user.role == "PATIENT") { 
+            return patientIndex(user) 
+        }
+        else if (session.user.role == "RECEPTIONIST") { 
+            return receptionistIndex(user) 
+        }
+        else if (session.user.role == "LAB_ASSISTANT") { 
+            return labAssistantIndex(user) 
+        }
+        else if (session.user.role == "LAB_SUPERVISOR") { 
+            return labSupervisorIndex(user) 
+        }
     } else {
         return (
             <div>
@@ -109,4 +108,59 @@ function index() {
     }
 }
 
-export default index;
+function handleSignOut() {
+    // console.log("signing out MF");
+    // setUser(initialState);
+    localStorage.removeItem('userInfo');
+    // localStorage.clear();
+    signOut();
+}
+    
+function doctorIndex(user){    
+    return (
+        <div>
+            <p>{user.name} + {user.role} hekllooooo </p>
+        <p>Welcome back panie doktorze {user.name}</p>
+            <button onClick={() => handleSignOut()}>Sign out </button>
+        </div>
+    )
+}
+ 
+function patientIndex(user){    
+    return (
+        <div>
+            <p>{user.name} + {user.role} hekllooooo </p>
+        <p>Welcome back commander {user.name}</p>
+            <button onClick={() => handleSignOut()}>Sign out </button>
+        </div>
+    )
+}
+function labAssistantIndex(user){    
+    return (
+        <div>
+            <p>{user.name} + {user.role} hekllooooo </p>
+        <p>Welcome back commander {user.name}</p>
+            <button onClick={() => handleSignOut()}>Sign out </button>
+        </div>
+    )
+}
+function labSupervisorIndex(user){    
+    return (
+        <div>
+            <p>{user.name} + {user.role} hekllooooo </p>
+        <p>Welcome back commander {user.name}</p>
+            <button onClick={() => handleSignOut()}>Sign out </button>
+        </div>
+    )
+}
+
+function receptionistIndex(user){    
+    return (
+        <div>
+            <p>{user.name} + {user.role} hekllooooo </p>
+        <p>Welcome back commander {user.name}</p>
+            <button onClick={() => handleSignOut()}>Sign out </button>
+        </div>
+    )
+}
+export default index
