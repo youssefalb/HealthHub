@@ -1,7 +1,7 @@
 import prisma from "../../../lib/prisma";
 
 
-//Get for now returns all visits, will need to be changed to return only visits for a specific patient
+//Get with patient Id for now
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -30,13 +30,19 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     try {
-      const visits = await prisma.visit.findMany();
-      console.log(visits);
-      return res.status(200).json({
-        success: true,
-        message: "Visits retrieved successfully",
-        data: visits,
-      });
+      const { id } = req.body
+      const results = await prisma.visit.findMany({
+        where: {
+            patient_id: id
+        }
+    });
+      console.log(results);
+      if (results.length !== 0) {
+        return res.status(200).json(results);
+      }
+      else {
+        return res.status(400).json({ message: "No visits found" });
+      }
     } catch (error) {
       console.error(error);
       return res
