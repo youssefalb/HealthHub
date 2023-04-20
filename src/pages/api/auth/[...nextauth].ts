@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "@lib/prisma";
+import prisma from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { redirect } from "next/dist/server/api-utils";
@@ -89,10 +89,10 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
-        async redirect({url, baseUrl}) {
+        async redirect({ url, baseUrl }) {
             return baseUrl
         },
-        
+
         async signIn({ user, account, profile, email, credentials }) {
             if (account.provider === "google") {
                 user.fname = profile.given_name
@@ -103,11 +103,11 @@ export const authOptions: NextAuthOptions = {
 
 
                 delete user.name
-                console.log("===SIGNIN===")
-                console.log(profile)
-                console.log(account)
-
-                console.log(user)
+                // console.log("===SIGNIN===")
+                // console.log(profile)
+                // console.log(account)
+                //
+                // console.log(user)
             }
             return true
         },
@@ -115,7 +115,7 @@ export const authOptions: NextAuthOptions = {
             session.user.id = token.id
             session.user.name = token.name
             session.user.role = token.role
-            // session.accessToken = token.accessToken
+          //  session.accessToken = token.accessToken
             // console.log("===SESSION===")           
             // console.log(token) 
             // console.log(session)
@@ -127,11 +127,12 @@ export const authOptions: NextAuthOptions = {
                 token.id = user.id
                 token.name = user.fname + " " + user.lname
                 token.role = user.role
-            }
-            //  console.log("===JWT===")
-            // console.log(profile)  
-            // console.log(account)                
-            // console.log(token) 
+            } //else
+            //token.accessToken = 
+            // console.log("===JWT===")
+            // console.log(profile)
+            // console.log(account)
+            // console.log(token)
             // console.log(user)
             return token
         },

@@ -24,7 +24,7 @@
         "baseUrl": "src/",
         "paths": {
             "@/components/*": ["components/*"],
-            "@lib/*": ["lib/*"],
+            "@/lib/*": ["lib/*"],
             "@/styles/*": ["styles/*"],
             // "@/prisma/*": ["."],
             "@/context/*": ["context/*"],

@@ -1,14 +1,19 @@
+import { Role } from "@prisma/client";
 import React from "react";
 
 // Used by Patient and Registrar
 
-const AppointmentCard = (appointment) => {
+const AppointmentCard = ({appointment, role}) => {
   const rawdate = new Date(appointment.date);
   const date = rawdate.toDateString();
   const description = appointment.description;
-  const name = appointment.doctor.user.fname + " " + appointment.doctor.user.lname;
+  let name: String | null
 
-  console.log("visit date", appointment);
+  if(role == Role.PATIENT)
+      name = appointment.doctor?.user?.fname + " " + appointment.doctor?.user?.lname;
+  else if(role == Role.DOCTOR)
+      name = appointment.patient?.user?.fname + " " + appointment.patient?.user?.lname;
+  console.log(appointment)
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">

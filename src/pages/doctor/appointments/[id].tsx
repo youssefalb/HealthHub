@@ -4,7 +4,6 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react';
-import { delay } from '@lib/async';
 
 
 
@@ -22,7 +21,6 @@ export default function AppointmentPage() {
     //this hook is run on the client side after initial render
     useEffect(  () => { //triggered on client side after rendering
         const getData = async () => {
-        await delay(4000);
         return null
 }
         getData().then(() => {

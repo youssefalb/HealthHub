@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import prisma from "../../../lib/prisma";
-import { authOptions } from "../auth/[...nextauth]";
-
-
-//Doctorname date and description
+import prisma from "@/lib/prisma";
+import { authOptions } from "./auth/[...nextauth]";
+import { Role } from "@prisma/client";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const session = await getServerSession(req, res, authOptions);
@@ -38,25 +36,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         else if (req.method === "GET") {
             try {
-                const { id } = req.query
-                const results = await prisma.visit.findMany({
-                    where: {
-                        patient_id: Number(id),
-                    },
-                    include: {
-                        doctor: {
-                            include: {
-                                user: {
-                                    select: {
-                                        fname: true,
-                                        lname: true,
+                const { role, id } = req.query
+                let results: string | any[]
+                if (role == Role.DOCTOR) {
+                    results = await prisma.visit.findMany({
+                        where: {
+                            doctor_id: Number(id),
+                        },
+                        include: {
+                            patient: {
+                                include: {
+                                    user: {
+                                        select: {
+                                            fname: true,
+                                            lname: true,
+                                        }
                                     }
-                                }
-                            },
-                        }
-                    },
+                                },
+                            }
+                        },
 
-                });
+                    });
+                } else if (role == Role.PATIENT) {
+                    results = await prisma.visit.findMany({
+                        where: {
+                            patient_id: Number(id),
+                        },
+                        include: {
+                            doctor: {
+                                include: {
+                                    user: {
+                                        select: {
+                                            fname: true,
+                                            lname: true,
+                                        }
+                                    }
+                                },
+                            }
+                        },
+
+                    });
+                } else if (role == Role.RECEPTIONIST) {
+                    results = await prisma.visit.findMany({
+                        where: {
+                            date: {
+                                gte: new Date()
+                            }
+                        }
+                    });
+                }
+
+
                 if (results.length !== 0) {
                     return res.status(200).json(results);
                 }
