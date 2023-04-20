@@ -5,6 +5,7 @@ import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
 
+
 export default function AppointmentsList() {
   const { data: session } = useSession();
   const [appointments, setAppointments] = useState([]);
