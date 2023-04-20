@@ -33,10 +33,10 @@ export const authOptions: NextAuthOptions = {
                 // (i.e., the request IP address)
                 //console.log("====CREDENTIALS===")
                 //console.log(credentials)
-                const { email, password } = credentials as {
-                    email: String,
-                    password: String
-                }
+                // const { email, password } = credentials as {
+                //     email: String,
+                //     password: String
+                // }
 
                 const res = await fetch(process.env.NEXTAUTH_URL + "/api/login", {
                     method: 'POST',
@@ -88,20 +88,27 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
+        async redirect({ url, baseUrl }) {
+            // Allows relative callback URLs
+            if (url.startsWith("/")) return `${baseUrl}`
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) return url
+            return baseUrl
+        },
         async signIn({ user, account, profile, email, credentials }) {
             if (account.provider === "google") {
                 user.fname = profile.given_name
                 user.lname = profile.family_name
                 user.image = profile.picture
-                if (profile.email_verified == true)
-                    user.emailVerified = new Date()
-                
+                // if (profile.email_verified == true)
+                //     user.emailVerified = new Date()
+
 
                 delete user.name
                 console.log("===SIGNIN===")
-                console.log(profile)  
-                console.log(account)                
-                
+                console.log(profile)
+                console.log(account)
+
                 console.log(user)
             }
             return true
@@ -111,9 +118,9 @@ export const authOptions: NextAuthOptions = {
             session.user.name = token.name
             session.user.role = token.role
             // session.accessToken = token.accessToken
-                // console.log("===SESSION===")           
-                // console.log(token) 
-                // console.log(session)
+            // console.log("===SESSION===")           
+            // console.log(token) 
+            // console.log(session)
             return session
         },
         jwt: async ({ profile, account, user, token }) => {
@@ -123,11 +130,11 @@ export const authOptions: NextAuthOptions = {
                 token.name = user.fname + " " + user.lname
                 token.role = user.role
             }
-              //  console.log("===JWT===")
-                // console.log(profile)  
-                // console.log(account)                
-                // console.log(token) 
-                // console.log(user)
+            //  console.log("===JWT===")
+            // console.log(profile)  
+            // console.log(account)                
+            // console.log(token) 
+            // console.log(user)
             return token
         },
     },

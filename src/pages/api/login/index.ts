@@ -7,16 +7,16 @@ export default async function handler(req, res) {
     const user = await prisma.user.findUnique({
         where: {
             email: email
-            
         }
     })
 
     // compare hashes
     let compareResult = false;
-    if (password && user.password)
+
+    if (user && password && user.password)
         compareResult = await comparePassword(password, user.password)
 
-    if (user && compareResult) {
+    if (compareResult) {
         res.status(200).json({ user })
     } else {
         res.status(401).json({ result: null })
