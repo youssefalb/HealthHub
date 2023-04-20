@@ -29,11 +29,15 @@ export default async function handler(req, res) {
         .status(500)
         .json({ success: false, message: "Failed to create visit" });
     }
-  } else if (req.method === "GET") {
+  }
+  
+  
+  
+  else if (req.method === "GET") {
     try {
       const { id } = req.query
-      console.log('Somthinggggggggggggggggggggggggggg')
-      console.log('req BODYYY', id);
+      // console.log('Somthinggggggggggggggggggggggggggg')
+      // console.log('req BODYYY', id);
       const results = await prisma.visit.findMany({
         where: {
             patient_id: Number(id),

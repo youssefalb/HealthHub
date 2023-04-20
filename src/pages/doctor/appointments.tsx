@@ -1,4 +1,4 @@
-import DoctorsAppointmentCard from "@/components/CustomComponents/DoctorsAppointmentCard";
+import DoctorsAppointmentCard from "@/components/DoctorsAppointmentCard";
 //here the Doctor can see his past appointments and can change status of it
 
 export default function docAppointmentsPage() {

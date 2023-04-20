@@ -11,6 +11,10 @@ help :(
   - [ ] middleware 
   - [ ] guard apis
   - [ ] doctor endpoints
-  - [ ] Make the side bar a compenent and make it interactive according to user
-  - [ ] Make the appointements page reachable from the sidebar
-  - [ ] Make appointements list compenent
+  - [√] Make the side bar a compenent and make it interactive according to user
+  - [√] Make the appointements page reachable from the sidebar
+  - [√] Make appointements list compenent
+  - [ ] make a userprofileimage as a component
+  - [ ] refractor the whole project (again)
+  - [ ] write fokin guidlines for everyone and FORCE THEM to follow it 
+  - [ ] 

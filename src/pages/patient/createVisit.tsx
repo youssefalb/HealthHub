@@ -1,6 +1,6 @@
 
-import CustomButton from '@/components/CustomComponents/CustomButton';
-import CustomTextInput from '@/components/CustomComponents/CustomTextInput';
+import CustomButton from '@/components/CustomButton';
+import CustomTextInput from '@/components/CustomTextInput';
 import { useState } from 'react';
 
 

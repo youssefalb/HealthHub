@@ -1,4 +1,4 @@
-import CustomButton from "@/components/CustomComponents/CustomButton";
+import CustomButton from "@/components/CustomButton";
 
 function Contact() {
   const developers = [
