@@ -5,6 +5,7 @@ import EmailProvider from "next-auth/providers/email";
 import prisma from "@lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
+import { redirect } from "next/dist/server/api-utils";
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, authOptions);
 export default authHandler;
@@ -88,13 +89,10 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.SECRET,
     callbacks: {
-        async redirect({ url, baseUrl }) {
-            // Allows relative callback URLs
-            if (url.startsWith("/")) return `${baseUrl}`
-            // Allows callback URLs on the same origin
-            else if (new URL(url).origin === baseUrl) return url
+        async redirect({url, baseUrl}) {
             return baseUrl
         },
+        
         async signIn({ user, account, profile, email, credentials }) {
             if (account.provider === "google") {
                 user.fname = profile.given_name

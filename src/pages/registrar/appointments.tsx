@@ -1,5 +1,5 @@
-import CustomButton from "@/components/CustomComponents/CustomButton";
-import AppointmentCard from "@/components/CustomComponents/AppointmentCard";
+import CustomButton from "@/components/CustomButton";
+import AppointmentCard from "@/components/AppointmentCard";
 
 //here the Registrar can see all past and upcoming appointments and can change details and add more
 
