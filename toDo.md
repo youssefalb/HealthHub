@@ -17,4 +17,6 @@ help :(
   - [ ] make a userprofileimage as a component
   - [ ] refractor the whole project (again)
   - [ ] write fokin guidlines for everyone and FORCE THEM to follow it 
+  - [ ] fix pages structre
+  - [ ] fix endpoints structure
   - [ ] 

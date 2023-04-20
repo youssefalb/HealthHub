@@ -10,18 +10,18 @@ export default function AppointmentsList() {
   const [appointments, setAppointments] = useState([]);
 
   const fetchData = async () => {
-      try {
-          if (session) {
-            if (session.user.role === "PATIENT") {
-              const response = await fetch(
-                `/api/patient/visits?id=${session.user.id}`,
-                {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-                }
-              );
-              const results = await response.json();
-              setAppointments(results);
+    try {
+      if (session) {
+        if (session.user.role === "PATIENT") {
+          const response = await fetch(
+            `/api/patient/visits?id=${session.user.id}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+          const results = await response.json();
+          setAppointments(results);
         }
       }
     } catch (error) {
@@ -31,33 +31,28 @@ export default function AppointmentsList() {
 
   useEffect(() => {
     fetchData();
-  }, [])
-    
-    
-  if (appointments.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <img
-          src="/images/empty.png"
-          alt="Placeholder"
-          className="w-58 h-48 mb-4"
-        />
-        <p className="text-2xl font-bold mb-2 mt-6">Nothing's in here</p>
-        <p className="text-gray-500 text-lg mb-6">
-          You don't have any planned appointments, yet.
-        </p>
-        <CustomButton buttonText={"Book Appointment"} onClick={() => {}} />
-      </div>
-    );
-  }
+  }, []);
 
   return (
     <div className="space-y-4">
-      {appointments.map((appointment) => (
-        <AppointmentCard key={appointment.visit_id} {...appointment} />
-      ))}
-      <p className="m-6"></p>
-      <CustomButton buttonText={"Book another one"} onClick={() => {}} />
+      {appointments.length ? (
+        appointments.map((appointment) => (
+          <AppointmentCard key={appointment.visit_id} {...appointment} />
+        ))
+      ) : (
+        <div className="flex flex-col items-center justify-center">
+          <img
+            src="/images/empty.png"
+            alt="Placeholder"
+            className="w-58 h-48 mb-4"
+          />
+          <p className="text-2xl font-bold mb-2 mt-6">Nothing's in here</p>
+          <p className="text-gray-500 text-lg mb-6">
+            You don't have any planned appointments, yet.
+          </p>
+          <CustomButton buttonText={"Book Appointment"} onClick={() => {}} />
+        </div>
+      )}
     </div>
   );
 }
