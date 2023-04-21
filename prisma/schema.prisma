@@ -110,11 +110,11 @@ model Patient {
 
 model Visit {
   visit_id               Int                     @id @default(autoincrement())
-  description            String
-  diagnosis              String
+  description            String?
+  diagnosis              String?
   status                 Status                  @default(REGISTERED)
   doctor_id              Int
-  patient_id             Int
+  patient_id             Int                     
   receptionist_id        Int?
   date                   DateTime
   laboratoryExaminations LaboratoryExamination[]

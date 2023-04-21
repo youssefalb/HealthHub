@@ -1,9 +1,4 @@
-import prisma from '../../../lib/prisma'
-
-//I think we should make this endpoint returning only for
-// a single visit each time and loop through the visits in the frontend
-//I think this is the best way to do it, but I'm not sure
-
+import prisma from '@/lib/prisma'
 
 export default async function handler(req, res) {
     if (req.method === 'GET') {

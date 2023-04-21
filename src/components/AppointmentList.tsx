@@ -4,7 +4,7 @@ import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
 import { getVisits } from "@/lib/api";
 
-
+//this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
     const { data: session } = useSession();
     const [appointments, setAppointments] = useState([]);

@@ -5,23 +5,44 @@ import { authOptions } from "./auth/[...nextauth]";
 import { Role } from "@prisma/client";
 
 //here we handle all visits-related api calls
-
-
+//ToDo : update method to change 
+//ToDo : delete method to cancel appointment
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
     if (session) {
+        //if method is delete, check role for patiend and receptionist and doctor and delete teh visit
+        // if (req.method === "DELETE") {
+        //     const { id, role } = req.query
+        //     const result = await prisma.visit.delete({
+        //         where: {
+        //             id: Number(id),
+        //         },
+        //     })
+        //     return res.status(200).json({
+        //         success: true,
+        //         message: "Visit deleted successfully",
+        //         data: result,
+        //     })
+        // }
+
+
         if (req.method === "POST") { //Patient or Registrar creating a visit
             try {
                 const { patientId, description, diagnosis, doctorId, date } = req.body;
+                let receptionistId;
 
+                if (session.user?.role === Role.RECEPTIONIST) {
+                  receptionistId = session.user.id;
+                }
                 const results = await prisma.visit.create({
-                    data: {
-                        description: description,
-                        diagnosis: diagnosis,
-                        date: date,
-                        doctor: { connect: { employee_id: doctorId } },
-                        patient: { connect: { patient_id: patientId } },
-                    },
+                  data: {
+                    description: description,
+                    diagnosis: diagnosis,
+                    date: date,
+                    doctor: { connect: { employee_id: doctorId } },
+                    patient: { connect: { patient_id: patientId } },
+                    receptionist: { connect: { employee_id: receptionistId } },
+                  },
                 });
                 return res.status(201).json({
                     success: true,
@@ -36,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // Patient, Doctor or Registrar viewing visits
-        else if (req.method === "GET") {
+        else if (req.method === "GET") { 
             try {
                 const { role, id } = req.query
                 let results: string | any[]
