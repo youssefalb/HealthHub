@@ -4,10 +4,13 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "./auth/[...nextauth]";
 import { Role } from "@prisma/client";
 
+//here we handle all visits-related api calls
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const session = await getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
     if (session) {
-        if (req.method === "POST") {
+        if (req.method === "POST") { //Patient or Registrar creating a visit
             try {
                 const { patientId, description, diagnosis, doctorId, date } = req.body;
 
@@ -32,8 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
-
-
+        // Patient, Doctor or Registrar viewing visits
         else if (req.method === "GET") {
             try {
                 const { role, id } = req.query
@@ -74,7 +76,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             }
                         },
-
                     });
                 } else if (role == Role.RECEPTIONIST) {
                     results = await prisma.visit.findMany({
@@ -86,19 +87,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                 }
 
-
+                //I dont think this check is needed (here), the caller checks the response size and renders response or place holder 
                 if (results.length !== 0) {
                     return res.status(200).json(results);
                 }
                 else {
                     return res.status(400).json({ message: "No visits found" });
                 }
-            } catch (error) {
+            } catch (error) { //here should be a redirect to a general purpose error page
                 return res
                     .status(500)
                     .json({ success: false, message: "Failed to retrieve visits" });
             }
-        } else {
+        }
+        else {
             return res
                 .status(400)
                 .json({ success: false, message: "Invalid request method" });
