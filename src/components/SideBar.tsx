@@ -24,7 +24,6 @@ export default function sideBar() {
   let path = "/";
 
   if (session?.user?.role === Role.PATIENT) {
-    console.log("user is patient");
 
     path = "/patient";
     menuItems = menuItems
@@ -43,7 +42,6 @@ export default function sideBar() {
         },
       ])
       .reverse();
-    console.log(menuItems);
   } else if (session?.user?.role === Role.DOCTOR) {
     path = "/doctor";
     menuItems = menuItems

@@ -1,4 +1,4 @@
-//here the patient can see his past appointments and make a new reservation
+//here the patient, doctor and recept. can see  appointments and make a new reservation
 import AppointmentList from "@/components/AppointmentList";
 
 export default function visitsPage() {

@@ -3,18 +3,30 @@ import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
 import { getVisits } from "@/lib/api";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
+
+// export async function getServerSideProps(context) {
+//   const session = useSession();
+
+//   return {
+//     props: { session }, // will be passed to the page component as props
+//   };
+// }
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
   const { data: session } = useSession();
   const [appointments, setAppointments] = useState([]);
   const router = useRouter();
-
   const role = session?.user?.role;
+  const user_id = session?.user?.id;
+  console.log("user params in list:");
+  console.log(user_id);
+  console.log(role);
+
   const fetchData = async () => {
     try {
-      const response = await getVisits(session?.user?.role, session?.user?.id);
+      const response = await getVisits(role, user_id);
       const results = await response.json();
       setAppointments(results);
     } catch (error) {
