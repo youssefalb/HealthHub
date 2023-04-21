@@ -13,7 +13,7 @@ const AppointmentCard = ({appointment, role}) => {
       name = appointment.doctor?.user?.fname + " " + appointment.doctor?.user?.lname;
   else if(role == Role.DOCTOR)
       name = appointment.patient?.user?.fname + " " + appointment.patient?.user?.lname;
-  console.log(appointment)
+  // console.log(appointment)
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
