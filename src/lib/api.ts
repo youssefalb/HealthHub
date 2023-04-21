@@ -11,10 +11,21 @@ export async function getVisits(role: Role, id: String) {
   return result;
 }
 
-export async function addVisit() {
+export async function addVisit(role: any, patient_id: any, doctor_id: any) {
   const path = "/api/visits";
   const result = await fetch(`${path}`, {
     method: "POST",
+    body: JSON.stringify({
+      description: "",
+      role: role,
+      date: new Date(),
+      doctor_id: doctor_id,
+      patient_id: patient_id,
+      receptionist_id: "",
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return result;
 }

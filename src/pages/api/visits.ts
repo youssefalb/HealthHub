@@ -5,20 +5,22 @@ import { authOptions } from "./auth/[...nextauth]";
 import { Role, Status } from "@prisma/client";
 
 //here we handle all visits-related api calls
-//ToDo : update method to change
-//ToDo : delete method to cancel appointment
+//ToDo : update method to change and/or cancel
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+  //   console.log(session);
   if (session) {
     if (req.method === "POST") {
       //Patient or Registrar creating a visit
       try {
-        const { patient_id, description, diagnosis, doctor_id, date } =
-          req.body;
+        const { patient_id, description, doctor_id, date } = req.body;
         let receptionistId;
+        console.log("=============================");
+        console.log("pat_id: ", patient_id);
+        console.log("doc_id: ", doctor_id);
 
         if (session.user?.role === Role.RECEPTIONIST) {
           receptionistId = session.user.id;
@@ -26,11 +28,10 @@ export default async function handler(
         const results = await prisma.visit.create({
           data: {
             description: description,
-            diagnosis: diagnosis,
             date: date,
             doctor: { connect: { employee_id: doctor_id } },
             patient: { connect: { patient_id: patient_id } },
-            receptionist: { connect: { employee_id: receptionistId } },
+            // receptionist: { connect: { employee_id: receptionistId } },
           },
         });
         return res.status(201).json({
@@ -39,6 +40,7 @@ export default async function handler(
           data: results,
         });
       } catch (error) {
+        console.log(error);
         return res
           .status(500)
           .json({ success: false, message: "Failed to create visit" });
@@ -153,7 +155,7 @@ export default async function handler(
 
         //I dont think this check is needed (here), the caller checks the response size and renders response or place holder
         if (results.length !== 0) {
-          return res.status(200).json(results);
+          return res.status(207).json(results);
         } else {
           return res.status(400).json({ message: "No visits found" });
         }

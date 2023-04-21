@@ -1,8 +1,5 @@
 to protect a page use a protected layout that takes "role" as a prob and compares role of current user and either continues or redirects 
 
-save role in contet not ls because of security 
-
-help :( 
 
 
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
@@ -19,4 +16,6 @@ help :(
   - [ ] write fokin guidlines for everyone and FORCE THEM to follow it 
   - [x] fix pages structre
   - [x] fix endpoints structure
+  - [ ] loading conmponent
+  - [ ] no appointments --> component
   

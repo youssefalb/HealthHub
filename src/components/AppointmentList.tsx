@@ -1,28 +1,18 @@
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
-import { getVisits } from "@/lib/api";
+import { addVisit, getVisits } from "@/lib/api";
 import { useRouter } from "next/router";
-
-// export async function getServerSideProps(context) {
-//   const session = useSession();
-
-//   return {
-//     props: { session }, // will be passed to the page component as props
-//   };
-// }
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
   const { data: session } = useSession();
-  const [appointments, setAppointments] = useState([]);
-  const router = useRouter();
   const role = session?.user?.role;
   const user_id = session?.user?.id;
-  console.log("user params in list:");
-  console.log(user_id);
-  console.log(role);
+
+  const router = useRouter();
+  const [appointments, setAppointments] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -36,7 +26,7 @@ export default function AppointmentsList() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [session]);
 
   return (
     <div className="space-y-4">
@@ -64,7 +54,7 @@ export default function AppointmentsList() {
       <CustomButton
         buttonText={"Book Appointment"}
         onClick={() => {
-          router.push("/booking");
+          addVisit(role, 1, 7);
         }}
       />
     </div>
