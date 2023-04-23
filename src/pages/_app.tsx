@@ -1,18 +1,16 @@
 import { SessionProvider } from "next-auth/react";
 import Layout from "../components/Layout";
-import '../styles/globals.css'
-import { UserProvider } from '../context/user'
-
+import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
-        <Layout>
-          <UserProvider >
-            <Component {...pageProps} />
-          </UserProvider>
-        </Layout>
+      {/*saves session (actually a session fetcher) in a context . when the
+      session is valid it fetches */}
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
-    )
-  }
-  export default App;
+  );
+}
+export default App;
