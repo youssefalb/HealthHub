@@ -2,6 +2,7 @@ import { SessionContext, useSession } from "next-auth/react";
 import Link from "next/link";
 
 import { Role } from "@prisma/client";
+import ProfilePicture from "@/components/ProfilePicture";
 
 export default function sideBar() {
   const { data: session } = useSession();
@@ -75,9 +76,12 @@ export default function sideBar() {
   return (
     <aside className="bg-gray-100 w-full md:w-60">
       {session ? (
-        <div className="flex items-center justify-center  rounded-full border-2 border-black w-3/6">
-          {/* <img src="/images/logotype.png" alt=""></img> */}
-          profile pic here
+        <div className="flex items-center py-4 px-4">
+        <ProfilePicture src={"https://avatars.githubusercontent.com/u/72605819?v=4"} alt={session?.user?.name}  size={9} />
+         <div>
+        <h2 className="text-sm font-bold">{session?.user?.name}</h2>
+       <p className="text-xs text-gray-500">{session?.user?.email}</p>
+    </div>
         </div>
       ) : null}
       <nav>
@@ -100,4 +104,5 @@ export default function sideBar() {
       </nav>
     </aside>
   );
+
 }
