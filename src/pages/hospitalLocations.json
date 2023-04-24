@@ -1,0 +1,20 @@
+[
+    {
+      "id": 1,
+      "name": "Our Clinic",
+      "city": "Gliwice",
+      "street": "Kujawska 10B/406",
+      "phoneNumber": "575 835 496",
+      "latitude": 50.285501314280324,
+      "longitude":  18.68019210000332
+    },
+    {
+      "id": 2,
+      "name": "Our Laboratory",
+      "city": "Gliwice",
+      "street": "Dunikowskiego 20/19",
+      "phoneNumber": "791 308 345",
+      "latitude": 50.2927818483664,
+      "longitude": 18.669170644563273
+    }
+]

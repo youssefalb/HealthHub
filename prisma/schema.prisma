@@ -12,13 +12,13 @@ model User {
   id             Int            @id @default(autoincrement())
   fname          String?        @db.VarChar(32)
   lname          String?        @db.VarChar(32)
+  image          String?
   sex            String?        @db.VarChar(32)
   email          String?        @unique @db.VarChar(64)
   password       String?
   emailVerified  DateTime?      @map("email_verified")
   nationalID     String?        @unique @db.VarChar(11)
   role           Role           @default(PATIENT)
-  image          String?
   accounts       Account[]
   doctor         Doctor?
   lab_assistant  LabAssistant?
@@ -113,10 +113,10 @@ model Visit {
   description            String?
   diagnosis              String?
   status                 Status                  @default(REGISTERED)
-  doctor_id              Int
-  patient_id             Int                     
-  receptionist_id        Int?
   date                   DateTime
+  doctor_id              Int
+  patient_id             Int
+  receptionist_id        Int?
   laboratoryExaminations LaboratoryExamination[]
   physicalExaminations   PhysicalExamination[]
   doctor                 Doctor                  @relation(fields: [doctor_id], references: [employee_id])
