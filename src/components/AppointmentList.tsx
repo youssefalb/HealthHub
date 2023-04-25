@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
-  const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it 
+  const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
   const role = session?.user?.role;
   const user_id = session?.user?.id;
 

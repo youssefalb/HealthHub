@@ -25,7 +25,6 @@ export default function sideBar() {
   let path = "/";
 
   if (session?.user?.role === Role.PATIENT) {
-
     path = "/patient";
     menuItems = menuItems
       .concat([
@@ -76,12 +75,16 @@ export default function sideBar() {
   return (
     <aside className="bg-gray-100 w-full md:w-60">
       {session ? (
-        <div className="flex items-center py-4 px-4">
-        <ProfilePicture src={"https://avatars.githubusercontent.com/u/72605819?v=4"} alt={session?.user?.name}  size={9} />
-         <div>
-        <h2 className="text-sm font-bold">{session?.user?.name}</h2>
-       <p className="text-xs text-gray-500">{session?.user?.email}</p>
-    </div>
+        <div className="flex items-center py-4 px-4 flex-col">
+          <ProfilePicture
+            src={"https://avatars.githubusercontent.com/u/72605819?v=4"}
+            alt={session?.user?.name}
+            size={5}
+          />
+          <div>
+            <h2 className="text-xs font-bold">{session?.user?.name}</h2>
+            {/* <p className="text-xs text-gray-500">{session?.user?.email}</p> */}
+          </div>
         </div>
       ) : null}
       <nav>
@@ -104,5 +107,4 @@ export default function sideBar() {
       </nav>
     </aside>
   );
-
 }
