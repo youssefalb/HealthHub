@@ -4,6 +4,7 @@ import sendVerificationEmail from "../../../lib/sendVerificationEmail";
 
 
 //create a hashing function
+//test commit
 
 export default async function handler(req, res) {
     const userData = req.body
