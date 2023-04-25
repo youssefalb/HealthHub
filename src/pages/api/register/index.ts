@@ -2,6 +2,7 @@ import prisma from '../../../../lib/prisma'
 import {hashPassword}  from '../../../utils/hashPassword'
 
 //create a hashing function
+//test commit
 
 export default async function handler(req, res) {
     const { fname, lname, email, password, insurance_id, national_id } = req.body
