@@ -50,7 +50,7 @@ export default async function handler(
               message: "Unauthorized, because this visit doesn't belong to you",
             });
         } else {
-          try { //todo move visit_id to the url
+          try {
             const { date, doctor_id, status } = req.body;
             let data: JSONClause = {};
             if (date) {

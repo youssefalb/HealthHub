@@ -11,7 +11,7 @@ export async function getVisits() {
 
 //get a specific visit
 export async function getVisit(visit_id: String) {
-  const result = await fetch(`${visitsPath}?visit_id=${visit_id}`, {
+  const result = await fetch(`${visitsPath}/${visit_id}`, {
     method: "GET",
   });
   return result;
@@ -36,7 +36,7 @@ export async function addVisit(patient_id: any, doctor_id: any) {
 
 //cancel visit
 export async function cancelVisit(visit_id: String) {
-  const result = await fetch(`${visitsPath}?visit_id=${visit_id}`, {
+  const result = await fetch(`${visitsPath}/${visit_id}`, {
     method: "PUT",
      body: JSON.stringify({
       newStatus : Status.CANCELLED
@@ -46,9 +46,8 @@ export async function cancelVisit(visit_id: String) {
 }
 
 //change visit date
-export async function updateVisit(doctor_id, date = undefined) {
-  const path = "/api/visits";
-  const result = await fetch(`${path}`, {
+export async function updateVisit(visit_id: String, doctor_id: String = undefined, date = undefined) {
+  const result = await fetch(`${visitsPath}/${visit_id}`, {
     method: "PUT",
     body: JSON.stringify({
       newDoctor_id: doctor_id,
