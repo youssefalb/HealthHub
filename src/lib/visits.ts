@@ -1,6 +1,5 @@
 import { Status } from "@prisma/client";
-
-const visitsPath: string = "/api/visits"
+import { visitsPath } from "./apiPaths";
 
 
 export async function getVisits() {
@@ -59,20 +58,4 @@ export async function updateVisit(doctor_id, date = undefined) {
   return result;
 }
 
-//================================================
 
-export async function addTests(params: type) {}
-
-export async function getTests(params: type) {}
-
-export async function getPatients(params: type) {}
-
-export async function getDoctors(params: type) {}
-
-export async function getReceptionists(params: type) {}
-
-export async function getDiagnosis(params: type) {}
-
-export async function getDescription(params: type) {}
-
-export async function getDate(params: type) {}

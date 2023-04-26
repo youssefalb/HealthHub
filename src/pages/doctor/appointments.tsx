@@ -1,5 +1,5 @@
 import DoctorsAppointmentCard from "@/components/DoctorsAppointmentCard";
-import { getVisits } from "@/lib/visitsApi";
+import { getVisits } from "@/lib/visits";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 //here the Doctor can see his past appointments and can change status of it

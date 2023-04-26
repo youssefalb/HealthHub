@@ -1,0 +1,1 @@
+//here list of personnell and button to deactivate them

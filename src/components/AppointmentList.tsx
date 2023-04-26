@@ -2,7 +2,7 @@ import { useSession, getSession } from "next-auth/react";
 import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
-import { addVisit, getVisits } from "@/lib/visitsApi";
+import { addVisit, getVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
