@@ -4,53 +4,84 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "./auth/[...nextauth]";
 import { Role, Status } from "@prisma/client";
 
+interface JSONClause {
+  [key : string] : any
+}
+
+
 //here we handle all visits-related api calls
-//ToDo : update method to change and/or cancel
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-  //   console.log(session);
+  // console.log(session.user?.role)
   if (session) {
     if (req.method === "POST") {
       //Patient or Registrar creating a visit
-      try {
-        const { patient_id, description, doctor_id, date } = req.body;
-        let receptionistId;
-        console.log("=============================");
-        console.log("pat_id: ", patient_id);
-        console.log("doc_id: ", doctor_id);
+      if (session.user?.role === Role.PATIENT) {
+        try {
+          const { patient_id, description, doctor_id, date } = req.body;
 
-        if (session.user?.role === Role.RECEPTIONIST) {
-          receptionistId = session.user.id;
+          const results = await prisma.visit.create({
+            data: {
+              description: description,
+              date: date,
+              doctor: { connect: { employee_id: doctor_id } },
+              patient: { connect: { patient_id: patient_id } },
+            },
+          });
+          return res.status(201).json({
+            success: true,
+            message: "Visit created successfully by patient",
+            data: results,
+          });
+        } catch (error) {
+          console.log(error);
+          return res
+            .status(500)
+            .json({ success: false, message: "Failed to create visit" });
         }
-        const results = await prisma.visit.create({
-          data: {
-            description: description,
-            date: date,
-            doctor: { connect: { employee_id: doctor_id } },
-            patient: { connect: { patient_id: patient_id } },
-            // receptionist: { connect: { employee_id: receptionistId } },
-          },
-        });
-        return res.status(201).json({
-          success: true,
-          message: "Visit created successfully",
-          data: results,
-        });
-      } catch (error) {
-        console.log(error);
+      } else if (session.user?.role === Role.RECEPTIONIST) {
+        try {
+          const { patient_id, description, doctor_id, date } = req.body;
+
+          const results = await prisma.visit.create({
+            data: {
+              description: description,
+              date: date,
+              doctor: { connect: { employee_id: doctor_id } },
+              patient: { connect: { patient_id: patient_id } },
+              receptionist: { connect: { employee_id: Number(session.user?.id) } },
+            },
+          });
+          return res.status(201).json({
+            success: true,
+            message: "Visit created successfully by receptionist",
+            data: results,
+          });
+        } catch (error) {
+          console.log(error);
+          return res
+            .status(500)
+            .json({ success: false, message: "Failed to create visit" });
+        }
+      }
+      else {
         return res
-          .status(500)
-          .json({ success: false, message: "Failed to create visit" });
+          .status(401)
+          .json({
+            success: false,
+            message: "only patients and receptionists can create appointments",
+          });
       }
     }
 
-    //if method is PUT, check if the user is a doctor, patient or receptionist, and then delete the visit
+    //if method is PUT, check if the user is a doctor, patient or receptionist
     //changing date needs to be accomodated
     if (req.method === "PUT") {
-      const { visit_id, role, user_id } = req.body;
+      const { visit_id } = req.body;
+      const { role, id: user_id } = session.user;
       if (
         role === Role.DOCTOR ||
         role === Role.PATIENT ||
@@ -65,53 +96,66 @@ export default async function handler(
           });
           if (
             role !== Role.RECEPTIONIST &&
-            visit?.patient_id !== user_id &&
-            visit?.doctor_id !== user_id
+            visit?.patient_id !== Number(user_id) &&
+            visit?.doctor_id !== Number(user_id)
           ) {
             return res
               .status(401)
-              .json({ success: false, message: "Unauthorized" });
+              .json({ success: false, message: "Unauthorized, because this visit doesn't belong to you" });
           } else {
             try {
+              const { newDate, newDoctor_id, newStatus } = req.body
+              let data : JSONClause = {} 
+              if (newDate) {
+                data.date = newDate
+              }
+              if (newDoctor_id) {
+                data.doctor_id = newDoctor_id
+              }
+              if (newStatus) {
+                data.status = newStatus
+              }
+              console.log("data obj:" ,data)
               await prisma.visit.update({
                 where: {
                   visit_id: Number(visit_id),
                 },
-                data: {
-                  status: Status.CANCELLED,
-                },
+                data : data
               });
             } catch (error) {
               return res
-                .status(404)
-                .json({ success: false, message: "cancelling visit failed" });
+                .status(500)
+                .json({ success: false, message: "failed to update visit" });
             }
             return res
               .status(200)
-              .json({ success: true, message: "Visit cancelled" });
+              .json({ success: true, message: "Visit updated successfully" });
           }
         } catch (error) {
           return res
-            .status(500)
+            .status(404)
             .json({ success: false, message: "Failed to find such a visit" });
         }
       } else {
         return res
           .status(401)
-          .json({ success: false, message: "Unauthorized" });
+          .json({ success: false, message: "Unauthorized because you are not the correct person.. go away" });
       }
     }
 
     // Patient, Doctor or Registrar viewing visits
     else if (req.method === "GET") {
       try {
-        const { role, id } = req.query;
+        const { visit_id } = req.query;
         let results: string | any[];
-        if (role == Role.DOCTOR) {
+        if (session.user?.role == Role.DOCTOR) {
+          let whereClause : JSONClause = {}
+          whereClause.doctor_id = session.user?.id
+          if (visit_id) {
+            whereClause.visit_id = visit_id   
+          }
           results = await prisma.visit.findMany({
-            where: {
-              doctor_id: Number(id),
-            },
+            where : whereClause,
             include: {
               patient: {
                 include: {
@@ -125,11 +169,16 @@ export default async function handler(
               },
             },
           });
-        } else if (role == Role.PATIENT) {
+        } else if (session.user.role == Role.PATIENT) {
+          let whereClause: JSONClause = {}
+          whereClause.patient_id = session.user?.id
+          console.log("clause" , whereClause)
+          if (visit_id) {
+            whereClause.visit_id = visit_id
+          }
+            console.log("request" , whereClause)
           results = await prisma.visit.findMany({
-            where: {
-              patient_id: Number(id),
-            },
+            where: whereClause,
             include: {
               doctor: {
                 include: {
@@ -143,7 +192,7 @@ export default async function handler(
               },
             },
           });
-        } else if (role == Role.RECEPTIONIST) {
+        } else if (session.user?.role == Role.RECEPTIONIST) { //todo
           results = await prisma.visit.findMany({
             where: {
               date: {
@@ -152,13 +201,11 @@ export default async function handler(
             },
           });
         }
+        return res
+          .status(200)
+          .json({ success: true, data: results })
 
-        //I dont think this check is needed (here), the caller checks the response size and renders response or place holder
-        if (results.length !== 0) {
-          return res.status(207).json(results);
-        } else {
-          return res.status(400).json({ message: "No visits found" });
-        }
+
       } catch (error) {
         //here should be a redirect to a general purpose error page
         return res
@@ -171,5 +218,5 @@ export default async function handler(
         .json({ success: false, message: "Invalid request method" });
     }
   }
-  return res.status(401).json({ success: false, message: "Unauthorized" });
+  return res.status(401).json({ success: false, message: "Unauthorized because not logged in" });
 }

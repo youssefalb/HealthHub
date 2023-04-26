@@ -8,18 +8,18 @@ import { useRouter } from "next/router";
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
-  const role = session?.user?.role;
-  const user_id = session?.user?.id;
-
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [appointments, setAppointments] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const role = session?.user?.role;
+  const user_id = session?.user?.id;
+  const router = useRouter();
+
   const fetchData = async () => {
     try {
-      const response = await getVisits(role, user_id);
+      const response = await getVisits();
       const results = await response.json();
-      setAppointments(results);
+      setAppointments(results["data"]);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -27,10 +27,13 @@ export default function AppointmentsList() {
   };
 
   useEffect(() => {
-    if (session) fetchData();
+    if (session) {
+      fetchData();
+    }
     //else loading state. show loading state
   }, [session]);
 
+  // ToDo : loading component
   if (isLoading) return <p>Loading...</p>;
   return (
     <div className="space-y-4">

@@ -1,24 +1,29 @@
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 
-export async function getVisits(role: Role, id: String) {
-  console.log("user params in lib:");
-  console.log(id);
-  console.log(role);
-  const path = "/api/visits";
-  const result = await fetch(`${path}?id=${id}&role=${role}`, {
+const visitsPath: string = "/api/visits"
+
+
+export async function getVisits() {
+  const result = await fetch(`${visitsPath}`, {
     method: "GET",
   });
   return result;
 }
 
-export async function addVisit(role: any, patient_id: any, doctor_id: any) {
-  const path = "/api/visits";
-  const result = await fetch(`${path}`, {
+//get a specific visit
+export async function getVisit(visit_id: String) {
+  const result = await fetch(`${visitsPath}?visit_id=${visit_id}`, {
+    method: "GET",
+  });
+  return result;
+}
+
+export async function addVisit(patient_id: any, doctor_id: any) {
+  const result = await fetch(`${visitsPath}`, {
     method: "POST",
     body: JSON.stringify({
       description: "",
-      role: role,
-      date: new Date(),
+      date: new Date(), //ToDo : date picker in page
       doctor_id: doctor_id,
       patient_id: patient_id,
       receptionist_id: "",
@@ -31,26 +36,30 @@ export async function addVisit(role: any, patient_id: any, doctor_id: any) {
 }
 
 //cancel visit
-export async function deleteVisit(
-  visit_id: String,
-  user_id: String,
-  role: Role
-) {
-  const path = "/api/visits";
-  const result = await fetch(`${path}?visit_id=${visit_id}`, {
-    method: "DELETE",
+export async function cancelVisit(visit_id: String) {
+  const result = await fetch(`${visitsPath}?visit_id=${visit_id}`, {
+    method: "PUT",
+     body: JSON.stringify({
+      newStatus : Status.CANCELLED
+    })
   });
   return result;
 }
 
 //change visit date
-export async function updateVisit() {
+export async function updateVisit(doctor_id, date = undefined) {
   const path = "/api/visits";
   const result = await fetch(`${path}`, {
     method: "PUT",
+    body: JSON.stringify({
+      newDoctor_id: doctor_id,
+      newDate: date,
+    })
   });
   return result;
 }
+
+//================================================
 
 export async function addTests(params: type) {}
 
