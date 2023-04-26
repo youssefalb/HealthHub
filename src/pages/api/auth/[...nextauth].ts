@@ -95,8 +95,8 @@ export const authOptions: NextAuthOptions = {
 
     async signIn({ user, account, profile, email, credentials }) {
       if (account.provider === "google") {
-        user.fname = profile.given_name;
-        user.lname = profile.family_name;
+        user.firstName = profile.given_name;
+        user.lastName = profile.family_name;
         user.image = profile.picture;
         // if (profile.email_verified == true)
         //     user.emailVerified = new Date()
@@ -124,7 +124,7 @@ export const authOptions: NextAuthOptions = {
       if (account) {
         token.accessToken = account.access_token;
         token.id = user.id;
-        token.name = user.fname + " " + user.lname;
+        token.name = user.firstName + " " + user.lastName;
         token.role = user.role;
       } //else
       //token.accessToken =

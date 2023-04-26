@@ -35,9 +35,9 @@ export default async function handler(req, res) {
     // console.log(visitId, exam_code);
     const results = await prisma.laboratoryExamination.create({
       data: {
-        visit: { connect: { visit_id: visitId } },
-        examinationStatus: "ORDERED",
-        supervisorNotice: "Supervisor NOTICE",
+        visit: { connect: { visitId: visitId } },
+        status: "ORDERED",
+        supervisorNote: "Supervisor NOTICE",
         doctorNotice: "Doctor NOTICE",
         examinationDictionary: { connect: { code: exam_code } },
       },

@@ -25,6 +25,7 @@ export default async function handler(
   //changing date needs to be accomodated
   if (req.method === "PUT") {
     const { visit_id } = req.query;
+    
     const { role, id: user_id } = session.user;
     if (
       role === Role.DOCTOR ||
@@ -35,13 +36,13 @@ export default async function handler(
       try {
         const visit = await prisma.visit.findUnique({
           where: {
-            visit_id: Number(visit_id),
+            visitId: visit_id.toString(),
           },
         });
         if (
           role !== Role.RECEPTIONIST &&
-          visit?.patient_id !== Number(user_id) &&
-          visit?.doctor_id !== Number(user_id)
+          visit?.patientId !== user_id &&
+          visit?.doctorId !== user_id
         ) {
           return res
             .status(401)
@@ -65,7 +66,7 @@ export default async function handler(
             console.log("data obj:", data);
             await prisma.visit.update({
               where: {
-                visit_id: Number(visit_id),
+                visitId: visit_id.toString(),
               },
               data: data,
             });
@@ -113,8 +114,8 @@ export default async function handler(
               include: {
                 user: {
                   select: {
-                    fname: true,
-                    lname: true,
+                    firstName: true,
+                    lastName: true,
                   },
                 },
               },
@@ -134,8 +135,8 @@ export default async function handler(
               include: {
                 user: {
                   select: {
-                    fname: true,
-                    lname: true,
+                    firstName: true,
+                    lastName: true,
                   },
                 },
               },

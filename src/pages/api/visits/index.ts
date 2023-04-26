@@ -30,8 +30,8 @@ export default async function handler(
           data: {
             description: description,
             date: date,
-            doctor: { connect: { employee_id: doctor_id } },
-            patient: { connect: { patient_id: patient_id } },
+            doctor: { connect: { employeeId: doctor_id } },
+            patient: { connect: { patientId: patient_id } },
           },
         });
         return res.status(201).json({
@@ -53,10 +53,10 @@ export default async function handler(
           data: {
             description: description,
             date: date,
-            doctor: { connect: { employee_id: doctor_id } },
-            patient: { connect: { patient_id: patient_id } },
+            doctor: { connect: { employeeId: doctor_id } },
+            patient: { connect: { patientId: patient_id } },
             receptionist: {
-              connect: { employee_id: Number(session.user?.id) },
+              connect: { employeeId: session.user?.id },
             },
           },
         });
@@ -96,8 +96,8 @@ export default async function handler(
               include: {
                 user: {
                   select: {
-                    fname: true,
-                    lname: true,
+                    firstName: true,
+                    lastName: true,
                   },
                 },
               },
@@ -114,8 +114,8 @@ export default async function handler(
               include: {
                 user: {
                   select: {
-                    fname: true,
-                    lname: true,
+                    firstName: true,
+                    lastName: true,
                   },
                 },
               },
