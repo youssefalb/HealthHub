@@ -24,7 +24,8 @@ export default async function handler(
   //if method is PUT, check if the user is a doctor, patient or receptionist
   //changing date needs to be accomodated
   if (req.method === "PUT") {
-    const { exam_id } = req.query;
+    var { exam_id } = req.query;
+    exam_id = exam_id.toString(); 
     const { role, id: user_id } = session.user;
     if (
       role === Role.DOCTOR ||
@@ -35,15 +36,15 @@ export default async function handler(
 
         const exam = await prisma.physicalExamination.findUnique({
           where: {
-            physical_exam_id: Number(exam_id),
+            physicalExamId: exam_id,
           },
           include: {
             visit: true,
           },
         });
         if (
-          exam?.visit.doctor_id !== Number(user_id) &&
-          exam?.visit.patient_id !== Number(user_id)
+          exam?.visit.doctorId !== user_id &&
+          exam?.visit.patientId !== user_id
         ) {
           return res
             .status(401)
@@ -99,13 +100,12 @@ export default async function handler(
       if (session.user?.role == Role.DOCTOR) {
         let doctor_id = session.user?.id;
         let whereClause: JSONClause = {
-          physical_exam_id: Number(exam_id),
+          physicalExamId: exam_id,
           visit: {
-            doctor_id: Number(doctor_id),
+            doctorId: doctor_id,
           },
         };
 
-        whereClause.physical_exam_id = exam_id;
         results = await prisma.physicalExamination.findUnique({
           where: whereClause,
           include: {
@@ -126,9 +126,9 @@ export default async function handler(
       } else if (session.user.role == Role.PATIENT) {
         let patient_id = session.user?.id;
         const whereClause: JSONClause = {
-          physical_exam_id: Number(exam_id),
+          physicalExamId: exam_id,
           visit: {
-            patient_id: Number(patient_id),
+            patientId: patient_id,
           },
         };
 

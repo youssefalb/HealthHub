@@ -27,7 +27,7 @@ export default async function handler(
                 const { visitId, exam_code } = req.body;
                 const results = await prisma.physicalExamination.create({
                     data: {
-                        visit: { connect: { visit_id: visitId } },
+                        visit: { connect: { visitId: visitId } },
                         examinationDictionary: { connect: { code: exam_code } },
                     },
                 });
@@ -59,7 +59,7 @@ export default async function handler(
             if (session.user.role == Role.PATIENT  || session.user.role == Role.DOCTOR || session.user.role == Role.RECEPTIONIST) {
                 const {visit_id} = req.query;
                 let whereClause: JSONClause = {};
-                whereClause.visit_id = Number(visit_id);
+                whereClause.visitId = visit_id;
                 results = await prisma.physicalExamination.findMany({
                     where: whereClause,
                 });

@@ -52,6 +52,7 @@ async function seed() {
       firstName: "Viktor",
       lastName: "Didyk",
       nationalId: "USA",
+      id: "1",
       email: "vity5.diduk@gmail.com",
       emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
@@ -61,6 +62,7 @@ async function seed() {
       firstName: "Viktor",
       lastName: "Didyk",
       nationalId: "UA",
+      id: "2",
       email: "vity2.diduk@gmail.com",
       password: await hashPassword("password123"),
 
@@ -70,6 +72,7 @@ async function seed() {
       firstName: "Viktor",
       lastName: "Didyk",
       nationalId: "MA",
+      id: "3",
       email: "vity3.diduk@gmail.com",
       emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
@@ -80,17 +83,19 @@ async function seed() {
       firstName: "Andrii",
       lastName: "Bobchuk",
       sex: "yes",
+      id: "4",
       nationalId: "Poland",
       email: "andrii.bobchuk@gmail.com",
       emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "RECEPTIONIST",
-      receptionist: { create: {} },
+      receptionist: { create: {employeeId : "4", } },
     },
     {
       firstName: "Mike",
       lastName: "Smaluch",
       sex: "sometimes",
+      id: "5",
       nationalId: "Belarussia",
       email: "mike.smaluch@gmailc.om",
       emailVerified: "2023-04-07T21:05:53.424Z",
@@ -102,6 +107,7 @@ async function seed() {
       firstName: "Asser",
       lastName: "Elfeki",
       sex: "polsl",
+      id: "6",
       nationalId: "Netherland",
       email: "ass.elfeki@gmail.com",
       emailVerified: "2023-04-07T21:05:53.424Z",
@@ -113,6 +119,7 @@ async function seed() {
       firstName: "Youssef",
       lastName: "Al Bali",
       sex: "always",
+      id: "7",
       nationalId: "Morocco",
       email: "ydm@gmail.com",
       emailVerified: "2023-04-07T21:05:53.424Z",
@@ -126,33 +133,33 @@ async function seed() {
       description: "First visit",
       diagnosis: "Common cold",
       date: "2023-03-29T16:30:00.000Z",
-      doctor: { connect: { employeeId: 7 } },
-      patient: { connect: { patientId: 1 } },
-      receptionist: { connect: { employeeId: 4 } },
+      doctor: { connect: { employeeId: "7" } },
+      patient: { connect: { patientId: "1" } },
+      receptionist: { connect: { employeeId: "4" } },
     },
     {
       description: "second visit",
       diagnosis: "Common cold",
       date: "2024-01-29T16:30:00.000Z",
-      doctor: { connect: { employeeId: 5 } },
-      patient: { connect: { patientId: 1 } },
-      receptionist: { connect: { employeeId: 4 } },
+      doctor: { connect: { employeeId: "5" } },
+      patient: { connect: { patientId: "1" } },
+      receptionist: { connect: { employeeId: "4" } },
     },
     {
       description: "Follow-up visit",
       diagnosis: "Sprained ankle",
       date: "2023-03-29T16:30:00.000Z",
-      doctor: { connect: { employeeId: 7 } },
-      patient: { connect: { patientId: 2 } },
-      receptionist: { connect: { employeeId: 4 } },
+      doctor: { connect: { employeeId: "7" } },
+      patient: { connect: { patientId: "2" } },
+      receptionist: { connect: { employeeId: "4" } },
     },
     {
       description: "Yearly check-up",
       diagnosis: "Healthy",
       date: "2023-03-29T16:30:00.000Z",
-      doctor: { connect: { employeeId: 7 } },
-      patient: { connect: { patientId: 3 } },
-      receptionist: { connect: { employeeId: 4 } },
+      doctor: { connect: { employeeId: "7" } },
+      patient: { connect: { patientId: "3" } },
+      receptionist: { connect: { employeeId: "4" } },
     },
   ];
 
@@ -166,8 +173,8 @@ async function seed() {
       supervisorNote: "",
       dateOfApprovalXorRejection: "2023-03-29T16:30:00.000Z",
       dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
-      visit: { connect: { visitId: 1 } },
-      labAssistant: { connect: { employeeId: 6 } },
+      visit: { connect: { visitId: "1" } },
+      labAssistant: { connect: { employeeId: "6" } },
     },
     {
       examinationDictionary: {
@@ -178,8 +185,8 @@ async function seed() {
       supervisorNote: "",
       dateOfApprovalXorRejection: "2023-03-29T16:30:00.000Z",
       dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
-      visit: { connect: { visitId: 2 } },
-      labAssistant: { connect: { employeeId: 6 } },
+      visit: { connect: { visitId: "2" } },
+      labAssistant: { connect: { employeeId: "6" } },
     },
   ];
   const pyshicalExaminationData: Prisma.PhysicalExaminationCreateInput[] = [
@@ -187,14 +194,14 @@ async function seed() {
       examinationDictionary: {
         create: { type: "Covid test", description: "Covid test" },
       },
-      visit: { connect: { visitId: 1 } },
+      visit: { connect: { visitId: "1" } },
     },
 
     {
       examinationDictionary: {
         create: { type: "Heart", description: "Heart problems" },
       },
-      visit: { connect: { visitId: 2 } },
+      visit: { connect: { visitId: "2" } },
     },
   ];
   for (const user of userData) {
@@ -204,19 +211,19 @@ async function seed() {
 
   for (const visit of visitData) {
     const v = await prisma.visit.create({ data: visit });
-    console.log(`Created visit with id: ${v.visit_id}`);
+    console.log(`Created visit with id: ${v.visitId}`);
   }
   for (const labExamination of labExaminationData) {
     const l = await prisma.laboratoryExamination.create({
       data: labExamination,
     });
-    console.log(`Created labExamination with id: ${l.laboratory_exam_id}`);
+    console.log(`Created labExamination with id: ${l.testId}`);
   }
   for (const physicalExamination of pyshicalExaminationData) {
     const p = await prisma.physicalExamination.create({
       data: physicalExamination,
     });
-    console.log(`Created physicalExamination with id: ${p.physical_exam_id}`);
+    console.log(`Created physicalExamination with id: ${p.physicalExamId}`);
   }
   for (const examinationDictionary of examinationDictionarySeedData) {
     const e = await prisma.examinationDictionary.create({
