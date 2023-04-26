@@ -1,4 +1,4 @@
-import { Role, Status } from "@prisma/client";
+import { Status } from "@prisma/client";
 
 const visitsPath: string = "/api/visits"
 
