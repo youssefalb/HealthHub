@@ -24,25 +24,26 @@ export default async function handler(
   //if method is PUT, check if the user is a doctor, patient or receptionist
   //changing date needs to be accomodated
   if (req.method === "PUT") {
-    const { visit_id } = req.query;
-    
+    const { exam_id } = req.query;
     const { role, id: user_id } = session.user;
     if (
       role === Role.DOCTOR ||
-      role === Role.PATIENT ||
-      role === Role.RECEPTIONIST
+      role === Role.PATIENT
     ) {
       //if it was a doctor or patient, check that the visit belongs to them
       try {
-        const visit = await prisma.visit.findUnique({
+
+        const exam = await prisma.physicalExamination.findUnique({
           where: {
-            visitId: visit_id.toString(),
+            physical_exam_id: Number(exam_id),
+          },
+          include: {
+            visit: true,
           },
         });
         if (
-          role !== Role.RECEPTIONIST &&
-          visit?.patientId !== user_id &&
-          visit?.doctorId !== user_id
+          exam?.visit.doctor_id !== Number(user_id) &&
+          exam?.visit.patient_id !== Number(user_id)
         ) {
           return res
             .status(401)
@@ -51,25 +52,19 @@ export default async function handler(
               message: "Unauthorized, because this visit doesn't belong to you",
             });
         } else {
-          try {
-            const { date, doctor_id, status } = req.body;
+          try {  //date and status to be added later to the db schema
+            const { status } = req.body;
             let data: JSONClause = {};
-            if (date) {
-              data.date = date;
-            }
-            if (doctor_id) {
-              data.doctor_id = doctor_id;
-            }
             if (status) {
               data.status = status;
             }
             console.log("data obj:", data);
-            await prisma.visit.update({
-              where: {
-                visitId: visit_id.toString(),
-              },
-              data: data,
-            });
+            // await prisma.visit.update({
+            //   where: {
+            //     physical_exam_id: Number(exam_id),
+            //   },
+            //   data: data,
+            // });
           } catch (error) {
             return res
               .status(500)
@@ -97,68 +92,72 @@ export default async function handler(
 
   // Patient, Doctor or Registrar viewing one particular visit
   else if (req.method === "GET") {
-      console.log("here")
     try {
-        const { visit_id } = req.query;
-        console.log(visit_id)
+      const { exam_id } = req.query;
+      console.log(exam_id)
       let results: string | any;
       if (session.user?.role == Role.DOCTOR) {
-        let whereClause: JSONClause = {};
-        // whereClause.doctor_id = session.user?.id;
-        whereClause.visit_id = visit_id;
-        
-        results = await prisma.visit.findUnique({
+        let doctor_id = session.user?.id;
+        let whereClause: JSONClause = {
+          physical_exam_id: Number(exam_id),
+          visit: {
+            doctor_id: Number(doctor_id),
+          },
+        };
+
+        whereClause.physical_exam_id = exam_id;
+        results = await prisma.physicalExamination.findUnique({
           where: whereClause,
           include: {
-            patient: {
-              include: {
-                user: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                  },
-                },
-              },
-            },
+            visit: true,
           },
         });
+
+
+
+        if (results) {
+          return res.status(200).json({ success: true, data: results });
+        } else {
+          return res
+            .status(500)
+            .json({ success: false, message: "The visit of the exam does not belong to visits of the doctor" });
+        }
+
       } else if (session.user.role == Role.PATIENT) {
-        let whereClause: JSONClause = {};
-        // whereClause.patient_id = session.user?.id;
-        // console.log("clause", whereClause);
-        whereClause.visit_id = Number(visit_id);
-        console.log("request", whereClause);
-        results = await prisma.visit.findUnique({
+        let patient_id = session.user?.id;
+        const whereClause: JSONClause = {
+          physical_exam_id: Number(exam_id),
+          visit: {
+            patient_id: Number(patient_id),
+          },
+        };
+
+        const results = await prisma.physicalExamination.findMany({
           where: whereClause,
           include: {
-            doctor: {
-              include: {
-                user: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                  },
-                },
-              },
-            },
+            visit: true,
           },
         });
-      } else if (session.user?.role == Role.RECEPTIONIST) {
-        //todo
-        results = await prisma.visit.findMany({
-          where: {
-            date: {
-              gte: new Date(),
-            },
-          },
-        });
+
+        if (results) {
+          return res.status(200).json({ success: true, data: results });
+        } else {
+          return res
+            .status(500)
+            .json({ success: false, message: "The visit of the exam does not belong to visits of the patient" });
+        }
+      }
+      else {
+        return res
+          .status(500)
+          .json({ success: false, message: "You should be a patient or a doctor to view this page" });
       }
       return res.status(200).json({ success: true, data: results });
     } catch (error) {
       //here should be a redirect to a general purpose error page
       return res
         .status(500)
-        .json({ success: false, message: "Failed to retrieve visits" });
+        .json({ success: false, message: "Failed to retrieve Pysical examination" });
     }
   } else {
     return res
