@@ -89,7 +89,7 @@ async function seed() {
       emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "RECEPTIONIST",
-      receptionist: { create: {employeeId : "4", } },
+      receptionist: { create: {} },
     },
     {
       firstName: "Mike",
@@ -132,6 +132,7 @@ async function seed() {
     {
       description: "First visit",
       diagnosis: "Common cold",
+      visitId :"1",
       date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employeeId: "7" } },
       patient: { connect: { patientId: "1" } },
@@ -139,6 +140,7 @@ async function seed() {
     },
     {
       description: "second visit",
+      visitId :"2",
       diagnosis: "Common cold",
       date: "2024-01-29T16:30:00.000Z",
       doctor: { connect: { employeeId: "5" } },
@@ -147,6 +149,7 @@ async function seed() {
     },
     {
       description: "Follow-up visit",
+      visitId :"3",
       diagnosis: "Sprained ankle",
       date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employeeId: "7" } },
@@ -156,6 +159,7 @@ async function seed() {
     {
       description: "Yearly check-up",
       diagnosis: "Healthy",
+      visitId :"4",
       date: "2023-03-29T16:30:00.000Z",
       doctor: { connect: { employeeId: "7" } },
       patient: { connect: { patientId: "3" } },
@@ -170,6 +174,7 @@ async function seed() {
       },
       doctorNote: "Patient is anemic",
       status: "ORDERED",
+      testId : "1",
       supervisorNote: "",
       dateOfApprovalXorRejection: "2023-03-29T16:30:00.000Z",
       dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
@@ -180,6 +185,7 @@ async function seed() {
       examinationDictionary: {
         create: { type: "Heart test", description: "Heart issues" },
       },
+      testId : "2",
       doctorNote: "Patient have some problems with his heart",
       status: "ORDERED",
       supervisorNote: "",
@@ -194,6 +200,7 @@ async function seed() {
       examinationDictionary: {
         create: { type: "Covid test", description: "Covid test" },
       },
+      physicalExamId : "1",
       visit: { connect: { visitId: "1" } },
     },
 
@@ -201,6 +208,7 @@ async function seed() {
       examinationDictionary: {
         create: { type: "Heart", description: "Heart problems" },
       },
+      physicalExamId : "2",
       visit: { connect: { visitId: "2" } },
     },
   ];

@@ -87,8 +87,7 @@ export default async function handler(
       let results: string | any[];
       if (session.user?.role == Role.DOCTOR) {
         let whereClause: JSONClause = {};
-        whereClause.doctor_id = session.user?.id;
-       
+        whereClause.doctorId = session.user?.id;
         results = await prisma.visit.findMany({
           where: whereClause,
           include: {
@@ -106,7 +105,7 @@ export default async function handler(
         });
       } else if (session.user.role == Role.PATIENT) {
         let whereClause: JSONClause = {};
-        whereClause.patient_id = session.user?.id;
+        whereClause.patientId = session.user?.id;
         results = await prisma.visit.findMany({
           where: whereClause,
           include: {

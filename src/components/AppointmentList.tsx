@@ -24,7 +24,7 @@ export default function AppointmentsList() {
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
-  };
+  };       
 
   useEffect(() => {
     if (session) {
@@ -40,7 +40,7 @@ export default function AppointmentsList() {
       {appointments.length ? (
         appointments.map((appointment) => (
           <AppointmentCard
-            key={appointment.visit_id}
+            key={appointment.visitId}
             appointment={appointment}
             role={role}
           />

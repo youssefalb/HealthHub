@@ -95,7 +95,6 @@ export default async function handler(
   else if (req.method === "GET") {
     try {
       const { exam_id } = req.query;
-      console.log(exam_id)
       let results: string | any;
       if (session.user?.role == Role.DOCTOR) {
         let doctor_id = session.user?.id;
@@ -107,7 +106,9 @@ export default async function handler(
         };
 
         results = await prisma.physicalExamination.findUnique({
-          where: whereClause,
+          where: {
+            physicalExamId: exam_id.toString()
+          },
           include: {
             visit: true,
           },
@@ -124,22 +125,26 @@ export default async function handler(
         }
 
       } else if (session.user.role == Role.PATIENT) {
+      console.log("request went here")
+
         let patient_id = session.user?.id;
         const whereClause: JSONClause = {
-          physicalExamId: exam_id,
+          physicalExamId: exam_id.toString(),
           visit: {
             patientId: patient_id,
           },
         };
 
-        const results = await prisma.physicalExamination.findMany({
-          where: whereClause,
+        const results = await prisma.physicalExamination.findUnique({
+          where: {
+            physicalExamId: exam_id.toString()
+          },
           include: {
             visit: true,
           },
         });
 
-        if (results) {
+        if (results.visit.patientId === patient_id) {
           return res.status(200).json({ success: true, data: results });
         } else {
           return res
@@ -152,7 +157,6 @@ export default async function handler(
           .status(500)
           .json({ success: false, message: "You should be a patient or a doctor to view this page" });
       }
-      return res.status(200).json({ success: true, data: results });
     } catch (error) {
       //here should be a redirect to a general purpose error page
       return res

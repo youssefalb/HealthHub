@@ -58,7 +58,7 @@ model VerificationToken {
 model Doctor {
   employeeId     String   @id @map("employee_id")
   visits         Visit[]
-  employmentDate DateTime @map("employment_date")
+  employmentDate DateTime @default(now()) @map("employment_date")
   user           User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("doctors")
@@ -67,7 +67,7 @@ model Doctor {
 model Receptionist {
   employeeId     String   @id @map("emplyee_id")
   visits         Visit[]
-  employmentDate DateTime @map("employment_date")
+  employmentDate DateTime @default(now()) @map("employment_date")
   user           User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("receptionists")
@@ -76,7 +76,7 @@ model Receptionist {
 model LabSupervisor {
   employeeId             String                  @id @map("emplyee_id")
   laboratoryExaminations LaboratoryExamination[]
-  employmentDate         DateTime                @map("employment_date")
+  employmentDate         DateTime                @default(now()) @map("employment_date")
   user                   User                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("lab_supervisors")
@@ -85,7 +85,7 @@ model LabSupervisor {
 model LabAssistant {
   employeeId             String                  @id @map("emplyee_id")
   laboratoryExaminations LaboratoryExamination[]
-  employmentDate         DateTime                @map("employment_date")
+  employmentDate         DateTime                @default(now()) @map("employment_date")
   user                   User                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@map("lab_assistants")
