@@ -38,3 +38,11 @@ to protect a page use a protected layout that takes "role" as a prob and compare
 scenario 2 : 
 1- admin creating accounts for personnel 
 2- admin revoking accounts for personnel 
+
+
+proposed workflow: 
+
+asser & victor : finish up visits endpoint according to his notes 
+youssef : front end part for the tests page (which one?)
+michal: start tests endpoint 
+me and victor : help and then functions 
