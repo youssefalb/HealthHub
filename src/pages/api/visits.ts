@@ -108,7 +108,7 @@ export default async function handler(
               message: "Unauthorized, because this visit doesn't belong to you",
             });
         } else {
-          try {
+          try { //todo move visit_id to the url
             const { newDate, newDoctor_id, newStatus } = req.body;
             let data: JSONClause = {};
             if (newDate) {
