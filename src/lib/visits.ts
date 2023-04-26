@@ -3,10 +3,10 @@ import { visitsPath } from "./apiPaths";
 
 
 export async function getVisits() {
-  const result = await fetch(`${visitsPath}`, {
-    method: "GET",
-  });
-  return result;
+    const result = await fetch(`${visitsPath}`, {
+      method: "GET",
+    });
+    return result;
 }
 
 //get a specific visit
