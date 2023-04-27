@@ -22,6 +22,7 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [ ] visit history for doctor's page 
   - [ ] notes on lab tests by doctor (optional)
   - [ ] search for auto-docs (swager, openApi)
+  - [ ] fix examination endpoint
   
 
   scenario: 
