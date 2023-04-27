@@ -17,7 +17,7 @@ export async function getVisit(visit_id: String) {
   return result;
 }
 
-export async function addVisit(patient_id: any, doctor_id: any) {
+export async function addVisit(doctor_id: any, patient_id?: any) {
   const result = await fetch(`${visitsPath}`, {
     method: "POST",
     body: JSON.stringify({

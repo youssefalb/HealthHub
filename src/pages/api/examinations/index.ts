@@ -24,11 +24,11 @@ export default async function handler(
 
         if (session.user?.role === Role.DOCTOR) {
             try {
-                const { visitId, exam_code } = req.body;
+                const { visit_id, exam_code } = req.body;
                 const results = await prisma.physicalExamination.create({
                     data: {
-                        visit: { connect: { visitId: visitId } },
-                        examinationDictionary: { connect: { code: exam_code } },
+                        visit: { connect: { visitId: visit_id } },
+                        examinationDictionary: { connect: { code: Number(exam_code) } },
                     },
                 });
                 return res.status(201).json({
@@ -37,7 +37,7 @@ export default async function handler(
                     data: results,
                 });
             } catch (error) {
-                console.log(error);
+                //console.log(error);
                 return res
                     .status(500)
                     .json({ success: false, message: "Failed to create Physical examination" });
@@ -53,7 +53,7 @@ export default async function handler(
 
     // Patient, Doctor or Registrar viewing visits
     else if (req.method === "GET") {
-        console.log("not here")
+        //console.log("not here")
         try {
             let results: string | any[];
             if (session.user.role == Role.PATIENT  || session.user.role == Role.DOCTOR || session.user.role == Role.RECEPTIONIST) {

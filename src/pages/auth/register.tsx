@@ -8,20 +8,20 @@ import React from 'react';
 export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [fname, setFname] = useState('');
-    const [lname, setLname] = useState('');
-    const [national_id, setNationaId] = useState('');
-    const [insurance_id, setInsuranceId] = useState('');
+    const [firstName, setFname] = useState('');
+    const [lastName, setLname] = useState('');
+    const [nationalId, setNationaId] = useState('');
+    const [insuranceId, setInsuranceId] = useState('');
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
-        const data = { fname, lname, email, password, national_id, insurance_id };
+        const data = { firstName, lastName, email, password, nationalId, insuranceId };
         const res = await fetch(`/api/register`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: { "Content-Type": "application/json" }
         })
-        console.log(fname);
+        //console.log(fname);
     };
     return (
         <div className="bg-gray-50 min-h-screen">

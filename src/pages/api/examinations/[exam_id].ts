@@ -59,13 +59,12 @@ export default async function handler(
             if (status) {
               data.status = status;
             }
-            console.log("data obj:", data);
-            // await prisma.visit.update({
-            //   where: {
-            //     physical_exam_id: Number(exam_id),
-            //   },
-            //   data: data,
-            // });
+            await prisma.physicalExamination.update({
+              where: {
+                 physicalExamId: exam_id,
+               },
+               data: data,
+            });
           } catch (error) {
             return res
               .status(500)
@@ -125,7 +124,7 @@ export default async function handler(
         }
 
       } else if (session.user.role == Role.PATIENT) {
-      console.log("request went here")
+      //console.log("request went here")
 
         let patient_id = session.user?.id;
         const whereClause: JSONClause = {

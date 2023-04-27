@@ -14,7 +14,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-  // console.log(session.user?.role)
+  //console.log(session.user?.role)
   if (!session)
     return res
       .status(401)
@@ -24,8 +24,8 @@ export default async function handler(
     //Patient or Registrar creating a visit
     if (session.user?.role === Role.PATIENT) {
       try {
-        const { patient_id, description, doctor_id, date } = req.body;
-
+        var { patient_id, description, doctor_id, date } = req.body;
+        if (!patient_id) patient_id = session.user?.id;
         const results = await prisma.visit.create({
           data: {
             description: description,
@@ -40,7 +40,7 @@ export default async function handler(
           data: results,
         });
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         return res
           .status(500)
           .json({ success: false, message: "Failed to create visit" });
@@ -66,7 +66,7 @@ export default async function handler(
           data: results,
         });
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         return res
           .status(500)
           .json({ success: false, message: "Failed to create visit" });
@@ -82,7 +82,7 @@ export default async function handler(
   
   // Patient, Doctor or Registrar viewing visits
       else if (req.method === "GET") {
-        console.log("not here")
+      //console.log("not here")
     try {
       let results: string | any[];
       if (session.user?.role == Role.DOCTOR) {

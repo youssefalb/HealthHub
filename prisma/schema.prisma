@@ -124,6 +124,7 @@ model PhysicalExamination {
   physicalExamId        String                @id @default(cuid())
   dictionaryCode        Int                   @map("dictionary_code")
   visitId               String                @map("visit_id")
+  status                ExaminationStatus     @default(ORDERED) //NOTE: Temporary
   examinationDictionary ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   visit                 Visit                 @relation(fields: [visitId], references: [visitId], onDelete: Cascade)
 

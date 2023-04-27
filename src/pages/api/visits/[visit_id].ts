@@ -14,7 +14,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-  // console.log(session.user?.role)
   if (!session)
     return res
       .status(401)
@@ -58,12 +57,11 @@ export default async function handler(
               data.date = date;
             }
             if (doctor_id) {
-              data.doctor_id = doctor_id;
+              data.doctorId = doctor_id;
             }
             if (status) {
               data.status = status;
             }
-            console.log("data obj:", data);
             await prisma.visit.update({
               where: {
                 visitId: visit_id.toString(),
@@ -97,15 +95,13 @@ export default async function handler(
 
   // Patient, Doctor or Registrar viewing one particular visit
   else if (req.method === "GET") {
-      console.log("here")
     try {
         const { visit_id } = req.query;
-        console.log(visit_id)
+      //console.log(visit_id)
       let results: string | any;
       if (session.user?.role == Role.DOCTOR) {
         let whereClause: JSONClause = {};
-        // whereClause.doctor_id = session.user?.id;
-        whereClause.visit_id = visit_id;
+        whereClause.visitId = visit_id;
         
         results = await prisma.visit.findUnique({
           where: whereClause,
@@ -124,10 +120,7 @@ export default async function handler(
         });
       } else if (session.user.role == Role.PATIENT) {
         let whereClause: JSONClause = {};
-        // whereClause.patient_id = session.user?.id;
-        // console.log("clause", whereClause);
-        whereClause.visit_id = Number(visit_id);
-        console.log("request", whereClause);
+        whereClause.visitId = visit_id;
         results = await prisma.visit.findUnique({
           where: whereClause,
           include: {
