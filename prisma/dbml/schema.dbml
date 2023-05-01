@@ -1,0 +1,191 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  firstName String
+  lastName String
+  image String
+  sex String
+  email String [unique]
+  password String
+  emailVerified DateTime
+  nationalId String [unique]
+  role Role [not null, default: 'PATIENT']
+  accounts accounts [not null]
+  doctor doctors
+  labAssistant lab_assistants
+  labSupervisor lab_supervisors
+  patient patients
+  receptionist receptionists
+}
+
+Table accounts {
+  id String [pk]
+  userId String [not null]
+  providerType String [not null]
+  providerId String [not null]
+  providerAccountId String [not null]
+  refreshToken String
+  accessToken String
+  accessTokenExpires DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user users [not null]
+
+  indexes {
+    (providerId, providerAccountId) [unique]
+  }
+}
+
+Table verification_tokens {
+  identifier String [not null]
+  token String [unique, not null]
+  expires DateTime [not null]
+
+  indexes {
+    (identifier, token) [unique]
+  }
+}
+
+Table doctors {
+  employeeId String [pk]
+  visits visits [not null]
+  employmentDate DateTime [default: `now()`, not null]
+  user users [not null]
+}
+
+Table receptionists {
+  employeeId String [pk]
+  visits visits [not null]
+  employmentDate DateTime [default: `now()`, not null]
+  user users [not null]
+}
+
+Table lab_supervisors {
+  employeeId String [pk]
+  laboratoryExaminations laboratory_examinations [not null]
+  employmentDate DateTime [default: `now()`, not null]
+  user users [not null]
+}
+
+Table lab_assistants {
+  employeeId String [pk]
+  laboratoryExaminations laboratory_examinations [not null]
+  employmentDate DateTime [default: `now()`, not null]
+  user users [not null]
+}
+
+Table patients {
+  patientId String [pk]
+  insuranceId String [unique]
+  visits visits [not null]
+  user users [not null]
+}
+
+Table visits {
+  visitId String [pk]
+  description String
+  diagnosis String
+  status Status [not null, default: 'REGISTERED']
+  date DateTime [not null]
+  dateCreated DateTime [default: `now()`, not null]
+  dateRealized DateTime
+  doctorId String [not null]
+  patientId String [not null]
+  receptionistId String
+  laboratoryExaminations laboratory_examinations [not null]
+  physicalExaminations physic_examinations [not null]
+  doctor doctors [not null]
+  patient patients [not null]
+  receptionist receptionists
+}
+
+Table physic_examinations {
+  physicalExamId String [pk]
+  dictionaryCode Int [not null]
+  visitId String [not null]
+  status ExaminationStatus [not null, default: 'ORDERED']
+  examinationDictionary examination_dictionaries [not null]
+  visit visits [not null]
+}
+
+Table laboratory_examinations {
+  testId String [pk]
+  doctorNote String
+  labTechnicianNote String
+  supervisorNote String
+  status ExaminationStatus [not null, default: 'ORDERED']
+  dateOfExecutionXorCancelling DateTime
+  dateOfApprovalXorRejection DateTime
+  dictionaryCode Int [not null]
+  labAssistantId String
+  labSupervisorId String
+  visitId String
+  visit visits
+  examinationDictionary examination_dictionaries [not null]
+  labAssistant lab_assistants
+  labSupervisor lab_supervisors
+}
+
+Table examination_dictionaries {
+  code Int [pk, increment]
+  type String [not null]
+  description String
+  LaboratoryExamination laboratory_examinations [not null]
+  PhysicalExamination physic_examinations [not null]
+}
+
+Enum Role {
+  PATIENT
+  DOCTOR
+  LAB_SUPERVISOR
+  LAB_ASSISTANT
+  RECEPTIONIST
+}
+
+Enum Status {
+  REGISTERED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+Enum ExaminationStatus {
+  ORDERED
+  COMPLETED
+  CANCELLED
+  APPROVED
+  REJECTED
+}
+
+Ref: accounts.userId > users.id
+
+Ref: doctors.employeeId - users.id [delete: Cascade]
+
+Ref: receptionists.employeeId - users.id [delete: Cascade]
+
+Ref: lab_supervisors.employeeId - users.id [delete: Cascade]
+
+Ref: lab_assistants.employeeId - users.id [delete: Cascade]
+
+Ref: patients.patientId - users.id [delete: Cascade]
+
+Ref: visits.doctorId > doctors.employeeId
+
+Ref: visits.patientId > patients.patientId
+
+Ref: visits.receptionistId > receptionists.employeeId
+
+Ref: physic_examinations.dictionaryCode > examination_dictionaries.code
+
+Ref: physic_examinations.visitId > visits.visitId [delete: Cascade]
+
+Ref: laboratory_examinations.visitId > visits.visitId
+
+Ref: laboratory_examinations.dictionaryCode > examination_dictionaries.code
+
+Ref: laboratory_examinations.labAssistantId > lab_assistants.employeeId [delete: Cascade]
+
+Ref: laboratory_examinations.labSupervisorId > lab_supervisors.employeeId [delete: Cascade]
