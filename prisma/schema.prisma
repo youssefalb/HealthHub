@@ -57,36 +57,36 @@ model VerificationToken {
 
 model Doctor {
   employeeId     String   @id @map("employee_id")
-  visits         Visit[]
   employmentDate DateTime @default(now()) @map("employment_date")
   user           User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  visits         Visit[]
 
   @@map("doctors")
 }
 
 model Receptionist {
   employeeId     String   @id @map("emplyee_id")
-  visits         Visit[]
   employmentDate DateTime @default(now()) @map("employment_date")
   user           User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  visits         Visit[]
 
   @@map("receptionists")
 }
 
 model LabSupervisor {
   employeeId             String                  @id @map("emplyee_id")
-  laboratoryExaminations LaboratoryExamination[]
   employmentDate         DateTime                @default(now()) @map("employment_date")
   user                   User                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  laboratoryExaminations LaboratoryExamination[]
 
   @@map("lab_supervisors")
 }
 
 model LabAssistant {
   employeeId             String                  @id @map("emplyee_id")
-  laboratoryExaminations LaboratoryExamination[]
   employmentDate         DateTime                @default(now()) @map("employment_date")
   user                   User                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  laboratoryExaminations LaboratoryExamination[]
 
   @@map("lab_assistants")
 }
@@ -94,8 +94,8 @@ model LabAssistant {
 model Patient {
   patientId   String  @id @map("patient_id")
   insuranceId String? @unique @map("insurance_id")
-  visits      Visit[]
   user        User    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  visits      Visit[]
 
   @@map("patients")
 }
@@ -124,7 +124,7 @@ model PhysicalExamination {
   physicalExamId        String                @id @default(cuid())
   dictionaryCode        Int                   @map("dictionary_code")
   visitId               String                @map("visit_id")
-  status                ExaminationStatus     @default(ORDERED) //NOTE: Temporary
+  status                ExaminationStatus     @default(ORDERED)
   examinationDictionary ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   visit                 Visit                 @relation(fields: [visitId], references: [visitId], onDelete: Cascade)
 
@@ -143,10 +143,10 @@ model LaboratoryExamination {
   labAssistantId               String?               @map("lab_assistant_id")
   labSupervisorId              String?               @map("lab_supervisor_id")
   visitId                      String?               @map("visit_id")
-  visit                        Visit?                @relation(fields: [visitId], references: [visitId])
   examinationDictionary        ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   labAssistant                 LabAssistant?         @relation(fields: [labAssistantId], references: [employeeId], onDelete: Cascade)
   labSupervisor                LabSupervisor?        @relation(fields: [labSupervisorId], references: [employeeId], onDelete: Cascade)
+  visit                        Visit?                @relation(fields: [visitId], references: [visitId])
 
   @@map("laboratory_examinations")
 }
