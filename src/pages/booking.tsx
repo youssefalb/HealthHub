@@ -1,7 +1,10 @@
 //here is a form for creating a visit
 /*
-    it needs : 
-    modular form components : text - email - phone - name - checkbox for insurance - select for speciality and doctors - date / time picker 
+    TODO:
+    - if name or surname or pesel or insurance not in db, we open popup.
+      - if cancel we go back to the list of appointments
+      - if conform we go to settings page
+    - else we open a form for booking appointment and fill read only lablels for name, surmane, pesel, insurance number
 
     endpoints : 
         retrieve available specialities
@@ -21,6 +24,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import React, { useState } from 'react';
 import AmazingDatePicker from '@/components/AmazingDatePicker';
 import MyDateTimePicker from '@/components/AmazingDatePicker';
+import PopupDialog from '@/components/PopupDialog';
+
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const Label = ({ name, value }) => {
   return (
@@ -38,51 +45,53 @@ const BookingForm = () => {
   const [time, setTime] = useState('');
   const [note, setNote] = useState('');
 
-  // const availableDates = [
-  //   { date: '2022-06-01', dayOfWeek: 'Wed' },
-  //   { date: '2022-06-02', dayOfWeek: 'Thu' },
-  //   { date: '2022-06-05', dayOfWeek: 'Sun' },
-  //   { date: '2022-06-06', dayOfWeek: 'Mon' },
-  //   { date: '2022-06-08', dayOfWeek: 'Wed' },
-  //   { date: '2022-06-09', dayOfWeek: 'Thu' },
-  //   { date: '2022-06-12', dayOfWeek: 'Sun' },
-  //   { date: '2022-06-13', dayOfWeek: 'Mon' },
-  //   { date: '2022-06-15', dayOfWeek: 'Wed' },
-  //   { date: '2022-06-16', dayOfWeek: 'Thu' },
-  //   { date: '2022-06-19', dayOfWeek: 'Sun' },
-  //   { date: '2022-06-20', dayOfWeek: 'Mon' },
-  //   { date: '2022-06-22', dayOfWeek: 'Wed' },
-  //   { date: '2022-06-23', dayOfWeek: 'Thu' },
-  //   { date: '2022-06-26', dayOfWeek: 'Sun' },
-  //   { date: '2022-06-27', dayOfWeek: 'Mon' },
-  //   { date: '2022-06-29', dayOfWeek: 'Wed' },
-  //   { date: '2022-06-30', dayOfWeek: 'Thu' },
-  // ];
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // submit handler logic
   };
 
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    console.log("Confirmed!");
+    setOpen(false);
+  };
+
   return (
     <div className="mx-auto max-w-screen-lg my-8 px-4">
+
+
+      <PopupDialog
+        open={false}
+        onClose={handleClose}
+        title="Ooooops!"
+        message="Before you book your first appointment, we need you to fill in your personal details. Do you want to do it now?"
+        onConfirm={handleConfirm}
+      />
+
+
+
       <h1 className="text-3xl font-bold mb-6">Booking Your Appointment</h1>
       <form onSubmit={handleSubmit}>
-      <div className="flex flex-wrap -mx-4">
-  <div className="w-full md:w-1/2 px-4 mb-4">
-    <Label name="Name" value={"Josephine"} />
-  </div>
-  <div className="w-full md:w-1/2 px-4 mb-4">
-    <Label name="Surname" value={"Jackson"} />
-  </div>
-  <div className="w-full md:w-1/2 px-4 mb-4">
-    <Label name="PESEL number" value={"20212145451"} />
-  </div>
-  <div className="w-full md:w-1/2 px-4 mb-4">
-    <Label name="Insurance number" value={"5254522325"} />
-  </div>
-</div>
-        
+        <div className="flex flex-wrap -mx-4">
+          <div className="w-full md:w-1/2 px-4 mb-4">
+            <Label name="Name" value={"Josephine"} />
+          </div>
+          <div className="w-full md:w-1/2 px-4 mb-4">
+            <Label name="Surname" value={"Jackson"} />
+          </div>
+          <div className="w-full md:w-1/2 px-4 mb-4">
+            <Label name="PESEL number" value={"20212145451"} />
+          </div>
+          <div className="w-full md:w-1/2 px-4 mb-4">
+            <Label name="Insurance number" value={"5254522325"} />
+          </div>
+        </div>
+
 
 
         <div className="mb-4">
@@ -100,11 +109,11 @@ const BookingForm = () => {
         <div className="mb-4">
           {/* Dropdown component goes here */}
           <Dropdown
-              label="Choose a Doctor*"
-              items={['Jan Paweł II', 'Jan Gniadek', 'Barbara Gniadek', 'Mikołaj Machowski', 'John Sins']}
-              selectedItem={doctor}
-              onSelectedChange={setDoctor}
-            />
+            label="Choose a Doctor*"
+            items={['Jan Paweł II', 'Jan Gniadek', 'Barbara Gniadek', 'Mikołaj Machowski', 'John Sins']}
+            selectedItem={doctor}
+            onSelectedChange={setDoctor}
+          />
         </div>
 
         <div className="mb-4">
@@ -130,15 +139,7 @@ const BookingForm = () => {
           <label className="block mb-2 font-bold" htmlFor="time">
             Choose a Time:
           </label>
-          {/* Time picker component goes here */}
-          <MyDateTimePicker
-            selected={time}
-            onChange={(time) => setTime(time)}
-            className="border border-gray-400 p-2 rounded-lg w-full"
-            dateFormat="yyyy-MM-dd"
-            minDate={new Date()}
-            filterDate={(date) => date.getDay() !== 6 && date.getDay() !== 0}
-          />
+
         </div>
 
         <LongTextInput

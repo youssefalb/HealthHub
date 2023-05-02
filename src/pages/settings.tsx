@@ -56,9 +56,6 @@ const UserSettings = () => {
                     />
                 </form>
             </div>
-
-
-
         </div>
     );
 };
