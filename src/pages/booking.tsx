@@ -14,20 +14,13 @@
 */
 
 import CustomButton from '@/components/CustomButton';
-import CustomDatePicker from '@/components/DatePicker';
 import Dropdown from '@/components/DropDown';
-
 import LongTextInput from '@/components/LongtextInput';
-
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import React, { useState } from 'react';
-import AmazingDatePicker from '@/components/AmazingDatePicker';
-import MyDateTimePicker from '@/components/AmazingDatePicker';
+
 import PopupDialog from '@/components/PopupDialog';
 
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 
 const Label = ({ name, value }) => {
   return (
@@ -50,7 +43,7 @@ const BookingForm = () => {
     // submit handler logic
   };
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleClose = () => {
     setOpen(false);
@@ -66,7 +59,7 @@ const BookingForm = () => {
 
 
       <PopupDialog
-        open={false}
+        open={open}
         onClose={handleClose}
         title="Ooooops!"
         message="Before you book your first appointment, we need you to fill in your personal details. Do you want to do it now?"
@@ -125,14 +118,6 @@ const BookingForm = () => {
             availableDates={availableDates}
             onDateSelect={setDate}
           /> */}
-          <DatePicker
-            selected={date}
-            onChange={(date) => setDate(date)}
-            className="border border-gray-400 p-2 rounded-lg w-full"
-            dateFormat="yyyy-MM-dd"
-            minDate={new Date()}
-            filterDate={(date) => date.getDay() !== 6 && date.getDay() !== 0}
-          />
         </div>
 
         <div className="mb-4">

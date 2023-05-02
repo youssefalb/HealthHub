@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   Dialog,
@@ -6,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const PopupDialog = (props) => {
   const { open, onClose, title, message, onConfirm } = props;
