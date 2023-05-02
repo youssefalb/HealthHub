@@ -33,7 +33,7 @@ const InsuranceForm = () => {
       </div>
       {hasInsurance && (
         <TextInput
-        label={"Insurance Number:"}
+        label={"Insurance Number*"}
         value={insuranceNumber}
         onChange={handleInsuranceNumberChange}
         />
