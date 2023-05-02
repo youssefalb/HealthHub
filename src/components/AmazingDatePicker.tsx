@@ -1,58 +1,103 @@
-// import { useState } from "react";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Typography } from "@material-ui/core";
-import DateFnsUtils from '@date-io/date-fns';
-import { format } from 'date-fns';
 import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+  KeyboardTimePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+}));
 
 const availableDates = [
-  new Date("2022-06-01T10:00:00.000Z"),
-  new Date("2022-06-01T11:00:00.000Z"),
-  new Date("2022-06-01T12:00:00.000Z"),
-  new Date("2022-06-02T13:00:00.000Z"),
-  new Date("2022-06-02T14:00:00.000Z"),
-  new Date("2022-06-02T15:00:00.000Z"),
+  new Date('2023-05-04'),
+  new Date('2023-05-06'),
+  new Date('2023-05-08'),
 ];
 
-const MyDateTimePicker = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
+const availableTimes = [
+  { value: '10:00 AM', label: '10:00 AM' },
+  { value: '11:00 AM', label: '11:00 AM' },
+  { value: '12:00 PM', label: '12:00 PM' },
+  { value: '01:00 PM', label: '01:00 PM' },
+  { value: '02:00 PM', label: '02:00 PM' },
+  { value: '03:00 PM', label: '03:00 PM' },
+  { value: '04:00 PM', label: '04:00 PM' },
+];
 
-  const isDateAvailable = (date) => {
-    return availableDates.some((availableDate) => {
-      return (
-        availableDate.getFullYear() === date.getFullYear() &&
-        availableDate.getMonth() === date.getMonth() &&
-        availableDate.getDate() === date.getDate() &&
-        availableDate.getHours() === date.getHours()
-      );
-    });
-  };
+const DateTimePicker = () => {
+  const classes = useStyles();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setSelectedTime(null);
+  };
+
+  const handleTimeChange = (event) => {
+    setSelectedTime(event.target.value);
+  };
+
+  const isDateAvailable = (date) => {
+    return availableDates.some((availableDate) => {
+      return availableDate.toDateString() === date.toDateString();
+    });
+  };
+
+  const isTimeAvailable = (time) => {
+    return availableTimes.some((availableTime) => {
+      return availableTime.value === time;
+    });
+  };
+
+  const disableDates = (date) => {
+    return !isDateAvailable(date);
+  };
+
+  const disableTimes = (time) => {
+    return !isTimeAvailable(time);
   };
 
   return (
-    <div>
-      <Typography variant="h6" gutterBottom>
-        Select a date and time:
-      </Typography>
+    <div className={classes.root}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
-      <DateTimePicker
-        value={selectedDate}
-        onChange={handleDateChange}
-        label="Select Date and Time"
-        inputVariant="outlined"
-        ampm={false}
-        disablePast
-        shouldDisableDate={(date) => !isDateAvailable(date)}
-      />
+        <KeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          id="date-picker"
+          label="Date picker"
+          value={selectedDate}
+          onChange={handleDateChange}
+          shouldDisableDate={disableDates}
+          autoOk={true}
+        />
+        <KeyboardTimePicker
+          margin="normal"
+          id="time-picker"
+          label="Time picker"
+          value={selectedTime}
+          onChange={handleTimeChange}
+          disabled={!selectedDate}
+          //shouldDisableTime={disableTimes}
+        >
+          {availableTimes.map((time) => (
+            <option key={time.value} value={time.value}>
+              {time.label}
+            </option>
+          ))}
+        </KeyboardTimePicker>
       </MuiPickersUtilsProvider>
-      
-      
     </div>
   );
 };
 
-export default MyDateTimePicker;
+export default DateTimePicker;
