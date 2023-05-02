@@ -51,37 +51,37 @@ Table verification_tokens {
 
 Table doctors {
   employeeId String [pk]
-  visits visits [not null]
   employmentDate DateTime [default: `now()`, not null]
   user users [not null]
+  visits visits [not null]
 }
 
 Table receptionists {
   employeeId String [pk]
-  visits visits [not null]
   employmentDate DateTime [default: `now()`, not null]
   user users [not null]
+  visits visits [not null]
 }
 
 Table lab_supervisors {
   employeeId String [pk]
-  laboratoryExaminations laboratory_examinations [not null]
   employmentDate DateTime [default: `now()`, not null]
   user users [not null]
+  laboratoryExaminations laboratory_examinations [not null]
 }
 
 Table lab_assistants {
   employeeId String [pk]
-  laboratoryExaminations laboratory_examinations [not null]
   employmentDate DateTime [default: `now()`, not null]
   user users [not null]
+  laboratoryExaminations laboratory_examinations [not null]
 }
 
 Table patients {
   patientId String [pk]
   insuranceId String [unique]
-  visits visits [not null]
   user users [not null]
+  visits visits [not null]
 }
 
 Table visits {
@@ -106,7 +106,7 @@ Table physic_examinations {
   physicalExamId String [pk]
   dictionaryCode Int [not null]
   visitId String [not null]
-  status ExaminationStatus [not null, default: 'ORDERED']
+  status ExaminationStatus [not null, default: 'COMPLETED']
   examinationDictionary examination_dictionaries [not null]
   visit visits [not null]
 }
@@ -116,17 +116,17 @@ Table laboratory_examinations {
   doctorNote String
   labTechnicianNote String
   supervisorNote String
-  status ExaminationStatus [not null, default: 'ORDERED']
+  status LaboratoryTestStatus [not null, default: 'ORDERED']
   dateOfExecutionXorCancelling DateTime
   dateOfApprovalXorRejection DateTime
   dictionaryCode Int [not null]
   labAssistantId String
   labSupervisorId String
   visitId String
-  visit visits
   examinationDictionary examination_dictionaries [not null]
   labAssistant lab_assistants
   labSupervisor lab_supervisors
+  visit visits
 }
 
 Table examination_dictionaries {
@@ -153,6 +153,11 @@ Enum Status {
 }
 
 Enum ExaminationStatus {
+  COMPLETED
+  CANCELLED
+}
+
+Enum LaboratoryTestStatus {
   ORDERED
   COMPLETED
   CANCELLED
@@ -182,10 +187,10 @@ Ref: physic_examinations.dictionaryCode > examination_dictionaries.code
 
 Ref: physic_examinations.visitId > visits.visitId [delete: Cascade]
 
-Ref: laboratory_examinations.visitId > visits.visitId
-
 Ref: laboratory_examinations.dictionaryCode > examination_dictionaries.code
 
 Ref: laboratory_examinations.labAssistantId > lab_assistants.employeeId [delete: Cascade]
 
 Ref: laboratory_examinations.labSupervisorId > lab_supervisors.employeeId [delete: Cascade]
+
+Ref: laboratory_examinations.visitId > visits.visitId

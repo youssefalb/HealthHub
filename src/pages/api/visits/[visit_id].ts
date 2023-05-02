@@ -24,7 +24,7 @@ export default async function handler(
   //changing date needs to be accomodated
   if (req.method === "PUT") {
     const { visit_id } = req.query;
-    
+
     const { role, id: user_id } = session.user;
     if (
       role === Role.DOCTOR ||
@@ -96,14 +96,14 @@ export default async function handler(
   // Patient, Doctor or Registrar viewing one particular visit
   else if (req.method === "GET") {
     try {
-        const { visit_id } = req.query;
-      //console.log(visit_id)
+      const { visit_id } = req.query;
       let results: string | any;
       if (session.user?.role == Role.DOCTOR) {
         let whereClause: JSONClause = {};
         whereClause.visitId = visit_id;
-        
-        results = await prisma.visit.findUnique({
+        whereClause.doctorId = session.user.id;
+
+        results = await prisma.visit.findFirst({
           where: whereClause,
           include: {
             patient: {
@@ -118,10 +118,13 @@ export default async function handler(
             },
           },
         });
+
       } else if (session.user.role == Role.PATIENT) {
         let whereClause: JSONClause = {};
         whereClause.visitId = visit_id;
-        results = await prisma.visit.findUnique({
+        whereClause.patientId = session.user.id;
+        console.log(whereClause)
+        results = await prisma.visit.findFirst({
           where: whereClause,
           include: {
             doctor: {
@@ -146,7 +149,12 @@ export default async function handler(
           },
         });
       }
+      if (results) {
       return res.status(200).json({ success: true, data: results });
+      } else {
+        return res.status(404).json({ success: false, message: "Visit not found or does not belong to you" });
+      }
+
     } catch (error) {
       //here should be a redirect to a general purpose error page
       return res

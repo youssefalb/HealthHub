@@ -90,19 +90,13 @@ export default async function handler(
     }
   }
 
-  // Patient, Doctor or Registrar viewing one particular visit
-  else if (req.method === "GET") {
+  
+ else if (req.method === "GET") {
     try {
       const { exam_id } = req.query;
       let results: string | any;
-      if (session.user?.role == Role.DOCTOR) {
-        let doctor_id = session.user?.id;
-        let whereClause: JSONClause = {
-          physicalExamId: exam_id,
-          visit: {
-            doctorId: doctor_id,
-          },
-        };
+      if (session.user?.role == Role.DOCTOR || session.user?.role == Role.PATIENT) {
+        let person_id = session.user?.id;
 
         results = await prisma.physicalExamination.findUnique({
           where: {
@@ -113,44 +107,15 @@ export default async function handler(
           },
         });
 
-
-
-        if (results) {
+        if (results.visit.doctorId === person_id || results.visit.patientId === person_id) {
           return res.status(200).json({ success: true, data: results });
         } else {
           return res
             .status(500)
-            .json({ success: false, message: "The visit of the exam does not belong to visits of the doctor" });
+            .json({ success: false, message: "The visit of the exam does not belong to you" });
         }
 
-      } else if (session.user.role == Role.PATIENT) {
-      //console.log("request went here")
-
-        let patient_id = session.user?.id;
-        const whereClause: JSONClause = {
-          physicalExamId: exam_id.toString(),
-          visit: {
-            patientId: patient_id,
-          },
-        };
-
-        const results = await prisma.physicalExamination.findUnique({
-          where: {
-            physicalExamId: exam_id.toString()
-          },
-          include: {
-            visit: true,
-          },
-        });
-
-        if (results.visit.patientId === patient_id) {
-          return res.status(200).json({ success: true, data: results });
-        } else {
-          return res
-            .status(500)
-            .json({ success: false, message: "The visit of the exam does not belong to visits of the patient" });
-        }
-      }
+      } 
       else {
         return res
           .status(500)

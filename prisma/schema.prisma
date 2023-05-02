@@ -2,10 +2,10 @@ generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "linux-musl-arm64-openssl-1.1.x"]
 }
+
 generator dbml {
   provider = "prisma-dbml-generator"
 }
-
 
 datasource db {
   provider = "postgresql"
@@ -14,13 +14,13 @@ datasource db {
 
 model User {
   id            String         @id @default(cuid())
-  firstName      String?        @map("first_name") @db.VarChar(32)
+  firstName     String?        @map("first_name") @db.VarChar(32)
   lastName      String?        @map("last_name") @db.VarChar(32)
   image         String?
   sex           String?        @db.VarChar(32)
   email         String?        @unique @db.VarChar(64)
   password      String?
-  emailVerified  DateTime?      @map("email_verified")
+  emailVerified DateTime?      @map("email_verified")
   nationalId    String?        @unique @map("national_id") @db.VarChar(11)
   role          Role           @default(PATIENT)
   accounts      Account[]
@@ -128,7 +128,7 @@ model PhysicalExamination {
   physicalExamId        String                @id @default(cuid())
   dictionaryCode        Int                   @map("dictionary_code")
   visitId               String                @map("visit_id")
-  status                ExaminationStatus     @default(ORDERED)
+  status                ExaminationStatus     @default(COMPLETED)
   examinationDictionary ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   visit                 Visit                 @relation(fields: [visitId], references: [visitId], onDelete: Cascade)
 
@@ -140,7 +140,7 @@ model LaboratoryExamination {
   doctorNote                   String?               @map("doctor_note")
   labTechnicianNote            String?               @map("lab_technician_note")
   supervisorNote               String?               @map("supervisor_note")
-  status                       ExaminationStatus     @default(ORDERED)
+  status                       LaboratoryTestStatus  @default(ORDERED)
   dateOfExecutionXorCancelling DateTime?             @map("date_of_execution_xor_cancelling")
   dateOfApprovalXorRejection   DateTime?             @map("date_of_approval_xor_rejection")
   dictionaryCode               Int                   @map("dictionary_code")
@@ -180,7 +180,12 @@ enum Status {
   CANCELLED
 }
 
-enum ExaminationStatus {
+enum ExaminationStatus {  
+  COMPLETED
+  CANCELLED
+}
+
+enum LaboratoryTestStatus {
   ORDERED
   COMPLETED
   CANCELLED
