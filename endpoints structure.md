@@ -5,10 +5,10 @@
 -[√] /api/visits/patient/${id} (SINGULAR GET) --> 
   returns a specific visit if (PATIENT && CORRECT PATENT)
 
-- /api/visits/doctor (GET PLURAL)
+-[√] /api/visits/doctor (GET PLURAL)
   if no params : gets all visits of the logged in DOCTOR
   if params (doctorId) --> in case of logged in user == admin || regestrar and they want to check all visits for a doctor (history) (include whatever we need)
-  - /api/visits/doctor/${id} (get singular) --> 
+  -[√] /api/visits/doctor/${id} (get singular) --> 
   returns a specific visit if (DOCTOR)
 
 ## labTests: 
