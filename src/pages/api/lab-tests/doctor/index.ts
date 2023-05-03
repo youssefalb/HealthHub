@@ -8,11 +8,13 @@ interface JSONClause {
     [key: string]: any;
 }
 
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+
     let accessGranted = false;
 
     if (!session)
@@ -24,12 +26,12 @@ export default async function handler(
         try {
             const { doctor } = req.query;
             let results: string | any[];
-            if (doctor) { // user is doctor or or reciptionist or admin
+            if (doctor) { // user is admin or reciptionist 
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;
-                    results = await prisma.visit.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: doctor.toString()
+                            visit: { doctorId: doctor.toString() }
                         },
                     });
                 }
@@ -40,11 +42,11 @@ export default async function handler(
                     //     .json({ success: false, message: "You can see this patient's data" });
                 }
             }
-            else { //no params passed, logged in user should be the doctor
+            else { //no params passed, logged in user should be the patient
                 if (session.user?.role == Role.DOCTOR) {
-                    results = await prisma.visit.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: session.user?.id
+                            visit: { doctorId: session.user?.id }
                         },
                     });
                 }
@@ -64,6 +66,35 @@ export default async function handler(
         }
     }
 
+
+    //doctor or supervisor creating a a new test 
+    else if (req.method == "POST") {
+        if (session.user?.role == Role.DOCTOR || session.user?.role == Role.LAB_SUPERVISOR) {
+            accessGranted = true
+            try {
+                const { doctorNote, supervisorNote, labSupervisorId, dictionaryCode, visitId } = req.body;
+                const result = await prisma.laboratoryExamination.create({
+                    data: {
+                        doctorNote: doctorNote,
+                        supervisorNote: supervisorNote,
+                        visit: { connect: { visitId: visitId } },
+                        examinationDictionary: { connect: { code: dictionaryCode } },
+                        labSupervisor: { connect: { employeeId: labSupervisorId } },
+                    },
+                });
+                return res.status(200).json({ success: true, data: result });
+            } catch (error) {
+                return res
+                    .status(500)
+                    .json({ success: false, message: "ERROR : Failed to create test" });
+            }
+        }
+        else {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
+    }
     else {
         return res
             .status(400)

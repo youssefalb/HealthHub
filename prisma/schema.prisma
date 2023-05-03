@@ -155,6 +155,7 @@ model LaboratoryExamination {
   labAssistant                 LabAssistant?         @relation(fields: [labAssistantId], references: [employeeId], onDelete: Cascade)
   labSupervisor                LabSupervisor?        @relation(fields: [labSupervisorId], references: [employeeId], onDelete: Cascade)
   visit                        Visit?                @relation(fields: [visitId], references: [visitId])
+  // result
 
   @@map("laboratory_examinations")
 }
@@ -175,6 +176,7 @@ enum Role {
   LAB_SUPERVISOR
   LAB_ASSISTANT
   RECEPTIONIST
+  ADMIN
 }
 
 enum Status {
@@ -195,4 +197,5 @@ enum LaboratoryTestStatus {
   CANCELLED
   APPROVED
   REJECTED
+  IN_PROGRESS
 }

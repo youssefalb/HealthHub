@@ -35,6 +35,7 @@
             "@/auth/*" : ["pages/auth/*"],
             "@/registerar/*" : ["pages/registrar/*"],
             "@/labstaff/*" : ["pages/labstaff/*"],
+            "@/apiAuth/*" : ["pages/api/auth/*"]
     },
 },
     "exclude": [

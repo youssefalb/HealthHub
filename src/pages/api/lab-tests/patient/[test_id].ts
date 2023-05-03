@@ -8,7 +8,8 @@ import { Role } from "@prisma/client";
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
-) {
+)
+{
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
     // let accessGranted = false;
@@ -17,29 +18,38 @@ export default async function handler(
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
-    const { exam_id } = req.query
+    const { test_id } = req.query
     if (req.method == "GET") {
-        if (session.user?.role == Role.DOCTOR) {
+        if (session.user?.role == Role.PATIENT) {
+            
             try {
-                const test = await prisma.physicalExamination.findUnique({
+                
+                const test = await prisma.laboratoryExamination.findUnique({
                     where: {
-                        physicalExamId: exam_id.toString(),
+                        testId : test_id.toString(),
                     },
+                    include: {
+                        visit: true
+                    }
                 })
-                return res.status(200).json({ success: true, data: test });
-
-            }
+                if(test.visit.patientId == session.user?.id) {
+                    return res.status(200).json({ success: true, data: test });
+                }
+                else {
+                    return res.status(401).json({ success: false, message: "You can't see this patient's data" });
+                }
+            } 
             catch (error) {
                 //here should be a redirect to a general purpose error page
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });
-            }
+                }
         }
         //return not authorized
         return res
             .status(401)
-            .json({ success: false, message: "you are not a Doctor" });
+            .json({ success: false, message: "you are not a patient" });
     }
 
     return res

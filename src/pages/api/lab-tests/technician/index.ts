@@ -2,17 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role } from "@prisma/client";
+import { LaboratoryTestStatus, Role } from "@prisma/client";
 
 interface JSONClause {
     [key: string]: any;
 }
+
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+
     let accessGranted = false;
 
     if (!session)
@@ -22,14 +24,14 @@ export default async function handler(
 
     if (req.method === "GET") {
         try {
-            const { doctor } = req.query;
+            const { technician } = req.query;
             let results: string | any[];
-            if (doctor) { // user is doctor or or reciptionist or admin
+            if (technician) { // user is admin or reciptionist 
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;
-                    results = await prisma.visit.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: doctor.toString()
+                            labAssistant: { employeeId: technician.toString() }
                         },
                     });
                 }
@@ -40,11 +42,11 @@ export default async function handler(
                     //     .json({ success: false, message: "You can see this patient's data" });
                 }
             }
-            else { //no params passed, logged in user should be the doctor
-                if (session.user?.role == Role.DOCTOR) {
-                    results = await prisma.visit.findMany({
+            else { //no params passed, logged in user should be the technician
+                if (session.user?.role == Role.LAB_ASSISTANT) {
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: session.user?.id
+                            status: LaboratoryTestStatus.ORDERED
                         },
                     });
                 }

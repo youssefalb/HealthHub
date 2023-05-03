@@ -17,13 +17,14 @@ export default async function handler(
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
-    const { exam_id } = req.query
+    const { test_id } = req.query
     if (req.method == "GET") {
         if (session.user?.role == Role.DOCTOR) {
+
             try {
-                const test = await prisma.physicalExamination.findUnique({
+                const test = await prisma.laboratoryExamination.findUnique({
                     where: {
-                        physicalExamId: exam_id.toString(),
+                        testId: test_id.toString(),
                     },
                 })
                 return res.status(200).json({ success: true, data: test });
