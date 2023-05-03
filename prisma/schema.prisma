@@ -135,6 +135,7 @@ model PhysicalExamination {
   @@map("physic_examinations")
 }
 
+//todo : result as a file
 model LaboratoryExamination {
   testId                       String                @id @default(cuid()) @map("test_id")
   doctorNote                   String?               @map("doctor_note")
