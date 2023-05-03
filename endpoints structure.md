@@ -18,24 +18,24 @@
   - /api/tests/patient/${id} (get singular)--> 
   no params : returns a specific test IFF (PATIENT && CORRECT PATENT)
 
-- /api/tests/doctor (GET plural)
+-[√] /api/tests/doctor (GET plural)
   if no params : gets all tests belonging to that specific LOGGED IN Doctor
   if params (doctorId) --> in case of logged in user == registrar || admin and they want to check all tests for a doctor
   - /api/tests/doctor/${id} (get singular)--> returns a specific test IFF (DOCTOR)
 
-- /api/tests/technician (GET plural)
+-[√] /api/tests/technician (GET plural)
   if no params : gets all tests that have status == ORDERED
-  if params (labAssistantId) --> in case of logged in user == registrar || labSupervisor || admin and they want to check all tests for a labassistant
-  - /api/tests/technician/${id} (GET SINGULAR) --> 
+  if params (labAssistantId) --> in case of logged in user == registrar || admin and they want to check all tests for a labassistant
+  -[√] /api/tests/technician/${id} (GET SINGULAR) --> 
   no params: returns a specific test IFF (techID = test.techID ) 
 
-- /api/tests/technician/in-progress
+-[√] /api/tests/technician/in-progress (GET PLURAL)
   no params : gets all tests that have (STATUS == IN-PROGRESS & TECHID == HIS ID)
 
-- /api/tests/supervisor (GET PLURAL)
+-[√] /api/tests/supervisor (GET PLURAL)
   if no params : gets all tests that have (status == completed)
   if params (labSupervisorId) --> in case of logged in user == registrar || admin and they want to check all tests (approved || rejected) by a specific Supervisor
-- /api/tests/supervisor/${id} (GET SINGULAR) --> 
+-[√] /api/tests/supervisor/${id} (GET SINGULAR) --> 
   no params: returns a specific test if (SUPERVISOR && completed)
 
 

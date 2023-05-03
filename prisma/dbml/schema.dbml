@@ -166,6 +166,7 @@ Enum LaboratoryTestStatus {
   CANCELLED
   APPROVED
   REJECTED
+  IN_PROGRESS
 }
 
 Ref: Account.userId > users.id [delete: Cascade]
