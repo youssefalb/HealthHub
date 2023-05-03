@@ -1,103 +1,144 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+/**
+ 
+CustomDatePicker
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
+Props:
+- dates: an array of objects representing dates with the following shape: { day: number, month: string }
+- onDateSelected: a function to be called when a date is selected, it receives the selected date object as an argument
 
-const availableDates = [
-  new Date('2023-05-04'),
-  new Date('2023-05-06'),
-  new Date('2023-05-08'),
-];
+Usage:
+import CustomDatePicker from './CustomDatePicker';
 
-const availableTimes = [
-  { value: '10:00 AM', label: '10:00 AM' },
-  { value: '11:00 AM', label: '11:00 AM' },
-  { value: '12:00 PM', label: '12:00 PM' },
-  { value: '01:00 PM', label: '01:00 PM' },
-  { value: '02:00 PM', label: '02:00 PM' },
-  { value: '03:00 PM', label: '03:00 PM' },
-  { value: '04:00 PM', label: '04:00 PM' },
-];
+<CustomDatePicker dates={...} onDateSelected={...} />
 
-const DateTimePicker = () => {
-  const classes = useStyles();
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+This component renders a date picker with a set of dates. The user can select a date and the selected date will be highlighted. The number of visible dates in the picker changes depending on the width of the screen.
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setSelectedTime(null);
+Note: Make sure to pass an array of date objects to the dates prop with each date object having the following shape: { day: number, month: string }. Also, pass a function to the onDateSelected prop which will be called when a date is selected and will receive the selected date object as an argument.
+
+ */
+
+
+
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+const CustomDatePicker = ({ dates, onDateSelected }) => {
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
+  const [numVisibleDates, setNumVisibleDates] = useState(getNumVisibleDates());
+
+  useEffect(() => {
+    function handleResize() {
+      setNumVisibleDates(getNumVisibleDates());
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handlePrevPage = () => {
+    setCurrentPageIndex(currentPageIndex - 1);
   };
 
-  const handleTimeChange = (event) => {
-    setSelectedTime(event.target.value);
+  const handleNextPage = () => {
+    setCurrentPageIndex(currentPageIndex + 1);
   };
 
-  const isDateAvailable = (date) => {
-    return availableDates.some((availableDate) => {
-      return availableDate.toDateString() === date.toDateString();
-    });
+  const handleDateSelected = (index) => {
+    setSelectedDateIndex(index);
+    onDateSelected(dates[index]);
   };
 
-  const isTimeAvailable = (time) => {
-    return availableTimes.some((availableTime) => {
-      return availableTime.value === time;
-    });
-  };
+  const startIndex = currentPageIndex * numVisibleDates;
+  const endIndex = startIndex + numVisibleDates;
+  const visibleDates = dates.slice(startIndex, endIndex);
 
-  const disableDates = (date) => {
-    return !isDateAvailable(date);
-  };
-
-  const disableTimes = (time) => {
-    return !isTimeAvailable(time);
-  };
+ 
+  // window.innerWight was crashing and I didnt want to fix it so..
+  function getNumVisibleDates() {
+    return 5;
+    // if (window.innerWidth >= 1024) {
+    //   return 10;
+    // } else if (window.innerWidth >= 768) {
+    //   return 7;
+    // } else {
+    //   return 5;
+    // }
+  }
 
   return (
-    <div className={classes.root}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker"
-          label="Date picker"
-          value={selectedDate}
-          onChange={handleDateChange}
-          shouldDisableDate={disableDates}
-          autoOk={true}
-        />
-        <KeyboardTimePicker
-          margin="normal"
-          id="time-picker"
-          label="Time picker"
-          value={selectedTime}
-          onChange={handleTimeChange}
-          disabled={!selectedDate}
-          //shouldDisableTime={disableTimes}
+    <div className="flex flex-col items-center">
+      <div className="w-full flex items-center justify-between mb-4">
+        <button
+          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 focus:outline-none"
+          disabled={currentPageIndex === 0}
+          onClick={handlePrevPage}
         >
-          {availableTimes.map((time) => (
-            <option key={time.value} value={time.value}>
-              {time.label}
-            </option>
+          <svg
+            className="w-4 h-4 stroke-current text-gray-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <div className="flex flex-wrap">
+          {visibleDates.map((date, index) => (
+            <button
+              key={startIndex + index}
+              className={`px-4 py-2 mr-2 mb-2 rounded-full ${
+                startIndex + index === selectedDateIndex
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+              }`}
+              onClick={() => handleDateSelected(startIndex + index)}
+            >
+              <p className="text-sm font-medium">{date.day}</p>
+              <p className={`text-xs ${
+                startIndex + index === selectedDateIndex
+                ? "text-gray-200"
+                : "text-gray-500"
+              }`}>{date.month}</p>
+            </button>
           ))}
-        </KeyboardTimePicker>
-      </MuiPickersUtilsProvider>
+        </div>
+        <button
+          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 focus:outline-none"
+          disabled={endIndex >= dates.length}
+          onClick={handleNextPage}
+        >
+          <svg
+            className="w-4 h-4 stroke-current text-gray-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      </div>
+      <div className="flex-grow" />
     </div>
   );
 };
 
-export default DateTimePicker;
+CustomDatePicker.propTypes = {
+  dates: PropTypes.arrayOf(
+    PropTypes.shape({
+      day: PropTypes.number.isRequired,
+      month: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  onDateSelected:
+ PropTypes.func.isRequired,
+};
+
+export default CustomDatePicker;
