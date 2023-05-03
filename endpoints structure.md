@@ -40,10 +40,10 @@
 
 
 ## examinations: 
-- /api/examinations/patient (GET PLURAL)
+-[√] /api/examinations/patient (GET PLURAL)
   if no params : gets all examinations belonging to that specific LOGGED IN Patient
   if params (patientId) --> in case of logged in user == registrar || doctor || admin and they want to check all examinations for a patient
-  - /api/examinations/patient/${id} (GET SINGULAR)--> 
+  -[√] /api/examinations/patient/${id} (GET SINGULAR)--> 
   no params: returns a specific exam IFF ( PATIENT & &CORRECT PATIENT)
 
   - /api/examinations/doctor (GET PLURAL)
