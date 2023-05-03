@@ -66,35 +66,6 @@ export default async function handler(
         }
     }
 
-
-    //doctor or supervisor creating a a new test 
-    else if (req.method == "POST") {
-        if (session.user?.role == Role.DOCTOR || session.user?.role == Role.LAB_SUPERVISOR) {
-            accessGranted = true
-            try {
-                const { doctorNote, supervisorNote, labSupervisorId, dictionaryCode, visitId } = req.body;
-                const result = await prisma.laboratoryExamination.create({
-                    data: {
-                        doctorNote: doctorNote,
-                        supervisorNote: supervisorNote,
-                        visit: { connect: { visitId: visitId } },
-                        examinationDictionary: { connect: { code: dictionaryCode } },
-                        labSupervisor: { connect: { employeeId: labSupervisorId } },
-                    },
-                });
-                return res.status(200).json({ success: true, data: result });
-            } catch (error) {
-                return res
-                    .status(500)
-                    .json({ success: false, message: "ERROR : Failed to create test" });
-            }
-        }
-        else {
-            return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action" });
-        }
-    }
     else {
         return res
             .status(400)

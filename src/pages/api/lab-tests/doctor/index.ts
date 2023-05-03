@@ -1,75 +1,101 @@
-//post should be done by
-//Doctor supervisor
-
-// Get all lab tests (Patient, Doctor, Supervisor)
-// Registrar can use Doctor and patient EPs
-// Doctor can use patient EP
-// technincian gets only ordered, in Progress
-// Doctor sees everything
-// Patient sees only his tests
-
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
-import { authOptions } from "../../auth/[...nextauth]";
-import { Role, Status } from "@prisma/client";
+import { authOptions } from "@/apiAuth/[...nextauth]";
+import { Role } from "@prisma/client";
 
 interface JSONClause {
     [key: string]: any;
 }
 
-//here we handle all visits-related api calls
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-    //console.log(session.user?.role)
+
+    let accessGranted = false;
+
     if (!session)
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
 
-    else if (req.method === "GET") {
-
+    if (req.method === "GET") {
         try {
-            const { doctor_id } = req.query;
+            const { doctor } = req.query;
             let results: string | any[];
-            if (doctor_id) {
-                if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST) {
+            if (doctor) { // user is admin or reciptionist 
+                if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
+                    accessGranted = true;
                     results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            visit: { patientId: doctor_id.toString()}
+                            visit: { doctorId: doctor.toString() }
                         },
                     });
                 }
                 else {
-                    return res
-                        .status(401)
-                        .json({ success: false, message: "You can see this patient's data" });
+                    accessGranted = false;
+                    // return res
+                    //     .status(401)
+                    //     .json({ success: false, message: "You can see this patient's data" });
                 }
-
             }
-            else {
-
-                if (session.user?.role == Role.PATIENT) {
-                results = await prisma.laboratoryExamination.findMany({
-                    where: {
-                        visit: { patientId: session.user?.id }
-                    },
-                });
+            else { //no params passed, logged in user should be the patient
+                if (session.user?.role == Role.DOCTOR) {
+                    results = await prisma.laboratoryExamination.findMany({
+                        where: {
+                            visit: { doctorId: session.user?.id }
+                        },
+                    });
+                }
+                return res.status(200).json({ success: true, data: results });
             }
-            return res.status(200).json({ success: true, data: results });
 
-            }
-            
         } catch (error) {
             //here should be a redirect to a general purpose error page
             return res
                 .status(500)
-                .json({ success: false, message: "Failed to retrieve data" });
+                .json({ success: false, message: "ERROR : Failed to retrieve data" });
         }
-    } else {
+        if (!accessGranted) {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
+    }
+
+
+    //doctor or supervisor creating a a new test 
+    else if (req.method == "POST") {
+        if (session.user?.role == Role.DOCTOR || session.user?.role == Role.LAB_SUPERVISOR) {
+            accessGranted = true
+            try {
+                const { doctorNote, supervisorNote, labSupervisorId, dictionaryCode, visitId } = req.body;
+                const result = await prisma.laboratoryExamination.create({
+                    data: {
+                        doctorNote: doctorNote,
+                        supervisorNote: supervisorNote,
+                        visit: { connect: { visitId: visitId } },
+                        examinationDictionary: { connect: { code: dictionaryCode } },
+                        labSupervisor: { connect: { employeeId: labSupervisorId } },
+                    },
+                });
+                return res.status(200).json({ success: true, data: result });
+            } catch (error) {
+                return res
+                    .status(500)
+                    .json({ success: false, message: "ERROR : Failed to create test" });
+            }
+        }
+        else {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
+    }
+    else {
         return res
             .status(400)
             .json({ success: false, message: "Invalid request method" });
