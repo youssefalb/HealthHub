@@ -36,7 +36,7 @@ export default function AppointmentsList() {
   // ToDo : loading component
   if (isLoading) return <p>Loading...</p>;
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col-reverse gap-4">
       {appointments.length ? (
         appointments.map((appointment) => (
           <AppointmentCard
@@ -61,9 +61,9 @@ export default function AppointmentsList() {
       <CustomButton
         buttonText={"Book Appointment"}
         onClick={() => {
-          window.location.href = "/booking";
+          router.push("/booking");
         }}
       />
-    </div>
+      </div>
   );
 }
