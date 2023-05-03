@@ -12,7 +12,7 @@
   returns a specific visit if (DOCTOR)
 
 ## labTests: 
-- /api/tests/patient  (GET plural)
+-[√] /api/tests/patient  (GET plural)
   if no params : gets all tests belonging to that specific LOGGED IN Patient
   if params (patientId) --> in case of logged in user == registrar || doctor || admin and they want to check all tests for a patient
   - /api/tests/patient/${id} (get singular)--> 
@@ -23,13 +23,13 @@
   if params (doctorId) --> in case of logged in user == registrar || admin and they want to check all tests for a doctor
   - /api/tests/doctor/${id} (get singular)--> returns a specific test IFF (DOCTOR)
 
-- /api/tests/labAssistant (GET plural)
+- /api/tests/technician (GET plural)
   if no params : gets all tests that have status == ORDERED
   if params (labAssistantId) --> in case of logged in user == registrar || labSupervisor || admin and they want to check all tests for a labassistant
-  - /api/tests/labAssistant/${id} (GET SINGULAR) --> 
+  - /api/tests/technician/${id} (GET SINGULAR) --> 
   no params: returns a specific test IFF (techID = test.techID ) 
 
-- /api/tests/labAssistant/progress
+- /api/tests/technician/in-progress
   no params : gets all tests that have (STATUS == IN-PROGRESS & TECHID == HIS ID)
 
 - /api/tests/supervisor (GET PLURAL)

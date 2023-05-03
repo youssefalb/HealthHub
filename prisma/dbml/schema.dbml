@@ -145,6 +145,7 @@ Enum Role {
   LAB_SUPERVISOR
   LAB_ASSISTANT
   RECEPTIONIST
+  ADMIN
 }
 
 Enum Status {
