@@ -1,8 +1,8 @@
 ## visits: 
-- /api/visits/patient (PLURAL GET)
+-[√] /api/visits/patient (PLURAL GET)
   if no params : gets all visits of the logged in PATIENT
   if params (patientId) --> in case of logged in user == DOCTOR and he wants to check all visits for a patient (history)
-- /api/visits/patient/${id} (SINGULAR GET) --> 
+-[√] /api/visits/patient/${id} (SINGULAR GET) --> 
   returns a specific visit if (PATIENT && CORRECT PATENT)
 
 - /api/visits/doctor (GET PLURAL)
