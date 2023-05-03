@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import prisma from "../../lib/prisma";
+import prisma from "@/lib/prisma";
 export default async function handler(req, res) {
     const token = req.query.token;
 
@@ -22,6 +22,28 @@ export default async function handler(req, res) {
         res.redirect('../auth/login?verified=true');
         console.log("Email verified");
     } catch (error) {
-        return res.status(401).send("Invalid or expired token");
+        try {
+            const decoded = jwt.verify(token, process.env.SECRET);
+            const provAccountId = decoded.id;
+            const userId = await prisma.account.findFirst({
+                where: {
+                    providerAccountId: provAccountId,
+                }
+            })
+            await prisma.user.update({
+                where: {
+                    id: userId.userId,
+                },
+                data: {
+                    emailVerified: new Date(),
+                },
+            })
+
+            res.redirect('../auth/login?verified=true');
+            console.log("Email verified");
+        }
+        catch (error) {
+            return res.status(401).send("Invalid or expired token");
+        }
     }
 }
