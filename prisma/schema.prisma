@@ -180,7 +180,7 @@ enum Status {
   CANCELLED
 }
 
-enum ExaminationStatus {  
+enum ExaminationStatus {
   COMPLETED
   CANCELLED
 }
