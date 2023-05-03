@@ -1,8 +1,8 @@
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import { User } from "@prisma/client";
 
-
-const generateToken = (user) => {
+const generateToken = (user: User) => {
   const payload = {
     id: user.id,
     email: user.email,
@@ -31,7 +31,7 @@ export default async function sendVerificationEmail(user) {
       from: process.env.SMTP_FROM,
       to: user.email,
       subject: "Please verify your email address",
-      html: `<p>Hi ${user.name},</p><p>Please click the following link to verify your email address:</p><a href="${verificationLink}">${verificationLink}</a>`,
+      html: `<p>Hi ${user.firstName},</p><p>Please click the following link to verify your email address:</p><a href="${verificationLink}">${verificationLink}</a>`,
     };
   
     try {

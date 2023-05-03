@@ -1,6 +1,6 @@
-import prisma from '../../../lib/prisma'
-import { hashPassword } from '../../../lib/hashPassword'
-import sendVerificationEmail from "../../../lib/sendVerificationEmail";
+import prisma from '@/lib/prisma'
+import { hashPassword } from '@/lib/hashPassword'
+import sendVerificationEmail from '@/lib/sendVerificationEmail'
 
 
 //create a hashing function
@@ -23,12 +23,12 @@ export default async function handler(req, res) {
         var result = null
         result = await prisma.user.create({
             data: {
-                fname: userData.fname,
-                lname: userData.lname,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
                 email: userData.email,
                 password: hashedPassword,
-                nationalID: userData.national_id,
-                patient: { create: { insurance_id: userData.insurance_id } }
+                nationalId: userData.nationalId,
+                patient: { create: { insuranceId: userData.insuranceId } }
             }
         })
         // console.log('before Verification ${user}')
