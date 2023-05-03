@@ -23,6 +23,8 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [ ] notes on lab tests by doctor (optional)
   - [ ] search for auto-docs (swager, openApi)
   - [ ] fix examination endpoint
+  - [ ] Eps only return one thing or everything
+  - [ ] Lib functions do the inclusion with the other parts needed
 
   
 

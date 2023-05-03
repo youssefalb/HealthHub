@@ -23,9 +23,12 @@ export default async function handler(
 
   //if method is PUT, check if the user is a doctor, patient or receptionist
   //changing date needs to be accomodated
+  // Technnician can change status and technician note (Lab_assistant) he should also change results (Not yet in the db)
+  // Supervisor can change status and supervisor notes (Lab_supervisor)
+  
   if (req.method === "PUT") {
-    var { exam_id } = req.query;
-    exam_id = exam_id.toString(); 
+    var { test_id } = req.query;
+    test_id = test_id.toString(); 
     const { role, id: user_id } = session.user;
     if (
       role === Role.DOCTOR ||
@@ -34,9 +37,9 @@ export default async function handler(
       //if it was a doctor or patient, check that the visit belongs to them
       try {
 
-        const exam = await prisma.physicalExamination.findUnique({
+        const exam = await prisma.laboratoryExamination.findUnique({
           where: {
-            physicalExamId: exam_id,
+           testId : test_id,
           },
           include: {
             visit: true,
@@ -50,18 +53,19 @@ export default async function handler(
             .status(401)
             .json({
               success: false,
-              message: "Unauthorized, because the visit doesn't belong to you",
+              message: "Unauthorized, because this visit doesn't belong to you",
             });
         } else {
-          try {  //date and status to be added later to the db schema
+          try {  
+            //
             const { status } = req.body;
             let data: JSONClause = {};
             if (status) {
               data.status = status;
             }
-            await prisma.physicalExamination.update({
+            await prisma.laboratoryExamination.update({
               where: {
-                 physicalExamId: exam_id,
+                 testId: test_id,
                },
                data: data,
             });
@@ -72,12 +76,12 @@ export default async function handler(
           }
           return res
             .status(200)
-            .json({ success: true, message: "Examination updated successfully" });
+            .json({ success: true, message: "Visit updated successfully" });
         }
       } catch (error) {
         return res
           .status(404)
-          .json({ success: false, message: "Failed to find the examination" });
+          .json({ success: false, message: "Failed to find the test" });
       }
     } else {
       return res
@@ -90,29 +94,30 @@ export default async function handler(
     }
   }
 
-  
+ //Rols: All except registrar
+ //Only patient is restricted to his own visits
  else if (req.method === "GET") {
     try {
-      const { exam_id } = req.query;
+      const { test_id } = req.query;
       let results: string | any;
       if (session.user?.role == Role.DOCTOR || session.user?.role == Role.PATIENT) {
         let person_id = session.user?.id;
 
-        results = await prisma.physicalExamination.findUnique({
+        results = await prisma.laboratoryExamination.findUnique({
           where: {
-            physicalExamId: exam_id.toString()
+            testId: test_id.toString()
           },
           include: {
             visit: true,
           },
         });
 
-        if (results.visit.doctorId === person_id || results.visit.patientId === person_id) {
+        if (results.visit.patientId === person_id || session.user?.role == Role.DOCTOR) {
           return res.status(200).json({ success: true, data: results });
         } else {
           return res
             .status(500)
-            .json({ success: false, message: "The visit of the exam does not belong to you" });
+            .json({ success: false, message: "The visit of the test does not belong to you" });
         }
 
       } 
