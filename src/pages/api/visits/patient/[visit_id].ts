@@ -57,8 +57,6 @@ export default async function handler(
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });
             }
         }
-
-
         //return not authorized
         return res
             .status(401)

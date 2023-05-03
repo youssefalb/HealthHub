@@ -20,7 +20,7 @@ export default async function handler(
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
-    
+
     if (req.method === "GET") {
         try {
             const { patient } = req.query;
@@ -30,9 +30,10 @@ export default async function handler(
                     accessGranted = true;
                     results = await prisma.visit.findMany({
                         where: {
-                             patientId: patient.toString() 
+                            patientId: patient.toString()
                         },
                     });
+                    return res.status(200).json({ success: true, data: results });
                 }
                 else {
                     accessGranted = false;
@@ -45,7 +46,7 @@ export default async function handler(
                 if (session.user?.role == Role.PATIENT) {
                     results = await prisma.visit.findMany({
                         where: {
-                            patientId: session.user?.id 
+                            patientId: session.user?.id
                         },
                     });
                 }
@@ -63,19 +64,19 @@ export default async function handler(
                 .status(401)
                 .json({ success: false, message: "You are not authorized to perform this action" });
         }
-    } 
+    }
 
     if (req.method === "POST") {
         //Patient or Registrar creating a visit
         if (session.user?.role === Role.PATIENT || session.user?.role === Role.RECEPTIONIST) {
             try {
-                var { patientId, description, doctorId, date, receptionistId } = req.body;
+                let { patientId, description, doctorId, date } = req.body;
+                let receptionist
                 if (!patientId) {
                     patientId = session.user?.id;
-                    receptionistId = null
                 }
-                else if (patientId)  {
-                    receptionistId = session.user?.id;
+                else if (patientId) {
+                    receptionist = { receptionist: { connect: { employeeId: session.user?.id } } }
                 }
                 const results = await prisma.visit.create({
                     data: {
@@ -83,7 +84,7 @@ export default async function handler(
                         date: date,
                         doctor: { connect: { employeeId: doctorId } },
                         patient: { connect: { patientId: patientId } },
-                        receptionist: { connect: { employeeId: session.user?.id }},
+                        ...receptionist,
                     },
                 });
                 return res.status(201).json({
@@ -92,7 +93,7 @@ export default async function handler(
                     data: results,
                 });
             } catch (error) {
-                //console.log(error);
+                console.log(error);
                 return res
                     .status(500)
                     .json({ success: false, message: "Failed to create visit" });
