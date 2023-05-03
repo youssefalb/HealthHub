@@ -1,6 +1,13 @@
 import { Status } from "@prisma/client";
 import { visitsPath } from "./apiPaths";
 
+//ToDO : 
+/*
+  1- recheck working ones
+  2- use them 
+  3- 
+*/
+
 
 export async function getVisits() {
     const result = await fetch(`${visitsPath}`, {
@@ -45,7 +52,7 @@ export async function cancelVisit(visit_id: String) {
   return result;
 }
 
-//change visit date
+//change visit date by patient or registrar
 export async function updateVisit(visit_id: String, doctor_id: String = undefined, date = undefined) {
   const result = await fetch(`${visitsPath}/${visit_id}`, {
     method: "PUT",
