@@ -20,6 +20,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import React, { useState } from 'react';
 
 import PopupDialog from '@/components/PopupDialog';
+import CustomDatePicker from '@/components/AmazingDatePicker';
+import CustomTimePicker from '@/components/AmazingTimePicker';
+//import AvailableDateTimePicker from '@/components/AmazingDatePicker';
 
 
 const Label = ({ name, value }) => {
@@ -52,7 +55,71 @@ const BookingForm = () => {
   const handleConfirm = () => {
     console.log("Confirmed!");
     setOpen(false);
+    window.location.href = "/settings";
   };
+
+
+  // Of course instead of this we should fetch data from the API, this is just a mock
+  const dates = [
+    { day: 1, month: "May" },
+    { day: 2, month: "May" },
+    { day: 3, month: "May" },
+    { day: 4, month: "May" },
+    { day: 5, month: "May" },
+    { day: 6, month: "May" },
+    { day: 7, month: "May" },
+    { day: 8, month: "May" },
+    { day: 9, month: "May" },
+    { day: 10, month: "May" },
+    { day: 11, month: "May" },
+    { day: 12, month: "May" },
+    { day: 13, month: "May" },
+    { day: 14, month: "May" },
+    { day: 15, month: "May" },
+    { day: 16, month: "May" },
+    { day: 17, month: "May" },
+    { day: 18, month: "May" },
+    { day: 19, month: "May" },
+    { day: 20, month: "May" },
+    { day: 21, month: "May" },
+    { day: 22, month: "May" },
+    { day: 23, month: "May" },
+    { day: 24, month: "May" },
+    { day: 25, month: "May" },
+    { day: 26, month: "May" },
+    { day: 27, month: "May" },
+    { day: 28, month: "May" },
+    { day: 29, month: "May" },
+    { day: 30, month: "May" },
+    { day: 31, month: "May" },
+  ];
+  
+  // Similarly, this is just a mock, but in a form of a function not to wrrite so much garbage
+  const getTimes = () => {
+    const times = [];
+    for (let i = 0; i < 24; i++) {
+      for (let j = 0; j < 60; j += 15) {
+        const hour = i < 10 ? "0" + i : i;
+        const minute = j === 0 ? "00" : j;
+        times.push(`${hour}:${minute}`);
+      }
+    }
+    return times;
+  };
+
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const handleTimeSelected = (time) => {
+    setSelectedTime(time);
+  };
+
+  const [selectedDate, setSelectedDate] = useState(dates[0]);
+
+  const handleDateSelected = (date) => {
+    setSelectedDate(date);
+  };
+
+
 
   return (
     <div className="mx-auto max-w-screen-lg my-8 px-4">
@@ -110,28 +177,37 @@ const BookingForm = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 font-bold" htmlFor="date">
-            Choose a Date:
+          <label className="block mb-2" htmlFor="date">
+            Choose a Date*
           </label>
           {/* Date picker component goes here */}
-          {/* <AmazingDatePicker
-            availableDates={availableDates}
-            onDateSelect={setDate}
-          /> */}
+          <CustomDatePicker
+            dates={dates}
+            onDateSelected={handleDateSelected}
+          />
+          <label className="text-gray-400">
+        Selected Date: {selectedDate.day} {selectedDate.month}
+      </label>
         </div>
-
-        <div className="mb-4">
-          <label className="block mb-2 font-bold" htmlFor="time">
-            Choose a Time:
+        <div className="">
+          <label className="block mb-2" htmlFor="time">
+            Choose a Time*
           </label>
-
+          <CustomTimePicker
+            times={getTimes()}
+            onTimeSelected={handleTimeSelected}
+          />
         </div>
-
+        <label className="text-gray-400">
+        Selected Time: {selectedTime}
+      </label>
+<div className="mt-4">
         <LongTextInput
           label="Note"
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
+        </div>
 
         <CustomButton
           buttonText={"Book Appointment"}

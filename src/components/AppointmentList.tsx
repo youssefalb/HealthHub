@@ -61,7 +61,7 @@ export default function AppointmentsList() {
       <CustomButton
         buttonText={"Book Appointment"}
         onClick={() => {
-          addVisit(role, 1, 7);
+          window.location.href = "/booking";
         }}
       />
     </div>
