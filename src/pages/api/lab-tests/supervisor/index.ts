@@ -34,12 +34,7 @@ export default async function handler(
                             labAssistant: { employeeId: supervisor.toString() }
                         },
                     });
-                }
-                else {
-                    accessGranted = false;
-                    // return res
-                    //     .status(401)
-                    //     .json({ success: false, message: "You can see this patient's data" });
+                    return res.status(200).json({ success: true, data: results });
                 }
             }
             else { //no params passed, logged in user should be the supervisor
@@ -49,8 +44,8 @@ export default async function handler(
                             status: LaboratoryTestStatus.COMPLETED
                         },
                     });
+                    return res.status(200).json({ success: true, data: results });
                 }
-                return res.status(200).json({ success: true, data: results });
             }
 
         } catch (error) {

@@ -49,9 +49,6 @@ export default async function handler(
                     });
                     return res.status(200).json({ success: true, data: results });
                 }
-                else {
-                    accessGranted = false;
-                }
             }
             else { //no params passed, logged in user should be the patient
                 if (session.user?.role == Role.PATIENT) {

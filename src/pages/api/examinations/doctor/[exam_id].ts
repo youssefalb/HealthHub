@@ -11,8 +11,6 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-    // let accessGranted = false;
-
     if (!session)
         return res
             .status(401)
@@ -27,7 +25,6 @@ export default async function handler(
                     },
                 })
                 return res.status(200).json({ success: true, data: test });
-
             }
             catch (error) {
                 //here should be a redirect to a general purpose error page
