@@ -26,7 +26,7 @@ export default async function handler(
                         testId: test_id.toString(),
                     },
                 })
-                if(test.labAssistantId == session.user.id)
+                if (test.labAssistantId == session.user.id)
                     return res.status(200).json({ success: true, data: test });
 
                 return res
@@ -63,7 +63,7 @@ export default async function handler(
                         },
                         data: {
                             status: LaboratoryTestStatus.IN_PROGRESS, //from ordered to in progress 
-                            labAssistantId: session.user.id
+                            labAssistantId: session.user.id,
                         }
                     })
                     return res.status(200).json({ success: true, data: results });
@@ -76,11 +76,12 @@ export default async function handler(
                         },
                         data: {
                             status: req.body.status, //from in progress to completed or Cancelled 
-                            //result: 
+                            dateOfExecutionXorCancelling: new Date()
+                            //result:
                         }
                     })
                     return res.status(200).json({ success: true, data: results });
-                }    
+                }
                 //return unauthorized
                 return res
                     .status(401)
@@ -96,7 +97,7 @@ export default async function handler(
         //return not authorized
         return res
             .status(401)
-            .json({ success: false, message: "you are not the technician ,, go away" });    
+            .json({ success: false, message: "you are not the technician ,, go away" });
     }
 
     return res

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 
 interface JSONClause {
     [key: string]: any;
@@ -32,22 +32,47 @@ export default async function handler(
                         where: {
                             patientId: patient.toString()
                         },
+                        include: { //because we want doctor name
+                            doctor: {
+                                include: {
+                                    user: {
+                                        select:
+                                        {
+                                            firstName: true,
+                                            lastName: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        orderBy: { date: "asc" }
                     });
                     return res.status(200).json({ success: true, data: results });
                 }
                 else {
                     accessGranted = false;
-                    // return res
-                    //     .status(401)
-                    //     .json({ success: false, message: "You can see this patient's data" });
                 }
             }
             else { //no params passed, logged in user should be the patient
                 if (session.user?.role == Role.PATIENT) {
                     results = await prisma.visit.findMany({
                         where: {
-                            patientId: session.user?.id
+                            patientId: session.user?.id,
                         },
+                        include: { //because we want doctor name
+                            doctor: {
+                                include: {
+                                    user: {
+                                        select:
+                                        {
+                                            firstName: true,
+                                            lastName: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        orderBy: [{ date: "asc" },]
                     });
                 }
                 return res.status(200).json({ success: true, data: results });
