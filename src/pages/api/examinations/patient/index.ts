@@ -52,8 +52,11 @@ export default async function handler(
                             visit: { patientId: session.user?.id }
                         },
                     });
+                    return res.status(200).json({ success: true, data: results });
                 }
-                return res.status(200).json({ success: true, data: results });
+                return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
             }
 
         } catch (error) {
