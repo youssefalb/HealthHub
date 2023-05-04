@@ -76,7 +76,7 @@ const CustomTimePicker = ({ times, onTimeSelected }) => {
           ))}
         </div>
         <button
-          className="p-4 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 focus:outline-none"
+          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200 focus:outline-none"
           disabled={endIndex >= times.length}
           onClick={handleNextPage}
         >
@@ -94,7 +94,6 @@ const CustomTimePicker = ({ times, onTimeSelected }) => {
           </svg>
         </button>
       </div>
-      <div className="flex-grow" />
     </div>
   );
 };
