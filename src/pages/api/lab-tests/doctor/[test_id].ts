@@ -26,8 +26,8 @@ export default async function handler(
                         testId: test_id.toString(),
                     },
                 })
+                if(test == null) throw "no data";
                 return res.status(200).json({ success: true, data: test });
-
             }
             catch (error) {
                 //here should be a redirect to a general purpose error page

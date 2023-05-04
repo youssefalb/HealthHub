@@ -25,6 +25,7 @@ export default async function handler(
                         status: LaboratoryTestStatus.COMPLETED,
                     },
                 })
+                if(test == null) throw "no data";
                 return res.status(200).json({ success: true, data: test });
             }
             catch (error) {

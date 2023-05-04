@@ -31,9 +31,10 @@ export default async function handler(
                     accessGranted = true;
                     results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            labAssistant: { employeeId: supervisor.toString() }
+                            labSupervisor: { employeeId: supervisor.toString() }
                         },
                     });
+                    if(results == null) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

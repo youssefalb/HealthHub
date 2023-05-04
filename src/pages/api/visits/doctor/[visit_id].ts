@@ -24,6 +24,7 @@ export default async function handler(
                         visitId: visit_id.toString(),
                     },
                 })
+                if(visit == null) throw "no data";
                 return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {

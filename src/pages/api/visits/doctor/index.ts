@@ -32,6 +32,7 @@ export default async function handler(
                             doctorId: doctor.toString()
                         },
                     });
+                    if(results == null) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
                 if (session.user?.role == Role.PATIENT) {

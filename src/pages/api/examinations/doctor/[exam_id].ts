@@ -24,6 +24,7 @@ export default async function handler(
                         physicalExamId: exam_id.toString(),
                     },
                 })
+                if(test == null) throw "no data";
                 return res.status(200).json({ success: true, data: test });
             }
             catch (error) {

@@ -47,6 +47,8 @@ export default async function handler(
                         },
                         orderBy: { date: "asc" }
                     });
+                    if(results == null) throw "no data";
+                    
                     return res.status(200).json({ success: true, data: results });
                 }
             }
