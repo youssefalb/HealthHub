@@ -62,16 +62,15 @@ export default async function handler(
     }
 
 
-    //doctor or supervisor creating a a new test 
+    //doctor creating a a new test 
     else if (req.method == "POST") {
-        if (session.user?.role == Role.DOCTOR || session.user?.role == Role.LAB_SUPERVISOR) {
+        if (session.user?.role == Role.DOCTOR) {
             accessGranted = true
             try {
-                const { doctorNote, supervisorNote, dictionaryCode, visitId } = req.body;
+                const { doctorNote, dictionaryCode, visitId } = req.body;
                 const result = await prisma.laboratoryExamination.create({
                     data: {
                         doctorNote: doctorNote,
-                        supervisorNote: supervisorNote,
                         visit: { connect: { visitId: visitId } },
                         examinationDictionary: { connect: { code: dictionaryCode } },
                     },
