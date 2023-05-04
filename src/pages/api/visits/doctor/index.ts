@@ -47,6 +47,19 @@ export default async function handler(
                         where: {
                             doctorId: session.user?.id
                         },
+                        include: {
+                            patient: {
+                                include: {
+                                    user: {
+                                        select:
+                                        {
+                                            firstName: true,
+                                            lastName: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
                 return res.status(200).json({ success: true, data: results });
