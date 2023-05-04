@@ -2,6 +2,10 @@ import { useSession, getSession } from 'next-auth/react';
 import { Status, Role } from "@prisma/client";
 import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
 
+let jsonHeader =  {
+  'Content-Type': 'application/json'
+    }
+
 /**
  * Asynchronously gets the visits of the user with the specified role.
  * @param {Role} role - The role of the user whose visits are to be retrieved.
@@ -66,7 +70,7 @@ export async function getPatientVisits(patientId: String): Promise<Response> {
  * @param {String} visitId - The ID of the visit to retrieve.
  * @returns {Promise} - Returns a Promise that resolves with the result of the fetch request.
  */
-export async function getVisitDetails(role: Role, visitId: String): Promise<Response>{
+export async function getVisitDetails(role: Role, visitId: String): Promise<Response> {
   let result
   if (role == Role.DOCTOR) {
     result = await fetch(`${doctorVisitsPath}/${visitId}`, {
@@ -93,10 +97,11 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
 export async function createVisitByPatient(speciality: String, doctorId: String, date: String): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
+    headers: jsonHeader,
     body: JSON.stringify({
-      description: speciality,
-      doctorId: doctorId,
-      date: date,
+      "description": speciality,
+      "doctorId": doctorId,
+      "date": date,
     }),
   });
   return result;
@@ -113,6 +118,7 @@ export async function createVisitByPatient(speciality: String, doctorId: String,
 export async function createVisitByReceptionist(patientId: String, speciality: String, doctorId: String, date: String): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
+    headers: jsonHeader,
     body: JSON.stringify({
       patientId: patientId,
       description: speciality,
@@ -124,32 +130,74 @@ export async function createVisitByReceptionist(patientId: String, speciality: S
 }
 
 //by patient and recep to change status 
-export async function cancelVisit(visitId : String) {
+/**
+ * Cancel a visit by changing its status to cancelled.
+ * @param {String} visitId - The ID of the visit to be cancelled.
+ * @returns {Promise} - A Promise that resolves with the result of the PUT request.
+ */
+export async function cancelVisit(visitId: String): Promise<Response> {
   //put request to change status of the visit
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
     body: JSON.stringify({
-      
+      status: Status.CANCELLED
     })
   });
   return result;
 
 }
 
-//by recep and atient, to change date 
-export async function changeVisitDate() {
-
+//by recep and patient, to change date 
+/**
+ * Update the visit date for a patient by ID.
+ * @param {String} visitId - The ID of the visit to update.
+ * @param {String} date - The new date for the visit.
+ * @returns {Promise<Response>} - A promise that resolves with the response from the server.
+ */
+export async function changeVisitDate(visitId: String, date: String): Promise<Response> {
+  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      date: date
+    })
+  });
+  return result;
 }
 
 //by recep only, to change doctor
-export async function changeVisitDoctor() {
-
+/**
+ * Changes the doctor assigned to a patient visit by sending a PUT request to the server
+ * @param {String} visitId - The ID of the visit to change the doctor for
+ * @param {String} doctorId - The ID of the new doctor to assign to the visit
+ * @returns {Promise<Response>} - A Promise that resolves to the result of the PUT request
+ */
+export async function changeVisitDoctor(visitId: String, doctorId: String): Promise<Response> {
+  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      doctorId: doctorId
+    })
+  });
+  return result;
 }
 
 //by doctor 
 //status, diagnosis, dateRealized, 
-export async function changeVisitDetails() {
-
+/**
+ * Updates the visit details for the given visit ID with the provided parameters.
+ * @param {string} visitId - The ID of the visit to update.
+ * @param {any} params - The parameters to update the visit with.
+ * @returns {Promise<Response>} - A Promise that resolves to the updated visit details.
+ */
+export async function changeVisitDetails(visitId: String, ...params: any): Promise<Response> {
+  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      status: params.status,
+      diagnosis: params.diagnosis,
+    })
+  });
+  return result;
 }
 
 
