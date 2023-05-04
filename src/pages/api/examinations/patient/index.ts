@@ -34,6 +34,9 @@ export default async function handler(
                             visit: { patientId: patient.toString() }
                         },
                     });
+                return res
+                        .status(200)
+                        .json({ success: true, data: results });
                 }
                 else {
                     accessGranted = false;
