@@ -2,7 +2,7 @@ import { useSession, getSession } from "next-auth/react";
 import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
-import { addVisit, getOwnVisits } from "@/lib/visits";
+import { addVisit, getDoctorVisits, getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
@@ -29,6 +29,7 @@ export default function AppointmentsList() {
   useEffect(() => {
     if (session) {
       fetchData();
+      getDoctorVisits("PATIENT", "5")
     }
     //else loading state. show loading state
   }, [session]);
