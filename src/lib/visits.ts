@@ -1,90 +1,156 @@
+import { useSession, getSession } from 'next-auth/react';
 import { Status, Role } from "@prisma/client";
 import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
 
-//ToDO : 
-/*
-  1- recheck working ones
-  2- use them 
-  3- 
-*/
-
 /**
- * Fetches the visits associated with a given role.
- * @async
- * @function
- * @param {Role} role - The role of the user.
- * @returns {Promise} The result of the fetch call.
+ * Asynchronously gets the visits of the user with the specified role.
+ * @param {Role} role - The role of the user whose visits are to be retrieved.
+ * @return {Promise} A Promise representing the result of the GET request to the 
+ * respective endpoint for the specified role. Returns a 401 error if the role is 
+ * not authorized.
  */
-export async function getOwnVisits(role: Role) { //working
+export async function getOwnVisits(role: Role): Promise<Response> { //working
   let result
   if (role == Role.DOCTOR) {
-    result = await fetch(`${doctorVisitsPath}`), {
+    result = await fetch(`${doctorVisitsPath}`, {
       method: "GET",
-    }
+    })
   }
   else if (role == Role.PATIENT) {
-    result = await fetch(`${patientVisitsPath}`), {
+    result = await fetch(`${patientVisitsPath}`, {
       method: "GET",
-    }
+    })
   }
   else {
     result.status(401)
       .json({ success: false, message: "you are not an authorized person" });
   }
-    return result;
+  return result;
 }
 
-export async function getDoctorVisits() {
+//for patient it returns dates only
+//for recep. and admin returns everything
+/**
+ * Async function that retrieves doctor visits based on doctor ID.
+ * @param role Role of the user making the request.
+ * @param doctorId ID of the doctor to retrieve visits for.
+ * @returns A Promise that resolves with the result of the GET request to the doctor visits endpoint.
+ */
+export async function getDoctorVisits(doctorId: String): Promise<Response> {
+  let result;
+  result = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
+    method: "GET",
+  });
 
+  return result;
 }
 
 
-//get a specific visit
-export async function getVisit(visit_id: String) {
-  const result = await fetch(`${visitsPath}/${visit_id}`, {
+/**
+ * Retrieves a list of patient visits for a given patient ID.
+ * @param {Role} role - The user role.
+ * @param {String} patientId - The ID of the patient.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing the patient visits.
+ */
+export async function getPatientVisits(patientId: String): Promise<Response> {
+  let result;
+  result = await fetch(`${patientVisitsPath}?patient=${patientId}`, {
     method: "GET",
   });
   return result;
 }
 
-export async function addVisit(doctor_id: any, patient_id?: any) {
-  const result = await fetch(`${visitsPath}`, {
+/**
+ * Retrieves a visit by ID based on the specified role.
+ * @param {Role} role - The role of the user making the request.
+ * @param {String} visitId - The ID of the visit to retrieve.
+ * @returns {Promise} - Returns a Promise that resolves with the result of the fetch request.
+ */
+export async function getVisitDetails(role: Role, visitId: String): Promise<Response>{
+  let result
+  if (role == Role.DOCTOR) {
+    result = await fetch(`${doctorVisitsPath}/${visitId}`, {
+      method: "GET",
+    })
+  }
+  else if (role == Role.PATIENT) {
+    result = await fetch(`${patientVisitsPath}/${visitId}`, {
+      method: "GET",
+    })
+  }
+
+  return result;
+}
+
+
+/**
+ * Creates a new visit for the given patient with the provided speciality, doctor ID, and date.
+ * @param speciality The speciality of the doctor the patient is visiting.
+ * @param doctorId The ID of the doctor the patient is visiting.
+ * @param date The date of the visit.
+ * @returns {Promise<Response>} A Promise that resolves to the result of the POST request to create the visit.
+ */
+export async function createVisitByPatient(speciality: String, doctorId: String, date: String): Promise<Response> {
+  const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
     body: JSON.stringify({
-      description: "",
-      date: new Date(), //ToDo : date picker in page
-      doctor_id: doctor_id,
-      patient_id: patient_id,
-      receptionist_id: "",
+      description: speciality,
+      doctorId: doctorId,
+      date: date,
     }),
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
   return result;
 }
 
-//cancel visit
-export async function cancelVisit(visit_id: String) {
-  const result = await fetch(`${visitsPath}/${visit_id}`, {
-    method: "PUT",
-     body: JSON.stringify({
-      newStatus : Status.CANCELLED
-    })
+/**
+ * Creates a new visit by receptionist for the given patientId, speciality, doctorId, and date.
+ * @param {String} patientId - The ID of the patient for whom the visit is being created.
+ * @param {String} speciality - The speciality of the doctor for whom the visit is being created.
+ * @param {String} doctorId - The ID of the doctor for whom the visit is being created.
+ * @param {String} date - The date of the visit for which the visit is being created.
+ * @returns {Promise<Response>} A Promise that resolves to the result of the POST request.
+ */
+export async function createVisitByReceptionist(patientId: String, speciality: String, doctorId: String, date: String): Promise<Response> {
+  const result = await fetch(`${patientVisitsPath}`, {
+    method: "POST",
+    body: JSON.stringify({
+      patientId: patientId,
+      description: speciality,
+      doctorId: doctorId,
+      date: date,
+    }),
   });
   return result;
 }
 
-//change visit date by patient or registrar
-export async function updateVisit(visit_id: String, doctor_id: String = undefined, date = undefined) {
-  const result = await fetch(`${visitsPath}/${visit_id}`, {
+//by patient and recep to change status 
+export async function cancelVisit(visitId : String) {
+  //put request to change status of the visit
+  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
     body: JSON.stringify({
-      newDoctor_id: doctor_id,
-      newDate: date,
+      
     })
   });
   return result;
+
 }
+
+//by recep and atient, to change date 
+export async function changeVisitDate() {
+
+}
+
+//by recep only, to change doctor
+export async function changeVisitDoctor() {
+
+}
+
+//by doctor 
+//status, diagnosis, dateRealized, 
+export async function changeVisitDetails() {
+
+}
+
 
 

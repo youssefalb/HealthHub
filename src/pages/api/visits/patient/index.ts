@@ -94,10 +94,10 @@ export default async function handler(
             try {
                 let { patientId, description, doctorId, date } = req.body;
                 let receptionist
-                if (!patientId) {
+                if (!patientId) { //logged in as patient
                     patientId = session.user?.id;
                 }
-                else if (patientId) {
+                else if (patientId) { //logged in as receotionist
                     receptionist = { receptionist: { connect: { employeeId: session.user?.id } } }
                 }
                 const results = await prisma.visit.create({
