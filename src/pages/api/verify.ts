@@ -22,17 +22,18 @@ export default async function handler(req, res) {
         res.redirect('../auth/login?verified=true');
         console.log("Email verified");
     } catch (error) {
+        //verification of an email when GoogleOAuth
         try {
             const decoded = jwt.verify(token, process.env.SECRET);
             const provAccountId = decoded.id;
-            const userId = await prisma.account.findFirst({
+            const account = await prisma.account.findFirst({
                 where: {
                     providerAccountId: provAccountId,
                 }
             })
             await prisma.user.update({
                 where: {
-                    id: userId.userId,
+                    id: account.userId,
                 },
                 data: {
                     emailVerified: new Date(),
