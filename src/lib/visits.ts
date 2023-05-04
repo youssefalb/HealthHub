@@ -42,7 +42,7 @@ export async function getOwnVisits(role: Role): Promise<Response> { //working
  * @param doctorId ID of the doctor to retrieve visits for.
  * @returns A Promise that resolves with the result of the GET request to the doctor visits endpoint.
  */
-export async function getDoctorVisits(role: Role, doctorId: String): Promise<Response> {
+export async function getDoctorVisits(doctorId: String): Promise<Response> {
   let result;
   result = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
     method: "GET",
@@ -51,13 +51,40 @@ export async function getDoctorVisits(role: Role, doctorId: String): Promise<Res
   return result;
 }
 
-
-
-// //get a specific visit
-export async function getVisit(visit_id: String) {
-  const result = await fetch(`${doctorVisitsPath}/${visit_id}`, {
+/**
+ * Retrieves a list of patient visits for a given patient ID.
+ * @param {Role} role - The user role.
+ * @param {String} patientId - The ID of the patient.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing the patient visits.
+ */
+export async function getPatientVisits(patientId: String): Promise<Response> {
+  let result;
+  result = await fetch(`${patientVisitsPath}?patient=${patientId}`, {
     method: "GET",
   });
+  return result;
+}
+
+/**
+ * Retrieves a visit by ID based on the specified role.
+ * 
+ * @param {Role} role - The role of the user making the request.
+ * @param {String} visitId - The ID of the visit to retrieve.
+ * @returns {Promise} - Returns a Promise that resolves with the result of the fetch request.
+ */
+export async function getVisit(role: Role, visitId: String) {
+  let result
+  if (role == Role.DOCTOR) {
+    result = await fetch(`${doctorVisitsPath}/${visitId}`, {
+      method: "GET",
+    })
+  }
+  else if (role == Role.PATIENT || role == Role.RECEPTIONIST) {
+    result = await fetch(`${patientVisitsPath}/${visitId}`, {
+      method: "GET",
+    })
+  }
+
   return result;
 }
 
