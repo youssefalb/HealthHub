@@ -10,7 +10,7 @@ const AppointmentCard = ({appointment, role}) => {
   let name: String | null
 
   if(role == Role.PATIENT)
-      name = appointment.doctor?.user?.firstName + " " + appointment.doctor?.user?.lastName;
+      name = "Dr. " + appointment.doctor?.user?.firstName + " " + appointment.doctor?.user?.lastName;
   else if(role == Role.DOCTOR)
       name = appointment.patient?.user?.firstName + " " + appointment.patient?.user?.lastName;
   // console.log(appointment)

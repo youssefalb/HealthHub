@@ -32,12 +32,23 @@ export default async function handler(
                             doctorId: doctor.toString()
                         },
                     });
+                    return res.status(200).json({ success: true, data: results });
+                }
+                if (session.user?.role == Role.PATIENT) {
+                    accessGranted = true;
+                    results = await prisma.visit.findMany({
+                        where: {
+                            doctorId: doctor.toString(),
+                        },
+                        select: {
+                            date: true,
+                        }
+                    });
+                    return res.status(200).json({ success: true, data: results });
                 }
                 else {
                     accessGranted = false;
-                    // return res
-                    //     .status(401)
-                    //     .json({ success: false, message: "You can see this patient's data" });
+                    
                 }
             }
             else { //no params passed, logged in user should be the doctor
@@ -46,6 +57,19 @@ export default async function handler(
                         where: {
                             doctorId: session.user?.id
                         },
+                        include: {
+                            patient: {
+                                include: {
+                                    user: {
+                                        select:
+                                        {
+                                            firstName: true,
+                                            lastName: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
                 return res.status(200).json({ success: true, data: results });

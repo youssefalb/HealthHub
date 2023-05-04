@@ -1,5 +1,5 @@
-import { Status } from "@prisma/client";
-import { visitsPath } from "./apiPaths";
+import { Status, Role } from "@prisma/client";
+import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
 
 //ToDO : 
 /*
@@ -9,10 +9,22 @@ import { visitsPath } from "./apiPaths";
 */
 
 
-export async function getVisits() {
-    const result = await fetch(`${visitsPath}`, {
+export async function getOwnVisits(role: Role) {
+  let result
+  if (role == Role.DOCTOR) {
+    result = await fetch(`${doctorVisitsPath}`), {
       method: "GET",
-    });
+    }
+  }
+  else if (role == Role.PATIENT) {
+    result = await fetch(`${patientVisitsPath}`), {
+      method: "GET",
+    }
+  }
+  else {
+    result.status(401)
+      .json({ success: false, message: "you are not an authorized person" });
+  }
     return result;
 }
 

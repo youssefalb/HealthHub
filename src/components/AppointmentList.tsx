@@ -2,7 +2,7 @@ import { useSession, getSession } from "next-auth/react";
 import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
-import { addVisit, getVisits } from "@/lib/visits";
+import { addVisit, getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
@@ -17,7 +17,7 @@ export default function AppointmentsList() {
 
   const fetchData = async () => {
     try {
-      const response = await getVisits();
+      const response = await getOwnVisits(role);
       const results = await response.json();
       setAppointments(results["data"]);
       setIsLoading(false);
@@ -40,6 +40,7 @@ export default function AppointmentsList() {
       {appointments.length ? (
         appointments.map((appointment) => (
           <AppointmentCard
+            // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
             key={appointment.visitId}
             appointment={appointment}
             role={role}

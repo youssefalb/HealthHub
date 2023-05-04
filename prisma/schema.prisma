@@ -180,7 +180,7 @@ enum Role {
 }
 
 enum Status {
-  REGISTERED
+  REGISTERED 
   IN_PROGRESS
   COMPLETED
   CANCELLED

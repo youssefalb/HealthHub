@@ -11,8 +11,6 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-    // let accessGranted = false;
-
     if (!session)
         return res
             .status(401)
@@ -59,6 +57,7 @@ export default async function handler(
                         },
                         data: {
                             status: req.body.status, //either approved or rejected 
+                            dateOfApprovalXorRejection: new Date()
                         }
                     })
                     //ToDo : can create a new test with all same details (if status was rejected)
