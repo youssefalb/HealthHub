@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role } from "@prisma/client";
+import { LaboratoryTestStatus, Role } from "@prisma/client";
 
 interface JSONClause {
     [key: string]: any;
@@ -15,6 +15,8 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
+    let accessGranted = false;
+
     if (!session)
         return res
             .status(401)
@@ -22,28 +24,25 @@ export default async function handler(
 
     if (req.method === "GET") {
         try {
-            const { doctor } = req.query;
+            const { supervisor } = req.query;
             let results: string | any[];
-            if (doctor) { // user is admin or reciptionist 
+            if (supervisor) { // user is admin or reciptionist 
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
-                    results = await prisma.physicalExamination.findMany({
+                    accessGranted = true;
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            visit: { doctorId: doctor.toString() }
+                            labSupervisor: { employeeId: supervisor.toString() }
                         },
                     });
                     if(results == null) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
-            return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action"  });
-
             }
-            else { //no params passed, logged in user should be the patient
-                if (session.user?.role == Role.DOCTOR) {
-                    results = await prisma.physicalExamination.findMany({
+            else { //no params passed, logged in user should be the supervisor
+                if (session.user?.role == Role.LAB_SUPERVISOR) {
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            visit: { doctorId: session.user?.id }
+                            status: LaboratoryTestStatus.COMPLETED
                         },
                     });
                     return res.status(200).json({ success: true, data: results });
@@ -56,16 +55,22 @@ export default async function handler(
                 .status(500)
                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
         }
+        if (!accessGranted) {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
     }
 
-
-    //doctor creating a a new examination 
     else if (req.method == "POST") {
-        if (session.user?.role == Role.DOCTOR) {
+        if (session.user?.role == Role.LAB_SUPERVISOR) {
+            accessGranted = true
             try {
-                const { dictionaryCode, visitId } = req.body;
-                const result = await prisma.physicalExamination.create({
+                const { supervisorNote, doctorNote, dictionaryCode, visitId } = req.body;
+                const result = await prisma.laboratoryExamination.create({
                     data: {
+                        supervisorNote: supervisorNote,
+                        doctorNote: doctorNote,
                         visit: { connect: { visitId: visitId } },
                         examinationDictionary: { connect: { code: dictionaryCode } },
                     },
@@ -77,12 +82,13 @@ export default async function handler(
                     .json({ success: false, message: "ERROR : Failed to create test" });
             }
         }
-        else {
+        if (!accessGranted) {
             return res
                 .status(401)
                 .json({ success: false, message: "You are not authorized to perform this action" });
         }
     }
+
     else {
         return res
             .status(400)

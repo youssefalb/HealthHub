@@ -8,11 +8,13 @@ interface JSONClause {
     [key: string]: any;
 }
 
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+
     let accessGranted = false;
 
     if (!session)
@@ -24,52 +26,27 @@ export default async function handler(
         try {
             const { doctor } = req.query;
             let results: string | any[];
-            if (doctor) { // user is doctor or or reciptionist or admin
+            if (doctor) { // user is admin or reciptionist 
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;
-                    results = await prisma.visit.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: doctor.toString()
+                            visit: { doctorId: doctor.toString() }
                         },
                     });
-                    if(results == null) throw "no data";
-                    return res.status(200).json({ success: true, data: results });
-                }
-                if (session.user?.role == Role.PATIENT) {
-                    accessGranted = true;
-                    results = await prisma.visit.findMany({
-                        where: {
-                            doctorId: doctor.toString(),
-                        },
-                        select: {
-                            date: true,
-                        }
-                    });
+                    if(results === null) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }
-            else { //no params passed, logged in user should be the doctor
+            else { //no params passed, logged in user should be the patient
                 if (session.user?.role == Role.DOCTOR) {
-                    results = await prisma.visit.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            doctorId: session.user?.id
+                            visit: { doctorId: session.user?.id }
                         },
-                        include: {
-                            patient: {
-                                include: {
-                                    user: {
-                                        select:
-                                        {
-                                            firstName: true,
-                                            lastName: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     });
+                    return res.status(200).json({ success: true, data: results });
                 }
-                return res.status(200).json({ success: true, data: results });
             }
 
         } catch (error) {
@@ -85,6 +62,33 @@ export default async function handler(
         }
     }
 
+
+    //doctor creating a a new test 
+    else if (req.method == "POST") {
+        if (session.user?.role == Role.DOCTOR) {
+            accessGranted = true
+            try {
+                const { doctorNote, dictionaryCode, visitId } = req.body;
+                const result = await prisma.laboratoryExamination.create({
+                    data: {
+                        doctorNote: doctorNote,
+                        visit: { connect: { visitId: visitId } },
+                        examinationDictionary: { connect: { code: dictionaryCode } },
+                    },
+                });
+                return res.status(200).json({ success: true, data: result });
+            } catch (error) {
+                return res
+                    .status(500)
+                    .json({ success: false, message: "ERROR : Failed to create test" });
+            }
+        }
+        else {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
+    }
     else {
         return res
             .status(400)

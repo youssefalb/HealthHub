@@ -8,11 +8,14 @@ interface JSONClause {
     [key: string]: any;
 }
 
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+
+    let accessGranted = false;
 
     if (!session)
         return res
@@ -25,20 +28,20 @@ export default async function handler(
             let results: string | any[];
             if (patient) { // user is doctor or or reciptionist or admin
                 if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
-                    results = await prisma.physicalExamination.findMany({
+                    accessGranted = true;
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
                             visit: { patientId: patient.toString() }
                         },
                     });
                     if(results == null) throw "no data";
-                    return res
-                        .status(200)
-                        .json({ success: true, data: results });
+                    
+                    return res.status(200).json({ success: true, data: results });
                 }
             }
             else { //no params passed, logged in user should be the patient
                 if (session.user?.role == Role.PATIENT) {
-                    results = await prisma.physicalExamination.findMany({
+                    results = await prisma.laboratoryExamination.findMany({
                         where: {
                             visit: { patientId: session.user?.id }
                         },
@@ -52,6 +55,11 @@ export default async function handler(
             return res
                 .status(500)
                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
+        }
+        if (!accessGranted) {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
         }
     }
 

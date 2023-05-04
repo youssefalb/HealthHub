@@ -5,6 +5,7 @@ import EmailProvider from "next-auth/providers/email";
 import prisma from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import sendVerificationEmail from "@/lib/sendVerificationEmail";
 
 const authHandler: NextApiHandler = (req, res) =>
     NextAuth(req, res, authOptions);

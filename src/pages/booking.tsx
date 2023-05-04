@@ -22,6 +22,9 @@ import React, { useState } from 'react';
 import PopupDialog from '@/components/PopupDialog';
 import CustomDatePicker from '@/components/AmazingDatePicker';
 import CustomTimePicker from '@/components/AmazingTimePicker';
+import { createVisitByPatient } from '@/lib/visits';
+import { Session } from 'inspector';
+import { useSession } from 'next-auth/react';
 //import AvailableDateTimePicker from '@/components/AmazingDatePicker';
 
 
@@ -35,6 +38,8 @@ const Label = ({ name, value }) => {
 };
 
 const BookingForm = () => {
+  const session = useSession();
+
   const [selectedSpecialization, setSelectedSpecialization] = useState('Cardiologist');
   const [doctor, setDoctor] = useState('Jan Gniadek');
   const [date, setDate] = useState('');
@@ -44,9 +49,10 @@ const BookingForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // submit handler logic
+    createVisitByPatient("sdsd", "5", "2023-03-29T16:30:00.000Z")
   };
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(true); //co to kurwa jest fookin andrii ??
 
   const handleClose = () => {
     setOpen(false);
@@ -55,7 +61,7 @@ const BookingForm = () => {
   const handleConfirm = () => {
     console.log("Confirmed!");
     setOpen(false);
-    window.location.href = "/settings";
+    window.location.href = "/settings"; //ughhhhhhhh 
   };
 
 
@@ -133,17 +139,15 @@ const BookingForm = () => {
         onConfirm={handleConfirm}
       />
 
-
-
       <h1 className="text-3xl font-bold mb-6">Booking Your Appointment</h1>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-4">
           <div className="w-full md:w-1/2 px-4 mb-4">
-            <Label name="Name" value={"Josephine"} />
+            <Label name="Name" value={session.data?.user?.name} />
           </div>
-          <div className="w-full md:w-1/2 px-4 mb-4">
+          {/* <div className="w-full md:w-1/2 px-4 mb-4">
             <Label name="Surname" value={"Jackson"} />
-          </div>
+          </div> */}
           <div className="w-full md:w-1/2 px-4 mb-4">
             <Label name="PESEL number" value={"20212145451"} />
           </div>
@@ -211,9 +215,7 @@ const BookingForm = () => {
 
         <CustomButton
           buttonText={"Book Appointment"}
-          onClick={() => {
-            //addVisit(role, 1, 7);
-          }}
+          onClick={handleSubmit}
         />
 
       </form>
