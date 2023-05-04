@@ -67,14 +67,13 @@ export default async function handler(
         if (session.user?.role == Role.DOCTOR || session.user?.role == Role.LAB_SUPERVISOR) {
             accessGranted = true
             try {
-                const { doctorNote, supervisorNote, labSupervisorId, dictionaryCode, visitId } = req.body;
+                const { doctorNote, supervisorNote, dictionaryCode, visitId } = req.body;
                 const result = await prisma.laboratoryExamination.create({
                     data: {
                         doctorNote: doctorNote,
                         supervisorNote: supervisorNote,
                         visit: { connect: { visitId: visitId } },
                         examinationDictionary: { connect: { code: dictionaryCode } },
-                        labSupervisor: { connect: { employeeId: labSupervisorId } },
                     },
                 });
                 return res.status(200).json({ success: true, data: result });

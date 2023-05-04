@@ -41,7 +41,7 @@ export default async function handler(
         //return not authorized
         return res
             .status(401)
-            .json({ success: false, message: "you are not a Doctor" });
+            .json({ success: false, message: "you are not a Technician" });
     }
 
     if (req.method == "PUT") {

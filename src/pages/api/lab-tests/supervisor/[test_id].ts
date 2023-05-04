@@ -57,10 +57,10 @@ export default async function handler(
                         },
                         data: {
                             status: req.body.status, //either approved or rejected 
-                            dateOfApprovalXorRejection: new Date()
+                            dateOfApprovalXorRejection: new Date(),
+                            labSupervisor: { connect: { employeeId: session.user.id } }
                         }
                     })
-                    //ToDo : can create a new test with all same details (if status was rejected)
                     return res.status(200).json({ success: true, data: results });
                 }
                 //return unauthorized

@@ -61,6 +61,33 @@ export default async function handler(
         }
     }
 
+    else if (req.method == "POST") {
+        if (session.user?.role == Role.LAB_SUPERVISOR) {
+            accessGranted = true
+            try {
+                const { supervisorNote, doctorNote, dictionaryCode, visitId } = req.body;
+                const result = await prisma.laboratoryExamination.create({
+                    data: {
+                        supervisorNote: supervisorNote,
+                        doctorNote: doctorNote,
+                        visit: { connect: { visitId: visitId } },
+                        examinationDictionary: { connect: { code: dictionaryCode } },
+                    },
+                });
+                return res.status(200).json({ success: true, data: result });
+            } catch (error) {
+                return res
+                    .status(500)
+                    .json({ success: false, message: "ERROR : Failed to create test" });
+            }
+        }
+        if (!accessGranted) {
+            return res
+                .status(401)
+                .json({ success: false, message: "You are not authorized to perform this action" });
+        }
+    }
+
     else {
         return res
             .status(400)
