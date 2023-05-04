@@ -11,8 +11,6 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-    // let accessGranted = false;
-
     if (!session)
         return res
             .status(401)
@@ -31,7 +29,7 @@ export default async function handler(
 
                 return res
                     .status(401)
-                    .json({ success: false, message: "this test doesn't nbelong to you" });
+                    .json({ success: false, message: "this test doesn't belong to you" });
             }
             catch (error) {
                 //here should be a redirect to a general purpose error page
@@ -97,7 +95,7 @@ export default async function handler(
         //return not authorized
         return res
             .status(401)
-            .json({ success: false, message: "you are not the technician ,, go away" });
+            .json({ success: false, message: "you are not the technician, go away" });
     }
 
     return res

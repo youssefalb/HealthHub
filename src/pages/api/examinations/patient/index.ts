@@ -8,7 +8,6 @@ interface JSONClause {
     [key: string]: any;
 }
 
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -34,15 +33,9 @@ export default async function handler(
                             visit: { patientId: patient.toString() }
                         },
                     });
-                return res
+                    return res
                         .status(200)
                         .json({ success: true, data: results });
-                }
-                else {
-                    accessGranted = false;
-                    // return res
-                    //     .status(401)
-                    //     .json({ success: false, message: "You can see this patient's data" });
                 }
             }
             else { //no params passed, logged in user should be the patient
@@ -54,9 +47,6 @@ export default async function handler(
                     });
                     return res.status(200).json({ success: true, data: results });
                 }
-                return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action" });
             }
 
         } catch (error) {

@@ -11,8 +11,6 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-    // let accessGranted = false;
-
     if (!session)
         return res
             .status(401)
