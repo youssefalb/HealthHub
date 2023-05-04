@@ -8,8 +8,14 @@ import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
   3- 
 */
 
-
-export async function getOwnVisits(role: Role) {
+/**
+ * Fetches the visits associated with a given role.
+ * @async
+ * @function
+ * @param {Role} role - The role of the user.
+ * @returns {Promise} The result of the fetch call.
+ */
+export async function getOwnVisits(role: Role) { //working
   let result
   if (role == Role.DOCTOR) {
     result = await fetch(`${doctorVisitsPath}`), {
@@ -27,6 +33,11 @@ export async function getOwnVisits(role: Role) {
   }
     return result;
 }
+
+export async function getDoctorVisits() {
+
+}
+
 
 //get a specific visit
 export async function getVisit(visit_id: String) {
