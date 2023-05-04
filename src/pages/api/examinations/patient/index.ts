@@ -15,8 +15,6 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-    let accessGranted = false;
-
     if (!session)
         return res
             .status(401)
@@ -28,7 +26,6 @@ export default async function handler(
             let results: string | any[];
             if (patient) { // user is doctor or or reciptionist or admin
                 if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
-                    accessGranted = true;
                     results = await prisma.physicalExamination.findMany({
                         where: {
                             visit: { patientId: patient.toString() }
@@ -39,10 +36,9 @@ export default async function handler(
                         .json({ success: true, data: results });
                 }
                 else {
-                    accessGranted = false;
-                    // return res
-                    //     .status(401)
-                    //     .json({ success: false, message: "You can see this patient's data" });
+                     return res
+                         .status(401)
+                         .json({ success: false, message: "You can't see this patient's data" });
                 }
             }
             else { //no params passed, logged in user should be the patient
@@ -64,11 +60,6 @@ export default async function handler(
             return res
                 .status(500)
                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
-        }
-        if (!accessGranted) {
-            return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action" });
         }
     }
 
