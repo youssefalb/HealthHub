@@ -32,6 +32,7 @@ export default async function handler(
                             doctorId: doctor.toString()
                         },
                     });
+                    return res.status(200).json({ success: true, data: results });
                 }
                 else {
                     accessGranted = false;
