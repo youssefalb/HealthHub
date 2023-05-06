@@ -9,6 +9,20 @@ interface JSONClause {
 }
 
 
+/**
+    * @swagger
+    * /api/examinations/doctor:
+    *   get:
+    *    description: test
+    *    responses:
+    *       200:
+    *           description: 200 response
+    *       401:
+    *           description: Unauthorized
+    *
+    *
+    *
+    */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -31,12 +45,12 @@ export default async function handler(
                             visit: { doctorId: doctor.toString() }
                         },
                     });
-                    if(results == null) throw "no data";
+                    if (results == null) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
-            return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action"  });
+                return res
+                    .status(401)
+                    .json({ success: false, message: "You are not authorized to perform this action" });
 
             }
             else { //no params passed, logged in user should be the patient

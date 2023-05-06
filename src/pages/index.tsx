@@ -37,7 +37,7 @@ function index() {
                             </p>
                             <div className="mt-5 max-w-md mx-auto flex justify-center">
                                 <a
-                                    href="#"
+                                    href="/auth/login"
                                     className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-blue-700 bg-white hover:bg-blue-50"
                                 >
                                     Log In & Book an Appointment
