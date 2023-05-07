@@ -38,7 +38,7 @@ export default function AppointmentsList() {
   if (isLoading) return <p>Loading...</p>;
   return (
     <div className="flex flex-col-reverse gap-4">
-      {appointments.length ? (
+      {appointments?.length ? (
         appointments.map((appointment) => (
           <AppointmentCard
             // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
