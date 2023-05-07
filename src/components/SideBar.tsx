@@ -77,7 +77,7 @@ export default function sideBar() {
       {session ? (
         <div className="flex items-center py-4 px-4 flex-col">
           <ProfilePicture
-            src={"https://avatars.githubusercontent.com/u/72605819?v=4"}
+            src={session.user?.image ? session.user?.image : "https://avatars.githubusercontent.com/u/72605819?v=4"}
             alt={session?.user?.name}
             size={5}
           />

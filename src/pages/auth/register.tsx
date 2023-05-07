@@ -15,12 +15,11 @@ export default function Register() {
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
         const data = { firstName, lastName, email, password, nationalId, insuranceId };
-        const res = await fetch(`/api/register`, {
+        await fetch(`/api/register`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: { "Content-Type": "application/json" }
         })
-        //console.log(fname);
     };
     return (
         <div className="bg-gray-50 min-h-screen">

@@ -101,28 +101,11 @@ export const authOptions: NextAuthOptions = {
                 const existingUser = await prisma.user.findUnique({
                     where: {id: user.id}
                 })
-                if(!existingUser)
+                if(!existingUser){
                     await sendVerificationEmail(user)
-                // if (profile.email_verified == true) {
-                //     try {
-                //         await prisma.user.update({
-                //             where:{id: user.id},
-                //             data: {emailVerified: new Date(),
-                //
-                //             }
-                //         })
-                //     }
-                //     catch (error) {
-                //         console.log("WELP")
-                //     }
-                // }
+                }
 
                 delete user.name;
-                // console.log("===SIGNIN===")
-                // console.log(profile)
-                // console.log(account)
-                //
-                // console.log(user)
             }
             return true;
         },
