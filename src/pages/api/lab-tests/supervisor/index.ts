@@ -34,7 +34,7 @@ export default async function handler(
                             labSupervisor: { employeeId: supervisor.toString() }
                         },
                     });
-                    if(results == null) throw "no data";
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }
@@ -45,6 +45,7 @@ export default async function handler(
                             status: LaboratoryTestStatus.COMPLETED
                         },
                     });
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }
@@ -66,13 +67,20 @@ export default async function handler(
         if (session.user?.role == Role.LAB_SUPERVISOR) {
             accessGranted = true
             try {
-                const { supervisorNote, doctorNote, dictionaryCode, visitId } = req.body;
+                const { supervisorNote, testId } = req.body;
+                //Get existing completed test
+                const oldTest = await prisma.laboratoryExamination.findUnique({
+                    where:{
+                        testId: testId,
+                    }
+                })
+                //create new one with same data + supervisorNote
                 const result = await prisma.laboratoryExamination.create({
                     data: {
                         supervisorNote: supervisorNote,
-                        doctorNote: doctorNote,
-                        visit: { connect: { visitId: visitId } },
-                        examinationDictionary: { connect: { code: dictionaryCode } },
+                        doctorNote: oldTest.doctorNote,
+                        visit: { connect: { visitId: oldTest.visitId } },
+                        examinationDictionary: { connect: { code: oldTest.dictionaryCode } },
                     },
                 });
                 return res.status(200).json({ success: true, data: result });

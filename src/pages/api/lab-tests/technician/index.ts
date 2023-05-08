@@ -34,7 +34,7 @@ export default async function handler(
                             labAssistant: { employeeId: technician.toString() }
                         },
                     });
-                    if(results == null) throw "no data";
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }
@@ -45,6 +45,7 @@ export default async function handler(
                             status: LaboratoryTestStatus.ORDERED
                         },
                     });
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

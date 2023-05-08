@@ -45,7 +45,7 @@ export default async function handler(
                             visit: { doctorId: doctor.toString() }
                         },
                     });
-                    if (results == null) throw "no data";
+                    if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
                 return res
@@ -60,6 +60,7 @@ export default async function handler(
                             visit: { doctorId: session.user?.id }
                         },
                     });
+                    if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

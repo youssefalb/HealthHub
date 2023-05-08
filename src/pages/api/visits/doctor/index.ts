@@ -32,7 +32,7 @@ export default async function handler(
                             doctorId: doctor.toString()
                         },
                     });
-                    if(results == null) throw "no data";
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
                 if (session.user?.role == Role.PATIENT) {
@@ -45,6 +45,7 @@ export default async function handler(
                             date: true,
                         }
                     });
+                    if(!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

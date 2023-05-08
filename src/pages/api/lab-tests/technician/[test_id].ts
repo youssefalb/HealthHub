@@ -24,6 +24,7 @@ export default async function handler(
                         testId: test_id.toString(),
                     },
                 })
+                if(test == null) throw "no data";
                 if (test.labAssistantId == session.user.id)
                     return res.status(200).json({ success: true, data: test });
 
