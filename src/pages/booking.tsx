@@ -17,33 +17,42 @@ import CustomButton from '@/components/CustomButton';
 import Dropdown from '@/components/DropDown';
 import LongTextInput from '@/components/LongtextInput';
 import "react-datepicker/dist/react-datepicker.css";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import PopupDialog from '@/components/PopupDialog';
 import CustomDatePicker from '@/components/AmazingDatePicker';
 import CustomTimePicker from '@/components/AmazingTimePicker';
 import { createVisitByPatient } from '@/lib/visits';
 import { useSession } from 'next-auth/react';
-//import AvailableDateTimePicker from '@/components/AmazingDatePicker';
-
-
-const Label = ({ name, value }) => {
-    return (
-        <div className="mb-2">
-            <label className="block mb-1 text-gray-500">{name}</label>
-            <div className="text-gray-800 font-bold">{value}</div>
-        </div>
-    );
-};
+import { useRouter } from 'next/router';
+import { getUserInfo } from '@/lib/userInfo';
+import Label from '@/components/Label';
 
 const BookingForm = () => {
+
+    const router = useRouter();
     const session = useSession();
+    const [pesel, setPesel] = useState('')
+    const [insurance, setInsurance] = useState('')
 
     const [selectedSpecialization, setSelectedSpecialization] = useState('Cardiologist');
     const [doctor, setDoctor] = useState('Jan Gniadek');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [note, setNote] = useState('');
+
+    const fetchData = async () => {
+        const response = await getUserInfo()    
+        const result = await response.json() 
+        console.log("result: ", result)
+        setPesel(result.data?.nationalId)
+        setInsurance(result.data?.patient.insuranceId)
+    }
+
+    useEffect(()=>{
+        fetchData()
+    }, [session]) 
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -60,7 +69,7 @@ const BookingForm = () => {
     const handleConfirm = () => {
         console.log("Confirmed!");
         setOpen(false);
-        window.location.href = "/settings"; //ughhhhhhhh 
+        router.push('/settings')
     };
 
 
@@ -124,8 +133,6 @@ const BookingForm = () => {
         setSelectedDate(date);
     };
 
-
-
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
 
@@ -144,14 +151,11 @@ const BookingForm = () => {
                     <div className="w-full md:w-1/2 px-4 mb-4">
                         <Label name="Name" value={session.data?.user?.name} />
                     </div>
-                    {/* <div className="w-full md:w-1/2 px-4 mb-4">
-            <Label name="Surname" value={"Jackson"} />
-          </div> */}
                     <div className="w-full md:w-1/2 px-4 mb-4">
-                        <Label name="PESEL number" value={"20212145451"} />
+                        <Label name="PESEL number" value={pesel} />
                     </div>
                     <div className="w-full md:w-1/2 px-4 mb-4">
-                        <Label name="Insurance number" value={"5254522325"} />
+                        <Label name="Insurance number" value={insurance} />
                     </div>
                 </div>
 
@@ -162,7 +166,7 @@ const BookingForm = () => {
                         /* Dropdown component goes here */
                         <Dropdown
                             label="Choose a Specialization*"
-                            items={['Cardiologist', 'Dentist', 'Dermatologist', 'Endocrinologist', 'Gastroenterologist']}
+                            items={}
                             selectedItem={selectedSpecialization}
                             onSelectedChange={setSelectedSpecialization}
                         />
