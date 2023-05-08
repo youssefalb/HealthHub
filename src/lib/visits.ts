@@ -14,7 +14,7 @@ let jsonHeader =  {
  * not authorized.
  */
 export async function getOwnVisits(role: Role): Promise<Response> { //working
-  let result 
+  let result
   if (role == Role.DOCTOR) {
     result = await fetch(`${doctorVisitsPath}`, {
       method: "GET",
