@@ -41,6 +41,7 @@ export default async function handler(req, res) {
             })
 
             console.log("Email verified");
+            res.redirect('/');
         }
         catch (error) {
             return res.status(401).send("Invalid or expired token");
