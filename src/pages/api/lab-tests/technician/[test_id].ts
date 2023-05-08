@@ -27,7 +27,6 @@ export default async function handler(
                 if(test == null) throw "no data";
                 if (test.labAssistantId == session.user.id)
                     return res.status(200).json({ success: true, data: test });
-
                 return res
                     .status(401)
                     .json({ success: false, message: "this test doesn't belong to you" });
@@ -53,7 +52,8 @@ export default async function handler(
                         testId: test_id.toString(),
                     }
                 })
-
+                const { note, status } = req.body
+                
                 if (testInQuestion.status == LaboratoryTestStatus.ORDERED) {
                     //assign self to perform the test
                     const results = await prisma.laboratoryExamination.update({
@@ -74,8 +74,9 @@ export default async function handler(
                             testId: test_id.toString(),
                         },
                         data: {
-                            status: req.body.status, //from in progress to completed or Cancelled 
-                            dateOfExecutionXorCancelling: new Date()
+                            status: status, //from in progress to completed or Cancelled 
+                            dateOfExecutionXorCancelling: new Date(),
+                            labTechnicianNote : note
                             //result:
                         }
                     })
