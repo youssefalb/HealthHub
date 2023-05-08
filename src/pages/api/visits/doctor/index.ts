@@ -66,7 +66,8 @@ export default async function handler(
                                     }
                                 }
                             }
-                        }
+                        },
+                        orderBy: { date: "asc" }
                     });
                 }
                 return res.status(200).json({ success: true, data: results });
