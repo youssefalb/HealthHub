@@ -14,7 +14,7 @@ let jsonHeader =  {
  * not authorized.
  */
 export async function getOwnVisits(role: Role): Promise<Response> { //working
-  let result
+  let result 
   if (role == Role.DOCTOR) {
     result = await fetch(`${doctorVisitsPath}`, {
       method: "GET",
@@ -32,10 +32,10 @@ export async function getOwnVisits(role: Role): Promise<Response> { //working
   return result;
 }
 
-//for patient it returns dates only
-//for recep. and admin returns everything
 /**
  * Async function that retrieves doctor visits based on doctor ID.
+ * if the requesting user is patient it returns only dates of visits.
+ * if the requesting user is receptionist or admin it returns all details
  * @param role Role of the user making the request.
  * @param doctorId ID of the doctor to retrieve visits for.
  * @returns A Promise that resolves with the result of the GET request to the doctor visits endpoint.
@@ -49,9 +49,9 @@ export async function getDoctorVisits(doctorId: String): Promise<Response> {
   return result;
 }
 
-
 /**
  * Retrieves a list of patient visits for a given patient ID.
+ * used only by receptionist or an admin.
  * @param {Role} role - The user role.
  * @param {String} patientId - The ID of the patient.
  * @returns {Promise<Response>} A promise that resolves with the response object containing the patient visits.
@@ -181,10 +181,9 @@ export async function changeVisitDoctor(visitId: String, doctorId: String): Prom
   return result;
 }
 
-//by doctor 
-//status, diagnosis, dateRealized, 
 /**
  * Updates the visit details for the given visit ID with the provided parameters.
+ * Consumed only by doctor to change status, diagnosis, dateRealized. 
  * @param {string} visitId - The ID of the visit to update.
  * @param {any} params - The parameters to update the visit with.
  * @returns {Promise<Response>} - A Promise that resolves to the updated visit details.
@@ -199,6 +198,3 @@ export async function changeVisitDetails(visitId: String, ...params: any): Promi
   });
   return result;
 }
-
-
-
