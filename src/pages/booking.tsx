@@ -1,17 +1,3 @@
-//here is a form for creating a visit
-/*
-    TODO:
-    - if name or surname or pesel or insurance not in db, we open popup.
-      - if cancel we go back to the list of appointments
-      - if conform we go to settings page
-    - else we open a form for booking appointment and fill read only lablels for name, surmane, pesel, insurance number
-
-    endpoints : 
-        retrieve available specialities
-        retrieve available doctors for a speciality
-        retrieve available time slots for a doctor
-        create a visit
-*/
 
 import CustomButton from '@/components/CustomButton';
 import Dropdown from '@/components/DropDown';
@@ -27,53 +13,12 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { getUserInfo } from '@/lib/userInfo';
 import Label from '@/components/Label';
-
-const BookingForm = () => {
-
-    const router = useRouter();
-    const session = useSession();
-    const [pesel, setPesel] = useState('')
-    const [insurance, setInsurance] = useState('')
-
-    const [selectedSpecialization, setSelectedSpecialization] = useState('Cardiologist');
-    const [doctor, setDoctor] = useState('Jan Gniadek');
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
-    const [note, setNote] = useState('');
-
-    const fetchData = async () => {
-        const response = await getUserInfo()    
-        const result = await response.json() 
-        console.log("result: ", result)
-        setPesel(result.data?.nationalId)
-        setInsurance(result.data?.patient.insuranceId)
-    }
-
-    useEffect(()=>{
-        fetchData()
-    }, [session]) 
+import { getSpecializationList } from '@/lib/bookings';
+import { Role, Specializations } from '@prisma/client';
+import { getDoctorsInSpeciality } from '@/lib/personnel';
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // submit handler logic
-        createVisitByPatient("sdsd", "5", "2023-03-29T16:30:00.000Z")
-    };
-
-    const [open, setOpen] = useState(true); //co to kurwa jest fookin andrii ??
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleConfirm = () => {
-        console.log("Confirmed!");
-        setOpen(false);
-        router.push('/settings')
-    };
-
-
-    // Of course instead of this we should fetch data from the API, this is just a mock
+ // Of course instead of this we should fetch data from the API, this is just a mock
     const dates = [
         { day: 1, month: "May" },
         { day: 2, month: "May" },
@@ -108,6 +53,78 @@ const BookingForm = () => {
         { day: 31, month: "May" },
     ];
 
+
+const BookingForm = () => {
+
+    const router = useRouter();
+    const { data: session } = useSession();
+    const [pesel, setPesel] = useState('')
+    const [insurance, setInsurance] = useState('')
+    const [specialities, setSpecialities] = useState(getSpecializationList())
+    const [selectedSpecialization, setSelectedSpecialization] = useState();
+    const [doctorList, setDoctorList] = useState([])
+    const [selectedDoctor, setSelectedDoctor] = useState();
+    // const [date, setDate] = useState('');
+    // const [time, setTime] = useState('');
+    const [note, setNote] = useState('');
+    const [name, setName] = useState('');
+    const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false); 
+    const [selectedTime, setSelectedTime] = useState('');
+    const [selectedDate, setSelectedDate] = useState(dates[0]);
+
+
+    const fetchData = async () => {
+        const response = await getUserInfo()    
+        const result = await response.json() 
+        console.log("result: ", result)
+        setPesel(result.data?.nationalId)
+        if (session?.user?.role === Role.PATIENT) 
+            setInsurance(result.data?.patient.insuranceId)
+    }
+
+    const fetchDoctors = async (specialization) => {
+        setSelectedSpecialization(specialization)
+        const response = await getDoctorsInSpeciality(specialization)  
+        const result = await JSON.stringify(response)
+        let doctorList = (JSON.parse(result))
+        doctorList = doctorList["data"]
+        //create and array of names of nested objects inside doctorList
+        if (doctorList != null) {
+            let doctorListNames = doctorList.map(doctor => doctor.user.firstName + " " + doctor.user.lastName)
+            setDoctorList(doctorListNames)
+        }
+        else 
+            setDoctorList([])
+        console.log("result: ", doctorList)
+        return result
+    }
+
+    //Todo
+    useEffect(()=>{
+        fetchData()
+        setName(session?.user?.name)
+        //function to check user insurance
+        
+    }, [session]) 
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // submit handler logic
+        // createVisitByPatient("sdsd", "5", "2023-03-29T16:30:00.000Z")
+    };
+
+    const handleClosePrompt = () => {
+        setCompleteUserInfoPromptShown(false);
+    };
+
+    const handleGoToSettings = () => {
+        console.log("Confirmed!");
+        setCompleteUserInfoPromptShown(false);
+        router.push('/settings')
+    };
+
+    //Todo : in lib
     // Similarly, this is just a mock, but in a form of a function not to wrrite so much garbage
     const getTimes = () => {
         const times = [];
@@ -121,35 +138,23 @@ const BookingForm = () => {
         return times;
     };
 
-    const [selectedTime, setSelectedTime] = useState(null);
-
-    const handleTimeSelected = (time) => {
-        setSelectedTime(time);
-    };
-
-    const [selectedDate, setSelectedDate] = useState(dates[0]);
-
-    const handleDateSelected = (date) => {
-        setSelectedDate(date);
-    };
-
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
 
 
             <PopupDialog
-                open={open}
-                onClose={handleClose}
+                open={completeUserInfoPromptShown}
+                onClose={handleClosePrompt}
                 title="Ooooops!"
                 message="Before you book your first appointment, we need you to fill in your personal details. Do you want to do it now?"
-                onConfirm={handleConfirm}
+                onConfirm={handleGoToSettings}
             />
 
             <h1 className="text-3xl font-bold mb-6">Booking Your Appointment</h1>
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-4">
-                        <Label name="Name" value={session.data?.user?.name} />
+                        <Label name="Name" value={name} />
                     </div>
                     <div className="w-full md:w-1/2 px-4 mb-4">
                         <Label name="PESEL number" value={pesel} />
@@ -166,9 +171,10 @@ const BookingForm = () => {
                         /* Dropdown component goes here */
                         <Dropdown
                             label="Choose a Specialization*"
-                            items={}
+                            items={specialities}
                             selectedItem={selectedSpecialization}
-                            onSelectedChange={setSelectedSpecialization}
+                            
+                            onSelectedChange={fetchDoctors}
                         />
                     }
                 </div>
@@ -177,9 +183,9 @@ const BookingForm = () => {
                     {/* Dropdown component goes here */}
                     <Dropdown
                         label="Choose a Doctor*"
-                        items={['Jan Paweł II', 'Jan Gniadek', 'Barbara Gniadek', 'Mikołaj Machowski', 'John Sins']}
-                        selectedItem={doctor}
-                        onSelectedChange={setDoctor}
+                        items={doctorList}
+                        selectedItem={selectedDoctor}
+                        onSelectedChange={setSelectedDoctor}
                     />
                 </div>
 
@@ -190,7 +196,7 @@ const BookingForm = () => {
                     {/* Date picker component goes here */}
                     <CustomDatePicker
                         dates={dates}
-                        onDateSelected={handleDateSelected}
+                        onDateSelected={setSelectedDate}
                     />
                     <label className="text-gray-400">
                         Selected Date: {selectedDate.day} {selectedDate.month}
@@ -202,7 +208,7 @@ const BookingForm = () => {
                     </label>
                     <CustomTimePicker
                         times={getTimes()}
-                        onTimeSelected={handleTimeSelected}
+                        onTimeSelected={setSelectedTime}
                     />
                 </div>
                 <label className="text-gray-400">

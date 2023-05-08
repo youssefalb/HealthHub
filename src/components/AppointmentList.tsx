@@ -29,7 +29,7 @@ export default function AppointmentsList() {
   useEffect(() => {
     if (session) {
       fetchData();
-      getDoctorVisits("5")
+      // getDoctorVisits("5")
     }
     //else loading state. show loading state
   }, [session]);
