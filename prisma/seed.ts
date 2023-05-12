@@ -238,7 +238,7 @@ async function seed() {
       emailVerified: "2023-04-07T21:05:53.424Z",
       password: await hashPassword("password123"),
       role: "DOCTOR",
-      doctor: { create: {speciality: "ANESTHESIOLOGY"} },
+      doctor: { create: {speciality: "DENTISTRY"} },
     },
     {
       firstName: "Juda",
@@ -414,6 +414,102 @@ async function seed() {
       password: await hashPassword("password123"),
 
       patient: { create: { insuranceId: "93214234" } },
+    },
+    {
+      firstName: "Galileo",
+      lastName: "Galiley",
+      sex: "science",
+      id: "33",
+      nationalId: "68092509230",
+      email: "galileo@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "OPHTHALMOLOGY"} },
+    },
+    {
+      firstName: "Eevee",
+      lastName: "Pokemon",
+      sex: "pokemon",
+      id: "34",
+      nationalId: "13090502396",
+      email: "eeve@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "PEDIATRICS"} },
+    },
+    {
+      firstName: "Psyduck",
+      lastName: "Pokemon",
+      sex: "pokemon",
+      id: "35",
+      nationalId: "87052909754",
+      email: "psyduck@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "UROLOGY"} },
+    },
+    {
+      firstName: "Stalker",
+      lastName: "Sanya",
+      sex: "Man",
+      id: "36",
+      nationalId: "02052501232",
+      email: "stalker@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "ONCOLOGY"} },
+    },
+    {
+      firstName: "Gregory",
+      lastName: "House",
+      sex: "Man",
+      id: "37",
+      nationalId: "95110105132",
+      email: "house@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "PULMONOLOGY"} },
+    },
+    {
+      firstName: "Ricardo",
+      lastName: "Milos",
+      sex: "Man",
+      id: "38",
+      nationalId: "23062704099",
+      email: "ricardo@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "RHEUMATOLOGY"} },
+    },
+    {
+      firstName: "Sadam",
+      lastName: "Housein",
+      sex: "Man",
+      id: "39",
+      nationalId: "10110508440",
+      email: "sadam@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "ORTHOPEDICS"} },
+    },
+    {
+      firstName: "Devops",
+      lastName: "Engineer",
+      sex: "Man",
+      id: "40",
+      nationalId: "56091200818",
+      email: "devops@gmail.com",
+      emailVerified: "2023-04-07T21:05:53.424Z",
+      password: await hashPassword("password123"),
+      role: "DOCTOR",
+      doctor: { create: {speciality: "PATHOLOGY"} },
     },
   ];
   const visitData: Prisma.VisitCreateInput[] = [
@@ -752,8 +848,242 @@ async function seed() {
       visit: { connect: { visitId: "2" } },
       labAssistant: { connect: { employeeId: "6" } },
     },
+    {
+      examinationDictionary: {
+        create: { type: "Blood test", description: "Full blood panel" },
+      },
+      testId : "3",
+      doctorNote: "Patient needs a full blood workup",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T08:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "5" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "MRI", description: "Head scan" },
+      },
+      testId : "4",
+      doctorNote: "Patient has persistent headaches",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T08:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "8" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Urinalysis", description: "Routine urine test" },
+      },
+      testId : "5",
+      doctorNote: "Patient needs a routine urine test",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T08:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "12" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Stool test", description: "Gastrointestinal issues" },
+      },
+      testId : "6",
+      doctorNote: "Patient has been experiencing gastrointestinal issues",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T12:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "16" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Thyroid function test", description: "Thyroid function evaluation" },
+      },
+      testId : "7",
+      doctorNote: "Patient has a family history of thyroid issues",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T12:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "20" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Pap smear", description: "Cervical cancer screening" },
+      },
+      testId : "8",
+      doctorNote: "Patient needs a routine pap smear",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T12:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "24" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Vitamin D test", description: "Vitamin D deficiency evaluation" },
+      },
+      testId : "9",
+      doctorNote: "Patient has a history of vitamin D deficiency",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "21" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    }
+    ,
+    {
+      examinationDictionary: {
+        create: { type: "Chest X-ray", description: "Lung function evaluation" },
+      },
+      testId : "10",
+      doctorNote: "Patient has been experiencing chest pain and difficulty breathing",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "22" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    }
+    ,
+    {
+      examinationDictionary: {
+        create: { type: "Allergy test", description: "Allergy evaluation" },
+      },
+      testId : "11",
+      doctorNote: "Patient has been experiencing allergy symptoms",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "26" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Urine pregnancy test", description: "Pregnancy confirmation" },
+      },
+      testId : "12",
+      doctorNote: "Patient suspects she may be pregnant",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "27" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Glucose test", description: "Blood sugar evaluation" },
+      },
+      testId : "13",
+      doctorNote: "Patient has a history of diabetes",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "10" } },
+      labAssistant: { connect: { employeeId: "6" } }, 
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Glucose test2", description: "Blood sugar evaluation" },
+      },
+      testId : "14",
+      doctorNote: "Patient has a history of diabetes",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T15:00:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "10" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Blood test", description: "Complete blood count" },
+      },
+      testId : "15",
+      doctorNote: "Patient reports feeling fatigued",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T16:30:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "5" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Stool test", description: "Gastrointestinal evaluation" },
+      },
+      testId : "16",
+      doctorNote: "Patient has been experiencing abdominal pain and irregular bowel movements",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T16:30:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "8" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Thyroid test", description: "Thyroid function evaluation" },
+      },
+      testId : "17",
+      doctorNote: "Patient has a family history of thyroid disease",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T16:30:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "12" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "HIV test", description: "HIV detection" },
+      },
+      testId : "18",
+      doctorNote: "Patient is due for a routine HIV test",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T16:30:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "16" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+    {
+      examinationDictionary: {
+        create: { type: "Urinalysis", description: "Kidney function evaluation" },
+      },
+      testId : "19",
+      doctorNote: "Patient has a history of kidney disease",
+      status: "ORDERED",
+      supervisorNote: "",
+      dateOfApprovalXorRejection: "2023-05-12T16:30:00.000Z",
+      dateOfExecutionXorCancelling: "2023-03-29T16:30:00.000Z",
+      visit: { connect: { visitId: "20" } },
+      labAssistant: { connect: { employeeId: "6" } },
+    },
+
+
   ];
-  const pyshicalExaminationData: Prisma.PhysicalExaminationCreateInput[] = [
+  const physicalExaminationData: Prisma.PhysicalExaminationCreateInput[] = [
     {
       examinationDictionary: {
         create: { type: "Covid test", description: "Covid test" },
@@ -768,6 +1098,90 @@ async function seed() {
       },
       physicalExamId : "2",
       visit: { connect: { visitId: "2" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Leg", description: "Leg problems" },
+      },
+      physicalExamId : "3",
+      visit: { connect: { visitId: "3" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Toe", description: "Toe problems" },
+      },
+      physicalExamId : "4",
+      visit: { connect: { visitId: "2" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Brain", description: "Brain problems" },
+      },
+      physicalExamId : "5",
+      visit: { connect: { visitId: "4" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Ear", description: "ear problems" },
+      },
+      physicalExamId : "6",
+      visit: { connect: { visitId: "6" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Tongue", description: "Tongue problems" },
+      },
+      physicalExamId : "7",
+      visit: { connect: { visitId: "7" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Middle leg", description: "Leg problems" },
+      },
+      physicalExamId : "8",
+      visit: { connect: { visitId: "8" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Imagination", description: "Imagination problems" },
+      },
+      physicalExamId : "9",
+      visit: { connect: { visitId: "9" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Something", description: "no idea problems" },
+      },
+      physicalExamId : "10",
+      visit: { connect: { visitId: "10" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Tractor", description: "Tractor problems" },
+      },
+      physicalExamId : "11",
+      visit: { connect: { visitId: "11" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Ear", description: "Def problems" },
+      },
+      physicalExamId : "12",
+      visit: { connect: { visitId: "12" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "Holera", description: "Witchery problems" },
+      },
+      physicalExamId : "13",
+      visit: { connect: { visitId: "12" } },
+    },
+    {
+      examinationDictionary: {
+        create: { type: "My hero", description: "Academy" },
+      },
+      physicalExamId : "14",
+      visit: { connect: { visitId: "12" } },
     },
   ];
   for (const user of userData) {
@@ -785,7 +1199,7 @@ async function seed() {
     });
     console.log(`Created labExamination with id: ${l.testId}`);
   }
-  for (const physicalExamination of pyshicalExaminationData) {
+  for (const physicalExamination of physicalExaminationData) {
     const p = await prisma.physicalExamination.create({
       data: physicalExamination,
     });

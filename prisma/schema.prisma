@@ -57,11 +57,11 @@ model VerificationToken {
 }
 
 model Doctor {
-  employeeId     String   @id @map("employee_id")
-  employmentDate DateTime @default(now()) @map("employment_date")
-  user           User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  visits         Visit[]
+  employeeId     String          @id @map("employee_id")
+  employmentDate DateTime        @default(now()) @map("employment_date")
   speciality     Specializations @default(SURGERY)
+  user           User            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  visits         Visit[]
 
   @@map("doctors")
 }
@@ -194,36 +194,36 @@ enum LaboratoryTestStatus {
 }
 
 enum Specializations {
-    SURGERY
-    CARDIOLOGY
-    DERMATOLOGY
-    ENDOCRINOLOGY
-    GASTROENTEROLOGY
-    GYNECOLOGY
-    HEMATOLOGY
-    NEUROLOGY
-    OPHTHALMOLOGY
-    OTOLARYNGOLOGY
-    PEDIATRICS
-    PSYCHIATRY
-    UROLOGY
-    ONCOLOGY
-    PULMONOLOGY
-    RHEUMATOLOGY
-    ANESTHESIOLOGY
-    FAMILY_MEDICINE
-    ORTHOPEDICS
-    PATHOLOGY
-    RADIOLOGY
-    BIOCHEMISTRY
-    DENTISTRY
-    DERMATOVENEREOLOGY
-    DIETETICS
-    ENDOCRINOLOGY_AND_METABOLISM
-    GASTROENTEROHEPATOLOGY
-    GENERAL_SURGERY
-    GERIATRICS
-    HEMATOLOGY_AND_MEDICAL_ONCOLOGY
-    INFECTIOUS_DISEASES
-    INTERNAL_MEDICINE_AND_RHEUMATOLOGY
+  SURGERY
+  CARDIOLOGY
+  DERMATOLOGY
+  ENDOCRINOLOGY
+  GASTROENTEROLOGY
+  GYNECOLOGY
+  HEMATOLOGY
+  NEUROLOGY
+  OPHTHALMOLOGY
+  OTOLARYNGOLOGY
+  PEDIATRICS
+  PSYCHIATRY
+  UROLOGY
+  ONCOLOGY
+  PULMONOLOGY
+  RHEUMATOLOGY
+  ANESTHESIOLOGY
+  FAMILY_MEDICINE
+  ORTHOPEDICS
+  PATHOLOGY
+  RADIOLOGY
+  BIOCHEMISTRY
+  DENTISTRY
+  DERMATOVENEREOLOGY
+  DIETETICS
+  ENDOCRINOLOGY_AND_METABOLISM
+  GASTROENTEROHEPATOLOGY
+  GENERAL_SURGERY
+  GERIATRICS
+  HEMATOLOGY_AND_MEDICAL_ONCOLOGY
+  INFECTIOUS_DISEASES
+  INTERNAL_MEDICINE_AND_RHEUMATOLOGY
 }
