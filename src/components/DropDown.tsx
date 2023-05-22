@@ -35,11 +35,11 @@ const Dropdown = ({ label, items, selectedItem, onSelectedChange }) => {
           <div className="absolute z-10 w-full mt-2 bg-white rounded-lg shadow-lg">
             {items.map((item) => (
               <div
-                key={item}
+                key={item.employeeId}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleItemClick(item)}
               >
-                {item}
+                {item.user?.firstName + " " + item.user?.lastName}
               </div>
             ))}
           </div>
