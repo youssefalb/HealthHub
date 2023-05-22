@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/apiAuth/[...nextauth]";
 import { Role, Status, Specializations } from "@prisma/client";
 
 interface JSONClause {

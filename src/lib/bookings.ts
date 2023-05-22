@@ -4,7 +4,6 @@ import { doctorVisitsPath } from './apiPaths'
 export function getSpecializationList() {
     //return an array of values of Specilaization
     return Object.values(Specializations)
-
 }
 
 // 9-5 , 30 min
@@ -16,7 +15,7 @@ export function getSpecializationList() {
 // 3. filter the slots by day
 // 4. return the days that have some free slots
 
-export async function getAvailableappointments(doctorId: String) {
+export async function getAvailableAppointments(doctorId: String) {
     const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
         method: "GET",
     })

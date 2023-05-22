@@ -13,7 +13,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { getUserInfo } from '@/lib/userInfo';
 import Label from '@/components/Label';
-import { getAvailableappointments, getSpecializationList } from '@/lib/bookings';
+import { getAvailableAppointments, getSpecializationList } from '@/lib/bookings';
 import { Role, Specializations } from '@prisma/client';
 import { getDoctorsInSpeciality } from '@/lib/personnel';
 import DateAndTimePicker from '@/components/DateTimePicker';
@@ -112,7 +112,7 @@ const BookingForm = () => {
         fetchUserData()
         setName(session?.user?.name)
         //function to check user insurance
-        getAvailableappointments("7")
+        getAvailableAppointments("7")
         
     }, [session]) 
 
