@@ -1,5 +1,5 @@
 import { LaboratoryTestStatus, Role, Status } from '@prisma/client';
-import { doctorTestsPath, patientTestsPath, supervisorTestsPath, technicianTestsPath } from './apiPaths';
+import { doctorTestsPath, patientTestsPath, supervisorTestsPath, technicianTestsPath, technicianTestsInProgressPath, supervisorTestsHistoryPath} from './apiPaths';
 import { getVisitDetails } from './visits';
 
 let jsonHeader = {
@@ -7,6 +7,21 @@ let jsonHeader = {
 }
 
 //===================== GENERAL ======================
+
+export async function getTechOrSupervisorTests(role: Role): Promise<Response>{
+    let path = '';
+    switch (role) {
+        case Role.LAB_SUPERVISOR:
+            path = supervisorTestsHistoryPath;
+            break;
+        case Role.LAB_ASSISTANT:
+            path = technicianTestsInProgressPath;
+            break;
+    }
+    return await fetch(path, {
+        method: 'GET',
+    });
+}
 
 /**
  * Async function that fetches a list of tests based on the user role.

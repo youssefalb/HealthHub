@@ -47,13 +47,41 @@ export default function sideBar() {
     menuItems = menuItems
       .concat([
         {
+          href: "/tests",
+          title: "Tests",
+        },
+        {
           href: "/visits",
           title: "Appointments",
         },
       ])
       .reverse();
   } else if (session?.user?.role === Role.LAB_ASSISTANT) {
+    menuItems = menuItems
+      .concat([
+        {
+          href: "/tests",
+          title: "My Tests",
+        },
+        {
+          href: "/all-tests",
+          title: "Tests",
+        },
+      ])
+      .reverse();
   } else if (session?.user?.role === Role.LAB_SUPERVISOR) {
+    menuItems = menuItems
+      .concat([
+        {
+          href: "/tests",
+          title: "My Tests",
+        },
+        {
+          href: "/all-tests",
+          title: "Tests",
+        },
+      ])
+      .reverse();
   } else if (session?.user?.role === Role.RECEPTIONIST) {
   } else {
     // menuItems = [

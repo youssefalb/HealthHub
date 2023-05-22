@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role } from "@prisma/client";
+import { LaboratoryTestStatus, Role } from "@prisma/client";
 
 interface JSONClause {
     [key: string]: any;
@@ -33,7 +33,7 @@ export default async function handler(
                             visit: { patientId: patient.toString() }
                         },
                     });
-                    if(!results.length) throw "no data";
+                    if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }
@@ -41,10 +41,11 @@ export default async function handler(
                 if (session.user?.role == Role.PATIENT) {
                     results = await prisma.laboratoryExamination.findMany({
                         where: {
-                            visit: { patientId: session.user?.id }
-                        },
+                            visit: { patientId: session.user?.id },
+                            status: LaboratoryTestStatus.APPROVED
+                        }
                     });
-                    if(!results.length) throw "no data";
+                    if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

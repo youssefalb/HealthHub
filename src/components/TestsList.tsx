@@ -1,22 +1,25 @@
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import TestCard from "./TestCard";
 import { useEffect, useState } from "react";
-import {getOwnTests} from "@/lib/tests";
-import { useRouter } from "next/router";
+import {getOwnTests, getTechOrSupervisorTests} from "@/lib/tests";
+import { Role } from "@prisma/client";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
-export default function TestsList() {
+export default function TestsList({techFetchAll = false}) {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
   const [isLoading, setIsLoading] = useState(true);
   const [tests, setTests] = useState([]);
 
   const role = session?.user?.role;
-  const user_id = session?.user?.id;
-  const router = useRouter();
 
   const fetchData = async () => {
     try {
-      const response = await getOwnTests(role);
+        let response;
+        if(techFetchAll || role == Role.PATIENT)
+          response = await getOwnTests(role);
+        else
+          response = await getTechOrSupervisorTests(role);
+
       const results = await response.json();
       setTests(results["data"]);
       setIsLoading(false);
@@ -28,7 +31,6 @@ export default function TestsList() {
   useEffect(() => {
     if (session) {
       fetchData();
-      // getDoctorVisits("5")
     }
     //else loading state. show loading state
   }, [session]);
@@ -36,6 +38,7 @@ export default function TestsList() {
   // ToDo : loading component
   if (isLoading) return <p>Loading...</p>;
   return (
+  // TODO(asser): add hyperling or redirect to one test details
     <div className="flex flex-col-reverse gap-4">
       {tests?.length ? (
         tests.map((test) => (
