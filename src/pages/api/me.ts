@@ -39,17 +39,23 @@ export default async function handler(
                 //THINGS TO CHANGE
                 //TODO(drago): 'data' to be changed 
                 //firstName, lastName, image, sex, nationalID(pesel), insuranceID 
-                const { firstName, lastName, image, sex, nationalId, insuranceId} = req.body
-                let dataClause = {
-                    
-                }
+                const { firstName, lastName, image, insuranceId} = req.body
+                console.log("Hello from put", firstName)
+
+                const dataClause = {
+                    firstName,    
+                    lastName,     
+                    image,           
+                    insuranceId,   
+                };
+                console.log("Hello from result", dataClause)
                 const result = await prisma.user.update({
                     where: {
                         id: session.user.id.toString(),
                     },
                     data: dataClause
                 })
-
+                console.log("Hello from result", result)
                 return res.status(200).json({ success: true, data: result });
             } catch (error) {
                 return res

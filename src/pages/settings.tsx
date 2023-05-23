@@ -1,45 +1,82 @@
 import { useSession } from "next-auth/react";
-import { useEffect, useCallback , useState} from "react";
+import { useEffect, useCallback, useState } from "react";
 import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
+import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 
 const UserSettings = () => {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
 
     const role = session?.user?.role;
-
-    const [profileImage, setProfileImage] = useState('');
+    const [image, setImage] = useState('');
     useEffect(() => {
         if (session?.user?.image) {
-            setProfileImage(session.user.image);
+            setImage(session.user.image);
         }
     }, [session?.user?.image]);
 
-    const handlePictureChange = useCallback((e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setProfileImage(event.target.result.toString());
-                console.log(session?.user?.image);
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
+
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
     const [email, setEmail] = useState('');
 
     const [hasInsurance, setHasInsurance] = useState(false);
-    const [insuranceNumber, setInsuranceNumber] = useState('');
+    const [insuranceId, setInsuranceId] = useState('');
 
+
+    const fetchData = async () => {
+        const response = await getUserInfo()
+        const result = await response.json()
+        setFirstName(result.data?.firstName)
+        setLastName(result.data?.lastName)
+        setEmail(result.data?.email)
+        setInsuranceId(result.data?.insuranceId)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [session])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(role);
     };
+
+    const handlePictureChange = useCallback((e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imageData = event.target.result.toString();
+                setImage(imageData);
+
+                const userData = {
+                    firstName,
+                    lastName,
+                    image: imageData,
+                    email,
+                    insuranceId,
+                };
+                console.log(userData);
+
+                updateUserInfo(userData)
+                    .then((response) => {
+                        if (response.ok) {
+                            console.log('User data updated successfully');
+                        } else {
+                            console.error('Failed to update user data');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Failed to update user data:', error);
+                    });
+            };
+            reader.readAsDataURL(file);
+        }
+    }, [firstName, lastName, email, insuranceId]);
 
     return (
         <div>
@@ -53,9 +90,9 @@ const UserSettings = () => {
             >
 
                 <label htmlFor="profileImageInput" className="w-full h-full">
-                    {profileImage ? (
+                    {image ? (
                         <img
-                            src={profileImage}
+                            src={image}
                             alt={session?.user?.name}
                             className="w-full h-full object-cover"
                         />
@@ -104,28 +141,12 @@ const UserSettings = () => {
                         }}
                     />
 
-
                     {role == Role.PATIENT && (
-                        // <div>
-                        // <InsuranceForm
-                        //     hasInsurance={hasInsurance}
-                        //     setHasInsurance={setHasInsurance}
-                        //     insuranceNumber={insuranceNumber}
-                        //     setInsuranceNumber={setInsuranceNumber}
-                        // />
-
-                        //       <CustomButton
-                        //         buttonText={"Save Changes"}
-                        //         onClick={() => {
-                        //             //Change name and username
-                        //         }}
-                        //     />
-                        // </div>
                         <div>
                             <TextInput
                                 label="Innsurance Number*"
-                                value={insuranceNumber}
-                                onChange={(e) => setInsuranceNumber(e.target.value)}
+                                value={insuranceId}
+                                onChange={(e) => setInsuranceId(e.target.value)}
                             />
                             <CustomButton
                                 buttonText={"Save Changes"}
