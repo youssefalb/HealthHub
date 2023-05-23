@@ -34,13 +34,13 @@ const dayFormatter = (day: string) => { return day.toUpperCase() }
 //         return result;
 //     }, []);
 
-    const fullyTakenDaysWith32Slots = fullyTakenDays.filter((day) => day.count === 2);
-    return fullyTakenDaysWith32Slots.map((day) => day.date);
-}
+//     const fullyTakenDaysWith32Slots = fullyTakenDays.filter((day) => day.count === 2);
+//     return fullyTakenDaysWith32Slots.map((day) => day.date);
+// }
 
-export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDate }) {
-    const fullyTakenDays = getFullyTakenDays(takenSlots);
-    console.log(fullyTakenDays);
+export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDate, changeMonth }) {
+    // const fullyTakenDays = getFullyTakenDays(takenSlots);
+    // console.log(fullyTakenDays);
 
     const handleChangeTime = (value) => {
         let time = dayjs(value.$d).format('THH:mm:ss.sss[Z]')
@@ -49,7 +49,10 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
 
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
+        let month = dayjs(value.$d).format('MM')
+        console.log(month)
         saveDate(date)
+        changeMonth(month)
     };
 
     return (
@@ -71,7 +74,7 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
                         disablePast
                         shouldDisableDate={isWeekend}
                         // renderLoading={() => <DayCalendarSkeleton />}
-                        // onMonthChange={}
+                        onMonthChange={handleChangeDate}
                         onChange={handleChangeDate}
                     //todo on change
                     //todo set isloading when fetching data

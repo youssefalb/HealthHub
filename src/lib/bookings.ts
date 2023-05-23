@@ -16,17 +16,19 @@ export function getSpecializationList() {
 // 3. filter the slots by day
 // 4. return the days that have some free slots
 
-export async function getTakenAppointments(doctorId: String, month: number = dayjs().month() ) {
-    // const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}`, {
-    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
+//as a patient or receptionist 
+export async function getTakenAppointments(doctorId: String, month: number = dayjs().month()) {
+    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}`, {
+        // const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
         method: "GET",
     })
-    if (visits.status === 200) {
-        const data = await visits.json()
+    const data = await visits.json()
+    if (data.length) {
         const takenSlots = data.data.map((visit: any) => new Date(visit.date))
-
         return takenSlots
     }
+
+    return []
 }
 
 

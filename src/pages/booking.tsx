@@ -16,6 +16,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { createVisitByPatient } from '@/lib/visits';
+import dayjs from 'dayjs';
 
 const BookingForm = () => {
 
@@ -31,6 +32,7 @@ const BookingForm = () => {
     const [name, setName] = useState('');
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false);
     const [selectedTime, setSelectedTime] = useState('');
+    const [selectedMonth, setMonth] = useState(dayjs().month())
     const [selectedDate, setSelectedDate] = useState('');
     const [takenSlots, setTakenSlots] = useState([])
 
@@ -66,6 +68,11 @@ const BookingForm = () => {
         setName(session?.user?.name)
     }, [session])
 
+    useEffect(() => {
+        fetchTakenSlots(selectedDoctor)
+    }, [selectedMonth])
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // submit handler logic
@@ -90,7 +97,7 @@ const BookingForm = () => {
 
     const fetchTakenSlots = async (doctor) => {
         if (doctor.employeeId) {
-            const response = await getTakenAppointments(doctor.employeeId)
+            const response = await getTakenAppointments(doctor.employeeId, selectedMonth)
             const result = JSON.stringify(response)
             let slotsList = null
             if (result)
@@ -116,6 +123,11 @@ const BookingForm = () => {
     const handleNoteChange = (event: object) => {
         setNote(event.target.value as string)
     };
+
+    const handleMonthCHange = (month) => {
+        setMonth(month)
+        getTakenAppointments(selectedDoctor.doctor?.employeeId, month-1)
+    }
 
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
@@ -197,6 +209,7 @@ const BookingForm = () => {
                         saveDate={setSelectedDate}
                         saveTime={setSelectedTime}
                         takenSlots={takenSlots}
+                        changeMonth = {handleMonthCHange}
                     />
                 </div>
 
