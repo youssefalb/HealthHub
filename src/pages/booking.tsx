@@ -13,9 +13,11 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { getUserInfo } from '@/lib/userInfo';
 import Label from '@/components/Label';
-import { getSpecializationList } from '@/lib/bookings';
+import { getAvailableAppointments, getSpecializationList } from '@/lib/bookings';
 import { Role, Specializations } from '@prisma/client';
 import { getDoctorsInSpeciality } from '@/lib/personnel';
+import DateAndTimePicker from '@/components/DateTimePicker';
+
 
 
  // Of course instead of this we should fetch data from the API, this is just a mock
@@ -63,9 +65,9 @@ const BookingForm = () => {
     const [specialities, setSpecialities] = useState(getSpecializationList())
     const [selectedSpecialization, setSelectedSpecialization] = useState();
     const [doctorList, setDoctorList] = useState([])
-    const [selectedDoctor, setSelectedDoctor] = useState();
-    // const [date, setDate] = useState('');
-    // const [time, setTime] = useState('');
+    const [doctorNamesList, setDoctorNamesList] = useState([])
+    const [selectedDoctor, setSelectedDoctor] = useState('');
+    const [selectedDoctorId, setSeletctedDoctorId] = useState('');
     const [note, setNote] = useState('');
     const [name, setName] = useState('');
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false); 
@@ -73,7 +75,12 @@ const BookingForm = () => {
     const [selectedDate, setSelectedDate] = useState(dates[0]);
 
 
-    const fetchData = async () => {
+    // const handleChooseDoctor(){
+    //     setSelectedDoctor()
+    //     setSeletctedDoctorId()
+    // }
+
+    const fetchUserData = async () => {
         const response = await getUserInfo()    
         const result = await response.json() 
         console.log("result: ", result)
@@ -88,22 +95,24 @@ const BookingForm = () => {
         const result = await JSON.stringify(response)
         let doctorList = (JSON.parse(result))
         doctorList = doctorList["data"]
+        // console.log("result: ", doctorList)
         //create and array of names of nested objects inside doctorList
         if (doctorList != null) {
+            setDoctorList(doctorList)
             let doctorListNames = doctorList.map(doctor => doctor.user.firstName + " " + doctor.user.lastName)
-            setDoctorList(doctorListNames)
+            setDoctorNamesList(doctorListNames)
         }
         else 
             setDoctorList([])
-        console.log("result: ", doctorList)
         return result
     }
 
     //Todo
     useEffect(()=>{
-        fetchData()
+        fetchUserData()
         setName(session?.user?.name)
         //function to check user insurance
+        getAvailableAppointments("7")
         
     }, [session]) 
 
@@ -194,26 +203,26 @@ const BookingForm = () => {
                         Choose a Date*
                     </label>
                     {/* Date picker component goes here */}
-                    <CustomDatePicker
+                    {/* <CustomDatePicker
                         dates={dates}
                         onDateSelected={setSelectedDate}
-                    />
-                    <label className="text-gray-400">
+                    /> */}
+
+
+                    {/* give it doctorId, on change month and on change time  */}
+                    <DateAndTimePicker doctorId={selectedDoctor} />
+                    
+                    
+                    
+                    {/* <label className="text-gray-400">
                         Selected Date: {selectedDate.day} {selectedDate.month}
-                    </label>
+                    </label> */}
                 </div>
-                <div className="">
-                    <label className="block mb-2" htmlFor="time">
-                        Choose a Time*
-                    </label>
-                    <CustomTimePicker
-                        times={getTimes()}
-                        onTimeSelected={setSelectedTime}
-                    />
-                </div>
-                <label className="text-gray-400">
+                
+                {/* <label className="text-gray-400">
                     Selected Time: {selectedTime}
-                </label>
+                </label> */}
+                
                 <div className="mt-4">
                     <LongTextInput
                         id="note"

@@ -1,2 +1,35 @@
 {
+    "terminal.integrated.profiles.osx": {
+    "dev": {
+      "path": "zsh",
+      "args": [
+        "-l"
+      ],
+      "icon": "server",
+        "color": "terminal.ansiGreen"
+    },
+    "prisma": {
+      "path": "zsh",
+      "args": [
+        "-l"
+      ],
+      "icon": "database",
+      "color": "terminal.ansiYellow"
+    },
+    "git": {
+      "path": "zsh",
+      "args": [
+        "-l"
+      ],
+      "icon": "github-alt",
+      "color": "terminal.ansiBlue"
+    },
+    "terminal": {
+      "path": "zsh",
+      "args": [
+        "-l"
+      ],
+      "color": "terminal.ansiRed"
+    }
+  }
 }
