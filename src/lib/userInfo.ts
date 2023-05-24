@@ -1,4 +1,5 @@
 import { userInfoPath } from "./apiPaths"
+import { hashPassword } from "./hashPassword"
 
 let jsonHeader = {
     'Content-Type': 'application/json'
@@ -19,4 +20,7 @@ export async function updateUserInfo(userData){
     });
     return result;
 }
+
+
+
 

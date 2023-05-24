@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
 import { Role } from "@prisma/client";
 import sendVerificationEmail from "@/lib/sendVerificationEmail";
+import { comparePassword, hashPassword } from "@/lib/hashPassword";
 
 export default async function handler(
     req: NextApiRequest,
@@ -40,7 +41,7 @@ export default async function handler(
                 //THINGS TO CHANGE
                 //TODO(drago): 'data' to be changed 
                 //firstName, lastName, image, sex, nationalID(pesel), insuranceID 
-                const { firstName, lastName, image, insuranceId, email } = req.body
+                const { firstName, lastName, image, insuranceId, email, newPassword, oldPassword } = req.body
                 console.log("Hello from put", firstName)
                 if (email) {
                     const user = await prisma.user.findUnique({
@@ -65,6 +66,39 @@ export default async function handler(
                     return res.status(200).json({ success: true, data: result });
 
                 }
+                else if (newPassword && oldPassword) {
+
+                    const { password: currentHashedPassword } = await prisma.user.findUnique({
+                        where: {
+                            id: session.user.id.toString(),
+                        },
+                        select: {
+                            password: true
+                        }
+                    })
+                    const hashedPassword = await hashPassword(newPassword)
+                    const isPasswordCorrect = await comparePassword(oldPassword, currentHashedPassword)
+                    console.log("Hello from password corecto", isPasswordCorrect)
+                    //if the password is the same then change the password in db
+                    if (isPasswordCorrect) {
+                        if (newPassword == oldPassword) {
+                            return res.status(401).json({ success: false, message: "New password cannot be the same as the old one" });
+                        }
+                        const result = await prisma.user.update({
+                            where: {
+                                id: session.user.id.toString(),
+                            },
+                            data: {
+                                password: hashedPassword
+                            }
+                        })
+                        return res.status(200).json({ success: true, data: result });
+                    }
+                    else {
+                        return res.status(401).json({ success: false, message: "Wrong password" });
+                    }
+                }
+
                 else {
                     const dataClause = {
                         firstName,

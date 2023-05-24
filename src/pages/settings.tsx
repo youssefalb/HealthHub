@@ -3,7 +3,7 @@ import { useEffect, useCallback, useState } from "react";
 import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
-import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
+import { getUserInfo, updateUserInfo} from "@/lib/userInfo";
 
 const UserSettings = () => {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -20,10 +20,10 @@ const UserSettings = () => {
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-
     const [email, setEmail] = useState('');
     const [emailVerified, setEmailVerified] = useState('');
-
+    const [newPassword, setNewPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
 
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
@@ -45,6 +45,14 @@ const UserSettings = () => {
         }
         updateUserInfo(userData)
         fetchData()
+    }
+    const updateUserPassword = () => {
+        console.log("saveUserNameAndSurname");
+        const userData = {
+            newPassword,
+            oldPassword
+        }
+        updateUserInfo(userData)        
     }
 
     const fetchData = async () => {
@@ -157,7 +165,25 @@ const UserSettings = () => {
                         buttonText={"Save Changes"}
                     />
                 </form>
-                            
+
+                <form onSubmit={updateUserPassword}>
+                    <TextInput
+                        label="Old Password*"
+                        value={oldPassword}
+                        type='password'
+                        onChange={(e) => setOldPassword(e.target.value)}
+                    />
+                    <TextInput
+                        label="New Password*"
+                        value={newPassword}
+                        type='password'
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />             
+                    <CustomButton
+                        buttonText={"Save Changes"}
+                    />
+                </form>
+
                     {role == Role.PATIENT && (
                         <div>
                             <TextInput
