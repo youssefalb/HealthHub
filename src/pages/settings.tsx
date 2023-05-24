@@ -3,7 +3,9 @@ import { useEffect, useCallback, useState } from "react";
 import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
-import { getUserInfo, updateUserInfo} from "@/lib/userInfo";
+import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserSettings = () => {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -24,35 +26,76 @@ const UserSettings = () => {
     const [emailVerified, setEmailVerified] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
+    const [pesel, setPesel] = useState('');
+
 
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
 
-    const updateUserNameAndSurname = () => {
+    const updateUserNameAndSurname = async (e) => {
+        e.preventDefault();
         console.log("saveUserNameAndSurname");
         const userData = {
             firstName,
             lastName
         }
-        updateUserInfo(userData)
+        const res = updateUserInfo(userData)
+            if ((await res).ok){
+            toast.success('Data updated successfully');
+        }  
+        else{
+            toast.error('Failed to update data');
+        }
 
     }
 
-    const updateUserEmail = () => {
+    const updateUserEmail = async (e) => {
+        e.preventDefault();
         console.log("saveUserNameAndSurname");
+
         const userData = {
             email,
         }
-        updateUserInfo(userData)
-        fetchData()
-    }
-    const updateUserPassword = () => {
+        const res =  updateUserInfo(userData)
+
+        if ((await res).ok){
+            toast.success('Email updated successfully', { autoClose: 50000 });
+        }  
+        else{
+            toast.error('Failed to update email');
+        }
+      }
+    const updateUserPassword = async (e) => {
+        e.preventDefault();
         console.log("saveUserNameAndSurname");
         const userData = {
             newPassword,
             oldPassword
         }
-        updateUserInfo(userData)        
+        const res =  updateUserInfo(userData)
+        if ((await res).ok){
+            toast.success('Password updated successfully', { autoClose: 50000 });
+        }
+        else{
+            toast.error('Failed to update password');
+        }
+    }
+
+    const updateUserPesel = async (e) => {
+        e.preventDefault();
+        console.log("saveUserNameAndSurname");
+        const userData = {
+            pesel,
+        }
+
+        const res = updateUserInfo(userData)
+        if ((await res).ok){
+            toast.success('Pesel updated successfully', { autoClose: 50000 });
+        }
+        else{
+            toast.error('Failed to update pesel');
+        }
+
     }
 
     const fetchData = async () => {
@@ -63,6 +106,8 @@ const UserSettings = () => {
         setEmail(result.data?.email)
         setInsuranceId(result.data?.insuranceId)
         setEmailVerified(result.data?.emailVerified)
+        setPesel(result.data?.nationalId)
+        setHasInsurance(result.data?.insuranceId ? true : false)
     }
 
     useEffect(() => {
@@ -86,7 +131,7 @@ const UserSettings = () => {
                 updateUserInfo(userData)
                     .then((response) => {
                         if (response.ok) {
-                            console.log('User data updated successfully');
+                                console.log("response ok");
                         } else {
                             console.error('Failed to update user data');
                         }
@@ -158,11 +203,11 @@ const UserSettings = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     {emailVerified ? (
-                        <span className="text-green-500 flex mb-0.5">Email verified</span>
-                    ): ( 
-                        <span className="text-red-500 flex mb-0.5">Email not verified</span>)}                    
+                        <span className="text-green-500 flex mb-2">Email verified</span>
+                    ) : (
+                        <span className="text-red-500 flex mb-2">Email not verified</span>)}
                     <CustomButton
-                        buttonText={"Save Changes"}
+                        buttonText={"Save Email"}
                     />
                 </form>
 
@@ -178,31 +223,46 @@ const UserSettings = () => {
                         value={newPassword}
                         type='password'
                         onChange={(e) => setNewPassword(e.target.value)}
-                    />             
+                    />
                     <CustomButton
-                        buttonText={"Save Changes"}
+                        buttonText={"Save Password"}
                     />
                 </form>
 
-                    {role == Role.PATIENT && (
-                        <div>
-                            <TextInput
-                                label="Innsurance Number*"
-                                value={insuranceId}
-                                type={"text"}
-                                onChange={(e) => setInsuranceId(e.target.value)}
-                            />
-                            <CustomButton
-                                buttonText={"Save Changes"}
-                                onClick={() => {
-                                    //Change the insurance number
-                                }}
-                            />
-                        </div>
-                    )}
+                <form onSubmit={updateUserPesel}>
+                    <TextInput
+                        label="Pesel*"
+                        value={pesel}
+                        type='text'
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <CustomButton
+                        buttonText={"Save Pesel"}
+                    />
+                </form>
+
+
+
+                {role == Role.PATIENT && (
+                    <div>
+                        <TextInput
+                            label="Innsurance Number*"
+                            value={insuranceId}
+                            type={"text"}
+                            onChange={(e) => setInsuranceId(e.target.value)}
+                        />
+                        <CustomButton
+                            buttonText={"Save Insurance Data"}
+                            onClick={() => {
+                                //Change the insurance number
+                            }}
+                        />
+                    </div>
+                )}
 
 
             </div>
+            <ToastContainer />
         </div>
     );
 };

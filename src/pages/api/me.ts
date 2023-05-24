@@ -41,8 +41,7 @@ export default async function handler(
                 //THINGS TO CHANGE
                 //TODO(drago): 'data' to be changed 
                 //firstName, lastName, image, sex, nationalID(pesel), insuranceID 
-                const { firstName, lastName, image, insuranceId, email, newPassword, oldPassword } = req.body
-                console.log("Hello from put", firstName)
+                const { firstName, lastName, image, insuranceId,nationalID,  email, newPassword, oldPassword } = req.body
                 if (email) {
                     const user = await prisma.user.findUnique({
                         where: {
@@ -78,8 +77,6 @@ export default async function handler(
                     })
                     const hashedPassword = await hashPassword(newPassword)
                     const isPasswordCorrect = await comparePassword(oldPassword, currentHashedPassword)
-                    console.log("Hello from password corecto", isPasswordCorrect)
-                    //if the password is the same then change the password in db
                     if (isPasswordCorrect) {
                         if (newPassword == oldPassword) {
                             return res.status(401).json({ success: false, message: "New password cannot be the same as the old one" });
@@ -105,15 +102,14 @@ export default async function handler(
                         lastName,
                         image,
                         insuranceId,
+                        nationalID
                     };
-                    console.log("Hello from result", dataClause)
                     const result = await prisma.user.update({
                         where: {
                             id: session.user.id.toString(),
                         },
                         data: dataClause
                     })
-                    console.log("Hello from result", result)
                     return res.status(200).json({ success: true, data: result });
                 }
             } catch (error) {
