@@ -3,7 +3,7 @@ import { useEffect, useCallback, useState } from "react";
 import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
-import { getUserInfo, updateUserInfo, updateUserEmail } from "@/lib/userInfo";
+import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 
 const UserSettings = () => {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -22,6 +22,8 @@ const UserSettings = () => {
     const [lastName, setLastName] = useState('');
 
     const [email, setEmail] = useState('');
+    const [emailVerified, setEmailVerified] = useState('');
+
 
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
@@ -41,9 +43,10 @@ const UserSettings = () => {
         const userData = {
             email,
         }
-        updateUserEmail(userData)
-
+        updateUserInfo(userData)
+        fetchData()
     }
+
     const fetchData = async () => {
         const response = await getUserInfo()
         const result = await response.json()
@@ -51,16 +54,13 @@ const UserSettings = () => {
         setLastName(result.data?.lastName)
         setEmail(result.data?.email)
         setInsuranceId(result.data?.insuranceId)
+        setEmailVerified(result.data?.emailVerified)
     }
 
     useEffect(() => {
         fetchData()
     }, [session])
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(role);
-    };
 
     const handlePictureChange = useCallback((e) => {
         const file = e.target.files[0];
@@ -124,36 +124,46 @@ const UserSettings = () => {
                 </label>
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
+                <form onSubmit={updateUserNameAndSurname}>
                     <TextInput
                         label="Name*"
                         value={firstName}
+                        type={"text"}
                         onChange={(e) => setFirstName(e.target.value)}
                     />
                     <TextInput
                         label="Surname*"
                         value={lastName}
+                        type={"text"}
                         onChange={(e) => setLastName(e.target.value)}
                     />
 
                     <CustomButton
                         buttonText={"Save Changes"}
-                        onClick={updateUserNameAndSurname}
                     />
+                </form>
+                <form onSubmit={updateUserEmail}>
                     <TextInput
                         label="Email*"
                         value={email}
+                        type='email'
                         onChange={(e) => setEmail(e.target.value)}
                     />
+                    {emailVerified ? (
+                        <span className="text-green-500 flex mb-0.5">Email verified</span>
+                    ): ( 
+                        <span className="text-red-500 flex mb-0.5">Email not verified</span>)}                    
                     <CustomButton
                         buttonText={"Save Changes"}
-                        onClick={updateUserEmail}
                     />
-
+                </form>
+                            
                     {role == Role.PATIENT && (
                         <div>
                             <TextInput
                                 label="Innsurance Number*"
                                 value={insuranceId}
+                                type={"text"}
                                 onChange={(e) => setInsuranceId(e.target.value)}
                             />
                             <CustomButton

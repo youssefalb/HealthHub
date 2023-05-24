@@ -57,7 +57,8 @@ export default async function handler(
                             id: session.user.id.toString(),
                         },
                         data: {
-                            email: email
+                            email: email,
+                            emailVerified: null
                         }
                     })
                     await sendVerificationEmail(result);
