@@ -3,7 +3,7 @@ import { useEffect, useCallback, useState } from "react";
 import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
-import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
+import { getUserInfo, updateUserInfo, updateUserEmail } from "@/lib/userInfo";
 
 const UserSettings = () => {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -26,7 +26,24 @@ const UserSettings = () => {
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
 
+    const updateUserNameAndSurname = () => {
+        console.log("saveUserNameAndSurname");
+        const userData = {
+            firstName,
+            lastName
+        }
+        updateUserInfo(userData)
 
+    }
+
+    const updateUserEmail = () => {
+        console.log("saveUserNameAndSurname");
+        const userData = {
+            email,
+        }
+        updateUserEmail(userData)
+
+    }
     const fetchData = async () => {
         const response = await getUserInfo()
         const result = await response.json()
@@ -54,11 +71,7 @@ const UserSettings = () => {
                 setImage(imageData);
 
                 const userData = {
-                    firstName,
-                    lastName,
                     image: imageData,
-                    email,
-                    insuranceId,
                 };
                 console.log(userData);
 
@@ -76,7 +89,7 @@ const UserSettings = () => {
             };
             reader.readAsDataURL(file);
         }
-    }, [firstName, lastName, email, insuranceId]);
+    }, []);
 
     return (
         <div>
@@ -111,7 +124,6 @@ const UserSettings = () => {
                 </label>
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
-                <form onSubmit={handleSubmit}>
                     <TextInput
                         label="Name*"
                         value={firstName}
@@ -125,9 +137,7 @@ const UserSettings = () => {
 
                     <CustomButton
                         buttonText={"Save Changes"}
-                        onClick={() => {
-                            //Change name and username
-                        }}
+                        onClick={updateUserNameAndSurname}
                     />
                     <TextInput
                         label="Email*"
@@ -136,9 +146,7 @@ const UserSettings = () => {
                     />
                     <CustomButton
                         buttonText={"Save Changes"}
-                        onClick={() => {
-                            //Change name and username
-                        }}
+                        onClick={updateUserEmail}
                     />
 
                     {role == Role.PATIENT && (
@@ -158,7 +166,6 @@ const UserSettings = () => {
                     )}
 
 
-                </form>
             </div>
         </div>
     );

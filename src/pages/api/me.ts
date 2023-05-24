@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
 import { Role } from "@prisma/client";
+import sendVerificationEmail from "@/lib/sendVerificationEmail";
 
 export default async function handler(
     req: NextApiRequest,
@@ -39,24 +40,47 @@ export default async function handler(
                 //THINGS TO CHANGE
                 //TODO(drago): 'data' to be changed 
                 //firstName, lastName, image, sex, nationalID(pesel), insuranceID 
-                const { firstName, lastName, image, insuranceId} = req.body
+                const { firstName, lastName, image, insuranceId, email } = req.body
                 console.log("Hello from put", firstName)
+                if (email) {
+                    const user = await prisma.user.findUnique({
+                        where: {
+                            email: email
+                        }
+                    })
+                    if (user) {
+                        return res.status(401).json({ success: false, message: "Email already in use" });
+                    }
 
-                const dataClause = {
-                    firstName,    
-                    lastName,     
-                    image,           
-                    insuranceId,   
-                };
-                console.log("Hello from result", dataClause)
-                const result = await prisma.user.update({
-                    where: {
-                        id: session.user.id.toString(),
-                    },
-                    data: dataClause
-                })
-                console.log("Hello from result", result)
-                return res.status(200).json({ success: true, data: result });
+                    const result = await prisma.user.update({
+                        where: {
+                            id: session.user.id.toString(),
+                        },
+                        data: {
+                            email: email
+                        }
+                    })
+                    await sendVerificationEmail(result);
+                    return res.status(200).json({ success: true, data: result });
+
+                }
+                else {
+                    const dataClause = {
+                        firstName,
+                        lastName,
+                        image,
+                        insuranceId,
+                    };
+                    console.log("Hello from result", dataClause)
+                    const result = await prisma.user.update({
+                        where: {
+                            id: session.user.id.toString(),
+                        },
+                        data: dataClause
+                    })
+                    console.log("Hello from result", result)
+                    return res.status(200).json({ success: true, data: result });
+                }
             } catch (error) {
                 return res
                     .status(500)
