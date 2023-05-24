@@ -17,18 +17,11 @@ export function getSpecializationList() {
 // 4. return the days that have some free slots
 
 //as a patient or receptionist 
-export async function getTakenAppointments(doctorId: String, month: number = dayjs().month()) {
-    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}`, {
-        // const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
+export async function getTakenAppointments(doctorId: String, year: number = dayjs().year(), month: number = dayjs().month()) {
+    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}&year=${year}`, {
         method: "GET",
     })
-    let data = await visits.json()
-    data = await data.data
-    if (data) {
-        return await data
-    }
-
-    return []
+    return visits
 }
 
 

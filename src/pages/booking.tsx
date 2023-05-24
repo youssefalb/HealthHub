@@ -56,6 +56,7 @@ const BookingForm = () => {
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false);
     const [selectedTime, setSelectedTime] = useState('');
     const [selectedMonth, setMonth] = useState(dayjs().month()) //needed for passing to datepicker
+    const [selectedYear, setYear] = useState(dayjs().year()) //needed for passing to datepicker
     const [selectedDate, setSelectedDate] = useState('');
 
     const fetchUserData = async () => {
@@ -68,7 +69,6 @@ const BookingForm = () => {
             else
                 setInsurance(result.data?.patient.insuranceId)
         }
-
     }
 
     const fetchDoctors = async (speciality: String) => {
@@ -97,7 +97,7 @@ const BookingForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // submit handler logic
-        createVisitByPatient(note, selectedDoctor.doctor.employeeId, selectedDate + selectedTime)
+        createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
         //NOTE: IDK if this router is good or not
         router.push('/visits')
     };
@@ -147,7 +147,7 @@ const BookingForm = () => {
 
     const handleMonthCHange = (month) => {
         setMonth(month)
-        getTakenAppointments(selectedDoctor.doctor?.employeeId, month-1)
+        // getTakenAppointments(selectedDoctor.doctor?.employeeId, month-1)
     }
 
     return (
@@ -229,9 +229,11 @@ const BookingForm = () => {
                         <DateAndTimePicker
                             doctor={selectedDoctor.doctor}
                             month={selectedMonth}
+                            year={selectedYear}
                             saveDate={setSelectedDate}
                             saveTime={setSelectedTime}
-                            changeMonth={handleMonthCHange}
+                            changeMonth={setMonth}
+                            changeYear={setYear}
                         />}
                 </div>
 

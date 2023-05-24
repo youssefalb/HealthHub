@@ -26,17 +26,18 @@ export default async function handler(
     if (req.method === "GET") {
         try {
             const { doctor } = req.query;
-            let { month } = req.query
+            let { month, year } = req.query
             console.log(month)
             let results: string | any[];
             if (doctor) { // user is patient or reciptionist or admin
                 let dataClause = {}
-                if (month) {
+                if (month && year) {
                     //create a new date with current year and start of {month}
                     let desiredMonth = Number(month)
+                    let desiredYear = Number(year)
                     // console.log(desiredMonth)
-                    const startDate = dayjs().month(desiredMonth).year(currentYear).toISOString()
-                    const endDate = dayjs().month(desiredMonth).year(currentYear).endOf('month').toISOString()
+                    const startDate = dayjs().month(desiredMonth).year(desiredYear).toISOString()
+                    const endDate = dayjs().month(desiredMonth).year(desiredYear).endOf('month').toISOString()
 
                     // console.log("start", startDate)
                     // console.log("end", endDate)
