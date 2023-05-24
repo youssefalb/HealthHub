@@ -34,12 +34,12 @@ export default async function handler(
                 if (month) {
                     //create a new date with current year and start of {month}
                     let desiredMonth = Number(month)
-                    console.log(desiredMonth)
+                    // console.log(desiredMonth)
                     const startDate = dayjs().month(desiredMonth).year(currentYear).toISOString()
                     const endDate = dayjs().month(desiredMonth).year(currentYear).endOf('month').toISOString()
 
-                    console.log("start", startDate)
-                    console.log("end", endDate)
+                    // console.log("start", startDate)
+                    // console.log("end", endDate)
 
                     dataClause = {
                         date: {
@@ -47,7 +47,7 @@ export default async function handler(
                             lte: endDate,
                         }
                     }
-                    console.log(dataClause)
+                    // console.log(dataClause)
                 }
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;

@@ -38,11 +38,61 @@ const dayFormatter = (day: string) => { return day.toUpperCase() }
 //     return fullyTakenDaysWith32Slots.map((day) => day.date);
 // }
 
-export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDate, changeMonth }) {
+
+
+export default function DateAndTimePicker({ doctor, month,  saveTime, saveDate, changeMonth }) {
     // const fullyTakenDays = getFullyTakenDays(takenSlots);
     // console.log(fullyTakenDays);
 
-    const handleChangeTime = (value) => {
+  const [selectedMonth, setSelectedMonth] = useState()
+  const [selectedTime, setSelectedTime] = useState()
+  const [selectedDate, setSelectedDate] = useState()
+  const [fullDays, setFullDays] = useState([])
+  const [takenTimeSlots, setTakenTimeSlots] = useState([])
+  
+  function getFullyTakenDays(takenAppointments) {
+  if (!Array.isArray(takenAppointments)) {
+    console.error("takenAppointments should be an array.");
+    return [];
+  }
+  console.log("hellooo mfs I am bored")
+  const fullyTakenDays = takenAppointments.reduce((result, slot) => {
+    const date = slot.toDateString(); // Extract the date component from the slot
+    const dayEntry = result.find((entry) => entry.date === date);
+
+    if (dayEntry) {
+      dayEntry.slots.push(slot);
+    } else {
+      result.push({ date, slots: [slot] });
+    }
+
+    console.log("fullyTakenDays:", result);
+    return result;
+  }, []);
+
+  return fullyTakenDays;
+}
+
+  const fetchstuff = async (id: String, month: number)=> {
+    const results = await getTakenAppointments(id, month)
+    console.log("var : ", id, " type : ", typeof (id))
+    console.log("var : " , month, " type : ", typeof(month))
+    
+    let jh = JSON.stringify(results)
+    console.log("zeftttttttt", jh)
+    return jh
+  }
+  
+  useEffect(() => {
+    console.log("doctor : ", doctor)
+    const results = fetchstuff(doctor.employeeId, month)
+    console.log("results of fetching: ", results)
+    setFullDays(getFullyTakenDays(results))
+    console.log("full Days: ", fullDays)
+  }, [selectedMonth])
+  
+
+  const handleChangeTime = (value) => {
         let time = dayjs(value.$d).format('THH:mm:ss.sss[Z]')
         saveTime(time)
     };
@@ -50,7 +100,7 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
         let month = dayjs(value.$d).format('MM')
-        console.log(month)
+        // console.log(month)
         saveDate(date)
         changeMonth(month)
     };

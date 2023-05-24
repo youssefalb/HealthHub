@@ -22,10 +22,10 @@ export async function getTakenAppointments(doctorId: String, month: number = day
         // const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
         method: "GET",
     })
-    const data = await visits.json()
-    if (data.length) {
-        const takenSlots = data.data.map((visit: any) => new Date(visit.date))
-        return takenSlots
+    let data = await visits.json()
+    data = await data.data
+    if (data) {
+        return await data
     }
 
     return []
