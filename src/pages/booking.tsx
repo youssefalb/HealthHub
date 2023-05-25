@@ -116,39 +116,15 @@ const BookingForm = () => {
         fetchDoctors(event.target.value as string);
     };
 
-    // const fetchTakenSlots = async (doctor) => {
-    //     if (doctor.employeeId) {
-    //         const response = await getTakenAppointments(doctor.employeeId, selectedMonth)
-    //         const result = JSON.stringify(response)
-    //         let slotsList = null
-    //         if (result)
-    //             slotsList = (JSON.parse(result))
-    //         if (slotsList != null) {
-    //             setTakenSlots(slotsList)
-    //         }
-    //         else {
-    //             setTakenSlots([])
-    //             console.log("empty")
-    //         }
-    //     }
-    // }
-
     const handleDoctorChange = async (event: SelectChangeEvent) => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: event.target.value
         }));
-        //fetch takenSlots
-        // await fetchTakenSlots(event.target.value)
     };
 
     const handleNoteChange = (event: object) => {
-        setNote(event.target.value as string)
+        setNote(event['target'].value as string)
     };
-
-    const handleMonthCHange = (month) => {
-        setMonth(month)
-        // getTakenAppointments(selectedDoctor.doctor?.employeeId, month-1)
-    }
 
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
@@ -201,7 +177,7 @@ const BookingForm = () => {
                 </div>
 
                 <div className="mb-4">
-                    {
+                    {selectedSpecialization&&
                         <FormControl fullWidth>
                             <InputLabel id="doctor">Choose a doctor</InputLabel>
                             <Select
@@ -238,6 +214,7 @@ const BookingForm = () => {
                 </div>
 
                 <div className="mt-4">
+                    {selectedTime&&
                     <TextField
                         id="note"
                         label="Note"
@@ -246,7 +223,7 @@ const BookingForm = () => {
                         value={note}
                         onChange={handleNoteChange}
                         fullWidth={true}
-                    />
+                    />}
                 </div>
 
                 <div className="mt-4">

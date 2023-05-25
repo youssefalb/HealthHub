@@ -111,6 +111,7 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
     const fetchstuff = async (id: String, year: number, month: number) => {
         const results = await getTakenAppointments(id, year, month)
         const jh = await results.json()
+        console.log(jh.data)
         setFullDays(getFullyTakenDays(jh.data))
         setTakenTimeSlots(getBusyTimeSlots(jh.data))
         return jh

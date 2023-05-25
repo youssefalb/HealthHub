@@ -27,7 +27,6 @@ export default async function handler(
         try {
             const { doctor } = req.query;
             let { month, year } = req.query
-            console.log(month)
             let results: string | any[];
             if (doctor) { // user is patient or reciptionist or admin
                 let dataClause = {}
