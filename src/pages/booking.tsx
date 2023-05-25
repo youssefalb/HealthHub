@@ -18,8 +18,32 @@ import TextField from '@mui/material/TextField';
 import { createVisitByPatient } from '@/lib/visits';
 import dayjs from 'dayjs';
 
-const BookingForm = () => {
+/*
+ keep track of : 
+    1- user info
+    2- speciality
+    3- doctor 
+    4- date
+    5- time
 
+datepicker component receives : 
+    1- month (default to now)    
+    2- doctor ID 
+    3- call back when (time is changed) --> changes date and time in parent
+
+keeps track of : 
+    1- blocked dates 
+    2- blocked times 
+    3- selected date
+    4- selected time
+
+fetches doctor's appointments in the passed month
+*/
+
+
+
+const BookingForm = () => {
+//we can make userinfo ONE object for cleanliness 
     const router = useRouter();
     const { data: session } = useSession();
     const [pesel, setPesel] = useState('')
@@ -29,12 +53,11 @@ const BookingForm = () => {
     const [doctorList, setDoctorList] = useState([])
     const [selectedDoctor, setSelectedDoctor] = useState({ doctor: "" })
     const [note, setNote] = useState('');
-    const [name, setName] = useState('');
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false);
     const [selectedTime, setSelectedTime] = useState('');
-    const [selectedMonth, setMonth] = useState(dayjs().month())
+    const [selectedMonth, setMonth] = useState(dayjs().month()) //needed for passing to datepicker
+    const [selectedYear, setYear] = useState(dayjs().year()) //needed for passing to datepicker
     const [selectedDate, setSelectedDate] = useState('');
-    const [takenSlots, setTakenSlots] = useState([])
 
     const fetchUserData = async () => {
         const response = await getUserInfo()
@@ -46,7 +69,6 @@ const BookingForm = () => {
             else
                 setInsurance(result.data?.patient.insuranceId)
         }
-
     }
 
     const fetchDoctors = async (speciality: String) => {
@@ -65,18 +87,17 @@ const BookingForm = () => {
 
     useEffect(() => {
         fetchUserData()
-        setName(session?.user?.name)
     }, [session])
 
     useEffect(() => {
-        fetchTakenSlots(selectedDoctor)
+        // fetchTakenSlots(selectedDoctor)
     }, [selectedMonth])
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
         // submit handler logic
-        createVisitByPatient(note, selectedDoctor.doctor.employeeId, selectedDate + selectedTime)
+        createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
         //NOTE: IDK if this router is good or not
         router.push('/visits')
     };
@@ -95,39 +116,15 @@ const BookingForm = () => {
         fetchDoctors(event.target.value as string);
     };
 
-    const fetchTakenSlots = async (doctor) => {
-        if (doctor.employeeId) {
-            const response = await getTakenAppointments(doctor.employeeId, selectedMonth)
-            const result = JSON.stringify(response)
-            let slotsList = null
-            if (result)
-                slotsList = (JSON.parse(result))
-            if (slotsList != null) {
-                setTakenSlots(slotsList)
-            }
-            else {
-                setTakenSlots([])
-                console.log("empty")
-            }
-        }
-    }
-
     const handleDoctorChange = async (event: SelectChangeEvent) => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: event.target.value
         }));
-        //fetch takenSlots
-        await fetchTakenSlots(event.target.value)
     };
 
     const handleNoteChange = (event: object) => {
-        setNote(event.target.value as string)
+        setNote(event['target'].value as string)
     };
-
-    const handleMonthCHange = (month) => {
-        setMonth(month)
-        getTakenAppointments(selectedDoctor.doctor?.employeeId, month-1)
-    }
 
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
@@ -144,7 +141,7 @@ const BookingForm = () => {
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-4">
-                        <Label name="Name" value={name} />
+                        <Label name="Name" value={session?.user?.name} />
                     </div>
                     <div className="w-full md:w-1/2 px-4 mb-4">
                         <Label name="PESEL number" value={pesel} />
@@ -180,7 +177,7 @@ const BookingForm = () => {
                 </div>
 
                 <div className="mb-4">
-                    {
+                    {selectedSpecialization&&
                         <FormControl fullWidth>
                             <InputLabel id="doctor">Choose a doctor</InputLabel>
                             <Select
@@ -204,16 +201,20 @@ const BookingForm = () => {
                 </div>
 
                 <div className="mb-4">
-                    <DateAndTimePicker
-                        doctor={selectedDoctor.doctor}
-                        saveDate={setSelectedDate}
-                        saveTime={setSelectedTime}
-                        takenSlots={takenSlots}
-                        changeMonth = {handleMonthCHange}
-                    />
+                    {selectedDoctor.doctor&& 
+                        <DateAndTimePicker
+                            doctor={selectedDoctor.doctor}
+                            month={selectedMonth}
+                            year={selectedYear}
+                            saveDate={setSelectedDate}
+                            saveTime={setSelectedTime}
+                            changeMonth={setMonth}
+                            changeYear={setYear}
+                        />}
                 </div>
 
                 <div className="mt-4">
+                    {selectedTime&&
                     <TextField
                         id="note"
                         label="Note"
@@ -222,7 +223,7 @@ const BookingForm = () => {
                         value={note}
                         onChange={handleNoteChange}
                         fullWidth={true}
-                    />
+                    />}
                 </div>
 
                 <div className="mt-4">

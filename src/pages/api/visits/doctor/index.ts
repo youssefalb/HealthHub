@@ -26,20 +26,20 @@ export default async function handler(
     if (req.method === "GET") {
         try {
             const { doctor } = req.query;
-            let { month } = req.query
-            console.log(month)
+            let { month, year } = req.query
             let results: string | any[];
             if (doctor) { // user is patient or reciptionist or admin
                 let dataClause = {}
-                if (month) {
+                if (month && year) {
                     //create a new date with current year and start of {month}
                     let desiredMonth = Number(month)
-                    console.log(desiredMonth)
-                    const startDate = dayjs().month(desiredMonth).year(currentYear).toISOString()
-                    const endDate = dayjs().month(desiredMonth).year(currentYear).endOf('month').toISOString()
+                    let desiredYear = Number(year)
+                    // console.log(desiredMonth)
+                    const startDate = dayjs().month(desiredMonth).year(desiredYear).toISOString()
+                    const endDate = dayjs().month(desiredMonth).year(desiredYear).endOf('month').toISOString()
 
-                    console.log("start", startDate)
-                    console.log("end", endDate)
+                    // console.log("start", startDate)
+                    // console.log("end", endDate)
 
                     dataClause = {
                         date: {
@@ -47,7 +47,7 @@ export default async function handler(
                             lte: endDate,
                         }
                     }
-                    console.log(dataClause)
+                    // console.log(dataClause)
                 }
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;

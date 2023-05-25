@@ -5,6 +5,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton, StaticTimePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import { getTakenAppointments } from '@/lib/bookings';
+import { warn } from 'console';
 
 const today = dayjs();
 // const tomorrow = dayjs('2023-05-20')
@@ -12,10 +13,6 @@ const twoPM = dayjs().set('hour', 14).startOf('hour');
 const maxTime = dayjs().set('hour', 17).startOf('hour');
 const minTime = dayjs().set('hour', 9).startOf('hour');
 
-const isWeekend = (date: Dayjs) => {
-    const day = date.day();
-    return day === 0 || day === 6;
-};
 
 const dayFormatter = (day: string) => { return day.toUpperCase() }
 
@@ -38,21 +35,108 @@ const dayFormatter = (day: string) => { return day.toUpperCase() }
 //     return fullyTakenDaysWith32Slots.map((day) => day.date);
 // }
 
-export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDate, changeMonth }) {
+
+
+export default function DateAndTimePicker({ doctor, year, month, saveTime, saveDate, changeMonth, changeYear }) {
     // const fullyTakenDays = getFullyTakenDays(takenSlots);
     // console.log(fullyTakenDays);
 
+    const [selectedMonth, setSelectedMonth] = useState()
+    const [selectedYear, setSelectedYear] = useState()
+    const [selectedTime, setSelectedTime] = useState()
+    const [selectedDate, setSelectedDate] = useState()
+    const [fullDays, setFullDays] = useState([])
+    const [takenTimeSlots, setTakenTimeSlots] = useState({})
+
+    const shouldDisableTime = (value) => {
+        let disable = false
+        if (takenTimeSlots)
+            for (const [key, times] of Object.entries(takenTimeSlots)) {
+                times.forEach((time) => {
+                    if (time == dayjs(value).format('HH-mm')){
+                        disable = true
+                    }
+                })
+            }
+        return disable;
+    }
+
+    const shouldDisableDate = (date: Dayjs) => {
+        const day = date.day();
+        let disable = false
+        if (fullDays)
+            fullDays.forEach(element => {
+                if (date["$D"] == element) {
+                    disable = true
+                }
+            });
+        return day === 0 || day === 6 || disable;
+    };
+
+    function getFullyTakenDays(takenAppointments) {
+        let results = []
+        if (takenAppointments) {
+            const daysWithAppointments = takenAppointments.map(date => dayjs(date.date)['$D'])
+
+            const appointmentsInEachDay = daysWithAppointments.reduce((count, day) => {
+                count[day] = (count[day] || 0) + 1
+                return count
+            }, {})
+
+            if (appointmentsInEachDay)
+                for (const [key, value] of Object.entries(appointmentsInEachDay)) {
+
+                    if (value > 2)
+                        results.push(key)
+
+                }
+        }
+        return results
+    }
+
+    function getBusyTimeSlots(takenAppointments) {
+        let days = {}
+        if (takenAppointments) {
+            takenAppointments.forEach((date) => {
+                const keyDay = dayjs(date.date)['$D']
+                if (!days.hasOwnProperty(keyDay)) {
+                    days[keyDay] = []
+                }
+                days[keyDay].push(dayjs(date.date).format('HH-mm'))
+            })
+        }
+        return days
+    }
+
+    const fetchstuff = async (id: String, year: number, month: number) => {
+        const results = await getTakenAppointments(id, year, month)
+        const jh = await results.json()
+        console.log(jh.data)
+        setFullDays(getFullyTakenDays(jh.data))
+        setTakenTimeSlots(getBusyTimeSlots(jh.data))
+        return jh
+    }
+
+    useEffect(() => {
+        fetchstuff(doctor.employeeId, year, month)
+    }, [selectedMonth, selectedYear])
+
+
     const handleChangeTime = (value) => {
-        let time = dayjs(value.$d).format('THH:mm:ss.sss[Z]')
+        let time = dayjs(value.$d).format('HH:mm')
         saveTime(time)
     };
 
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
-        let month = dayjs(value.$d).format('MM')
-        console.log(month)
+        let month = Number(value.$M)
+        let year = Number(value.$y)
+        // console.log(month)
         saveDate(date)
+        changeYear(year)
         changeMonth(month)
+        setSelectedMonth(month)
+        setSelectedYear(year)
     };
 
     return (
@@ -72,9 +156,10 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
                         dayOfWeekFormatter={dayFormatter}
                         defaultValue={today}
                         disablePast
-                        shouldDisableDate={isWeekend}
+                        shouldDisableDate={shouldDisableDate}
                         // renderLoading={() => <DayCalendarSkeleton />}
                         onMonthChange={handleChangeDate}
+                        onYearChange={handleChangeDate}
                         onChange={handleChangeDate}
                     //todo on change
                     //todo set isloading when fetching data
@@ -82,9 +167,11 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
                 </Grid>
                 <Grid item>
                     <StaticTimePicker
+                        ampm={false}
                         orientation="landscape"
                         defaultValue={twoPM}
-                        minutesStep={15}
+                        shouldDisableTime={shouldDisableTime}
+                        minutesStep={30}
                         minTime={minTime}
                         maxTime={maxTime}
                         onChange={handleChangeTime}
