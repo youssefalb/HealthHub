@@ -94,12 +94,12 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
  * @param date The date of the visit.
  * @returns {Promise<Response>} A Promise that resolves to the result of the POST request to create the visit.
  */
-export async function createVisitByPatient(speciality: String, doctorId: String, date: String): Promise<Response> {
+export async function createVisitByPatient(note: String, doctorId: String, date: String): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
     headers: jsonHeader,
     body: JSON.stringify({
-      "description": speciality,
+      "description": note,
       "doctorId": doctorId,
       "date": date,
     }),

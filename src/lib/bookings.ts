@@ -1,4 +1,5 @@
 import { Specializations } from '@prisma/client'
+import dayjs from 'dayjs';
 import { doctorVisitsPath } from './apiPaths'
 
 export function getSpecializationList() {
@@ -6,7 +7,7 @@ export function getSpecializationList() {
     return Object.values(Specializations)
 }
 
-// 9-5 , 30 min
+// 9-5 , 15 min
 
 //function that returns free days in the current month of a doctor
 // give doctor_id, return array of days that he has free slots 
@@ -15,15 +16,12 @@ export function getSpecializationList() {
 // 3. filter the slots by day
 // 4. return the days that have some free slots
 
-export async function getAvailableAppointments(doctorId: String) {
-    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
+//as a patient or receptionist 
+export async function getTakenAppointments(doctorId: String, year: number = dayjs().year(), month: number = dayjs().month()) {
+    const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}&year=${year}`, {
         method: "GET",
     })
-    if (visits.status === 200) {
-        const data = await visits.json()
-        const slots = data.data.map((visit: any) => visit.date)
-        
-    }
+    return visits
 }
 
 
