@@ -56,21 +56,15 @@ const BookingForm = () => {
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false);
     const [selectedTime, setSelectedTime] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
-    const [selectedMonth, setMonth] = useState(dayjs().month()) //needed for passing to datepicker
-    const [selectedYear, setYear] = useState(dayjs().year()) //needed for passing to datepicker
 
     const initialState = {
-        date: "",
+        date: dayjs().format('YYYY-MM-DD'),
         time: "",
         note: "",
-        selectedDate : "",
-        selectedTime: "",
         selectedDoctor: {
             doctor: ""
         },
         selectedSpecialization: "",
-        selectedMonth: "",
-        selectedYear: "",
     }
 
 
@@ -105,13 +99,7 @@ const BookingForm = () => {
         fetchUserData()
     }, [session])
 
-    // useEffect(() => {
-    //     // fetchTakenSlots(selectedDoctor)
-    // }, [selectedMonth])
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = () => {
         createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
         router.push('/visits')
     };
@@ -126,9 +114,8 @@ const BookingForm = () => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: ""
         }));
-        setSelectedDate(initialState.selectedDate)
-        setSelectedTime(initialState.selectedTime)
         setSelectedDoctor(initialState.selectedDoctor)
+        setSelectedTime(initialState.time)
         fetchDoctors(event.target.value as string);
 
     };
@@ -137,8 +124,7 @@ const BookingForm = () => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: event.target.value
         }));
-        setSelectedDate(initialState.selectedDate)
-        setSelectedTime(initialState.selectedTime)
+        setSelectedDate(initialState.date)
     };
 
     const handleNoteChange = (event: object) => {
@@ -223,12 +209,9 @@ const BookingForm = () => {
                     {selectedDoctor.doctor&& 
                         <DateAndTimePicker
                             doctor={selectedDoctor.doctor}
-                            month={selectedMonth}
-                            year={selectedYear}
+                            date={selectedDate}
                             saveDate={setSelectedDate}
                             saveTime={setSelectedTime}
-                            changeMonth={setMonth}
-                            changeYear={setYear}
                         />}
                 </div>
 

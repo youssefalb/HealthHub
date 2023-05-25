@@ -2,52 +2,22 @@ import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import Grid from '@mui/material/Grid';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { DayCalendarSkeleton, StaticTimePicker } from '@mui/x-date-pickers';
+import { StaticTimePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import { getTakenAppointments } from '@/lib/bookings';
-import { warn } from 'console';
 
 const today = dayjs();
 // const tomorrow = dayjs('2023-05-20')
-const twoPM = dayjs().set('hour', 14).startOf('hour');
 const maxTime = dayjs().set('hour', 17).startOf('hour');
 const minTime = dayjs().set('hour', 9).startOf('hour');
 
-
 const dayFormatter = (day: string) => { return day.toUpperCase() }
 
-//NOTE: do it
-// function getFullyTakenDays(takenSlots) {
-//     const fullyTakenDays = takenSlots.reduce((result, slot) => {
-//         const date = slot.toDateString(); // Extract the date component from the slot
-//         const dayEntry = result.find((entry) => entry.date === date);
-//
-//         if (dayEntry) {
-//             dayEntry.count++;
-//         } else {
-//             result.push({ date: date, count: 1 });
-//         }
-//
-//         return result;
-//     }, []);
-
-//     const fullyTakenDaysWith32Slots = fullyTakenDays.filter((day) => day.count === 2);
-//     return fullyTakenDaysWith32Slots.map((day) => day.date);
-// }
-
-
-
-export default function DateAndTimePicker({ doctor, year, month, saveTime, saveDate, changeMonth, changeYear }) {
-    // const fullyTakenDays = getFullyTakenDays(takenSlots);
-    // console.log(fullyTakenDays);
-
-    const [selectedMonth, setSelectedMonth] = useState()
-    const [selectedYear, setSelectedYear] = useState()
-    const [selectedTime, setSelectedTime] = useState()
-    const [initialTime, setInitialTime] = useState(twoPM)
-    const [selectedDate, setSelectedDate] = useState()
+export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
+    const [selectedDate, setSelectedDate] = useState(date)
     const [fullDays, setFullDays] = useState([])
     const [takenTimeSlots, setTakenTimeSlots] = useState({})
+    const [clockDisabled, setClockDisabled] = useState(true)
 
     const shouldDisableTime = (value) => {
         let disable = false
@@ -109,18 +79,17 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
         return days
     }
 
-    const getDoctorBusySlots = async (id: String, year: number, month: number) => {
-        const results = await getTakenAppointments(id, year, month)
+    const getDoctorBusySlots = async (id: String) => {
+        const results = await getTakenAppointments(id, Number(dayjs(selectedDate).format('YYYY')), Number(dayjs(selectedDate).format('MM')) - 1 )
         const busySlots = await results.json()
-        console.log("busy Slots: ", busySlots.data)
         setFullDays(getFullyTakenDays(busySlots.data))
         setTakenTimeSlots(getBusyTimeSlots(busySlots.data))
         return busySlots
     }
 
     useEffect(() => {
-        getDoctorBusySlots(doctor.employeeId, year, month)
-    }, [selectedMonth, selectedYear])
+        getDoctorBusySlots(doctor.employeeId)
+    }, [selectedDate])
 
 
     const handleChangeTime = (value) => {
@@ -130,16 +99,9 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
 
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
-        let month = Number(value.$M)
-        let year = Number(value.$y)
-        // console.log(month)
         saveDate(date)
-        changeYear(year)
-        changeMonth(month)
-        setSelectedMonth(month)
-        setSelectedYear(year)
         setSelectedDate(date)
-        setSelectedTime(initialTime)
+        setClockDisabled(false)
     };
 
     return (
@@ -157,24 +119,19 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
                 <Grid item>
                     <DateCalendar
                         dayOfWeekFormatter={dayFormatter}
-                        defaultValue={today}
                         disablePast
                         shouldDisableDate={shouldDisableDate}
-                        // renderLoading={() => <DayCalendarSkeleton />}
                         onMonthChange={handleChangeDate}
                         onYearChange={handleChangeDate}
                         onChange={handleChangeDate}
-                    //todo on change
-                    //todo set isloading when fetching data
                     />
                 </Grid>
                 <Grid item>
                     <StaticTimePicker
                         ampm={false}
                         orientation="landscape"
-                        defaultValue={twoPM}
-                        // value = {selectedTime}
                         shouldDisableTime={shouldDisableTime}
+                        disabled={clockDisabled}
                         minutesStep={30}
                         minTime={minTime}
                         maxTime={maxTime}
