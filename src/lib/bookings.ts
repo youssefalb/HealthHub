@@ -21,6 +21,7 @@ export async function getTakenAppointments(doctorId: String, year: number = dayj
     const visits = await fetch(`${doctorVisitsPath}?doctor=${doctorId}&month=${month}&year=${year}`, {
         method: "GET",
     })
+    console.log("busy slots from fetching: ", visits)
     return visits
 }
 

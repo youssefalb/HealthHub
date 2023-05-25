@@ -35,7 +35,7 @@ export default async function handler(
                     let desiredMonth = Number(month)
                     let desiredYear = Number(year)
                     // console.log(desiredMonth)
-                    const startDate = dayjs().month(desiredMonth).year(desiredYear).toISOString()
+                    const startDate = dayjs().month(desiredMonth).year(desiredYear).startOf('day').toISOString()
                     const endDate = dayjs().month(desiredMonth).year(desiredYear).endOf('month').toISOString()
 
                     // console.log("start", startDate)
@@ -72,6 +72,9 @@ export default async function handler(
                         }
                     });
                     if (!results.length) throw "no data";
+                    console.log("doctor: ", doctor)
+                    console.log("dataclause : ", dataClause)
+
                     return res.status(200).json({ success: true, data: results });
                 }
             }

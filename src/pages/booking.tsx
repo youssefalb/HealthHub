@@ -55,9 +55,25 @@ const BookingForm = () => {
     const [note, setNote] = useState('');
     const [completeUserInfoPromptShown, setCompleteUserInfoPromptShown] = useState(false);
     const [selectedTime, setSelectedTime] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
     const [selectedMonth, setMonth] = useState(dayjs().month()) //needed for passing to datepicker
     const [selectedYear, setYear] = useState(dayjs().year()) //needed for passing to datepicker
-    const [selectedDate, setSelectedDate] = useState('');
+
+    const initialState = {
+        date: "",
+        time: "",
+        note: "",
+        selectedDate : "",
+        selectedTime: "",
+        selectedDoctor: {
+            doctor: ""
+        },
+        selectedSpecialization: "",
+        selectedMonth: "",
+        selectedYear: "",
+    }
+
+
 
     const fetchUserData = async () => {
         const response = await getUserInfo()
@@ -89,16 +105,14 @@ const BookingForm = () => {
         fetchUserData()
     }, [session])
 
-    useEffect(() => {
-        // fetchTakenSlots(selectedDoctor)
-    }, [selectedMonth])
+    // useEffect(() => {
+    //     // fetchTakenSlots(selectedDoctor)
+    // }, [selectedMonth])
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // submit handler logic
         createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
-        //NOTE: IDK if this router is good or not
         router.push('/visits')
     };
 
@@ -112,14 +126,19 @@ const BookingForm = () => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: ""
         }));
-
+        setSelectedDate(initialState.selectedDate)
+        setSelectedTime(initialState.selectedTime)
+        setSelectedDoctor(initialState.selectedDoctor)
         fetchDoctors(event.target.value as string);
+
     };
 
     const handleDoctorChange = async (event: SelectChangeEvent) => {
         setSelectedDoctor(selectedDoctor => ({
             doctor: event.target.value
         }));
+        setSelectedDate(initialState.selectedDate)
+        setSelectedTime(initialState.selectedTime)
     };
 
     const handleNoteChange = (event: object) => {
@@ -227,10 +246,11 @@ const BookingForm = () => {
                 </div>
 
                 <div className="mt-4">
-                    <CustomButton
+                    {selectedTime &&
+                        <CustomButton
                         buttonText={"Book Appointment"}
                         onClick={handleSubmit}
-                    />
+                    />}
                 </div>
             </form>
 

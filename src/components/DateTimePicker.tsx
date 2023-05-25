@@ -44,6 +44,7 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
     const [selectedMonth, setSelectedMonth] = useState()
     const [selectedYear, setSelectedYear] = useState()
     const [selectedTime, setSelectedTime] = useState()
+    const [initialTime, setInitialTime] = useState(twoPM)
     const [selectedDate, setSelectedDate] = useState()
     const [fullDays, setFullDays] = useState([])
     const [takenTimeSlots, setTakenTimeSlots] = useState({})
@@ -53,7 +54,7 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
         if (takenTimeSlots)
             for (const [key, times] of Object.entries(takenTimeSlots)) {
                 times.forEach((time) => {
-                    if (time == dayjs(value).format('HH-mm')){
+                    if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')){
                         disable = true
                     }
                 })
@@ -108,17 +109,17 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
         return days
     }
 
-    const fetchstuff = async (id: String, year: number, month: number) => {
+    const getDoctorBusySlots = async (id: String, year: number, month: number) => {
         const results = await getTakenAppointments(id, year, month)
-        const jh = await results.json()
-        console.log(jh.data)
-        setFullDays(getFullyTakenDays(jh.data))
-        setTakenTimeSlots(getBusyTimeSlots(jh.data))
-        return jh
+        const busySlots = await results.json()
+        console.log("busy Slots: ", busySlots.data)
+        setFullDays(getFullyTakenDays(busySlots.data))
+        setTakenTimeSlots(getBusyTimeSlots(busySlots.data))
+        return busySlots
     }
 
     useEffect(() => {
-        fetchstuff(doctor.employeeId, year, month)
+        getDoctorBusySlots(doctor.employeeId, year, month)
     }, [selectedMonth, selectedYear])
 
 
@@ -137,6 +138,8 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
         changeMonth(month)
         setSelectedMonth(month)
         setSelectedYear(year)
+        setSelectedDate(date)
+        setSelectedTime(initialTime)
     };
 
     return (
@@ -170,6 +173,7 @@ export default function DateAndTimePicker({ doctor, year, month, saveTime, saveD
                         ampm={false}
                         orientation="landscape"
                         defaultValue={twoPM}
+                        // value = {selectedTime}
                         shouldDisableTime={shouldDisableTime}
                         minutesStep={30}
                         minTime={minTime}
