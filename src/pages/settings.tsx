@@ -158,17 +158,11 @@ const UserSettings = () => {
             >
 
                 <label htmlFor="profileImageInput" className="w-full h-full">
-                    {image ? (
-                        <img
-                            src={image}
-                            alt={session?.user?.name}
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <span className="flex items-center justify-center w-full h-full">
-                            Upload Picture
-                        </span>
-                    )}
+                    <img
+                        src={image ? image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
+                        alt={session?.user?.name}
+                        className="w-full h-full object-cover"
+                    />
                     <input
                         id="profileImageInput"
                         type="file"
