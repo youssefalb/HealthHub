@@ -103,18 +103,19 @@ export default function sideBar() {
     return (
         <aside className="bg-gray-100 w-full md:w-60">
             {session ? (
-                <div className="flex items-center py-4 px-4 flex-col">
-                    <Link href={"/settings"}>
+
+                <Link href={"/settings"}>
+                    <div className="flex items-center py-4 px-4 flex-col">
                         <ProfilePicture
                             src={session.user?.image ? session.user?.image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
                             alt={session?.user?.name}
                             size={5}
                         />
-                    </Link>
-                    <div>
-                        <h2 className="text-xs font-bold">{session?.user?.name}</h2>
+                        <div>
+                            <h2 className="text-xs font-bold">{session?.user?.name}</h2>
+                        </div>
                     </div>
-                </div>
+                </Link>
             ) : null}
             <nav>
                 <ul>
