@@ -1,14 +1,14 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useCallback, useState } from "react";
-import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
 import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TextField } from "@mui/material";
 
 const UserSettings = () => {
-    const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
+    const { data: session, update } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
 
     const role = session?.user?.role;
     const [image, setImage] = useState('');
@@ -18,8 +18,6 @@ const UserSettings = () => {
         }
     }, [session?.user?.image]);
 
-
-
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -27,7 +25,6 @@ const UserSettings = () => {
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [pesel, setPesel] = useState('');
-
 
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
@@ -40,15 +37,18 @@ const UserSettings = () => {
             lastName
         }
         const res = updateUserInfo(userData)
-            if ((await res).ok){
+        if ((await res).ok) {
             toast.success('Data updated successfully');
-        }  
-        else{
+        }
+        else {
             toast.error('Failed to update data');
         }
-
+        console.log(userData)
+        update(userData)
     }
 
+    //TODO: After email change resend verification
+    //also there may be implications with google OA accounts
     const updateUserEmail = async (e) => {
         e.preventDefault();
         console.log("saveUserNameAndSurname");
@@ -56,15 +56,16 @@ const UserSettings = () => {
         const userData = {
             email,
         }
-        const res =  updateUserInfo(userData)
+        const res = updateUserInfo(userData)
 
-        if ((await res).ok){
+        if ((await res).ok) {
             toast.success('Email updated successfully', { autoClose: 50000 });
-        }  
-        else{
+        }
+        else {
             toast.error('Failed to update email');
         }
-      }
+    }
+
     const updateUserPassword = async (e) => {
         e.preventDefault();
         console.log("saveUserNameAndSurname");
@@ -72,11 +73,11 @@ const UserSettings = () => {
             newPassword,
             oldPassword
         }
-        const res =  updateUserInfo(userData)
-        if ((await res).ok){
+        const res = updateUserInfo(userData)
+        if ((await res).ok) {
             toast.success('Password updated successfully', { autoClose: 50000 });
         }
-        else{
+        else {
             toast.error('Failed to update password');
         }
     }
@@ -89,13 +90,12 @@ const UserSettings = () => {
         }
 
         const res = updateUserInfo(userData)
-        if ((await res).ok){
+        if ((await res).ok) {
             toast.success('Pesel updated successfully', { autoClose: 50000 });
         }
-        else{
+        else {
             toast.error('Failed to update pesel');
         }
-
     }
 
     const fetchData = async () => {
@@ -114,7 +114,6 @@ const UserSettings = () => {
         fetchData()
     }, [session])
 
-
     const handlePictureChange = useCallback((e) => {
         const file = e.target.files[0];
         if (file) {
@@ -131,7 +130,7 @@ const UserSettings = () => {
                 updateUserInfo(userData)
                     .then((response) => {
                         if (response.ok) {
-                                console.log("response ok");
+                            console.log("response ok");
                         } else {
                             console.error('Failed to update user data');
                         }
@@ -139,6 +138,9 @@ const UserSettings = () => {
                     .catch((error) => {
                         console.error('Failed to update user data:', error);
                     });
+                //NOTE: updating session image works, but uncomment it only after we change this code to save image on server/cloud
+                //base64 breaks the server 
+                // update(userData)
             };
             reader.readAsDataURL(file);
         }
@@ -178,30 +180,42 @@ const UserSettings = () => {
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
                 <form onSubmit={updateUserNameAndSurname}>
-                    <TextInput
-                        label="Name*"
-                        value={firstName}
-                        type={"text"}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <TextInput
-                        label="Surname*"
-                        value={lastName}
-                        type={"text"}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Name"
+                            value={firstName}
+                            type={"text"}
+                            onChange={(v) => setFirstName(v.target.value)}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Surname"
+                            value={lastName}
+                            type={"text"}
+                            onChange={(v) => setLastName(v.target.value)}
+                        />
+                    </div>
 
                     <CustomButton
                         buttonText={"Save Changes"}
                     />
                 </form>
                 <form onSubmit={updateUserEmail}>
-                    <TextInput
-                        label="Email*"
-                        value={email}
-                        type='email'
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Email"
+                            value={email}
+                            type='email'
+                            onChange={(v) => setEmail(v.target.value)}
+                        />
+                    </div>
                     {emailVerified ? (
                         <span className="text-green-500 flex mb-2">Email verified</span>
                     ) : (
@@ -212,45 +226,59 @@ const UserSettings = () => {
                 </form>
 
                 <form onSubmit={updateUserPassword}>
-                    <TextInput
-                        label="Old Password*"
-                        value={oldPassword}
-                        type='password'
-                        onChange={(e) => setOldPassword(e.target.value)}
-                    />
-                    <TextInput
-                        label="New Password*"
-                        value={newPassword}
-                        type='password'
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Old Password"
+                            value={oldPassword}
+                            type='password'
+                            onChange={(v) => setOldPassword(v.target.value)}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="New Password"
+                            value={newPassword}
+                            type='password'
+                            onChange={(v) => setNewPassword(v.target.value)}
+                        />
+                    </div>
                     <CustomButton
                         buttonText={"Save Password"}
                     />
                 </form>
 
                 <form onSubmit={updateUserPesel}>
-                    <TextInput
-                        label="Pesel*"
-                        value={pesel}
-                        type='text'
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Pesel"
+                            value={pesel}
+                            type='text'
+                            onChange={(v) => setNewPassword(v.target.value)}
+                        />
+                    </div>
                     <CustomButton
                         buttonText={"Save Pesel"}
                     />
                 </form>
 
-
-
                 {role == Role.PATIENT && (
                     <div>
-                        <TextInput
-                            label="Innsurance Number*"
-                            value={insuranceId}
-                            type={"text"}
-                            onChange={(e) => setInsuranceId(e.target.value)}
-                        />
+                        <div className="mb-4">
+                            <TextField
+                                fullWidth
+                                required
+                                label="Innsurance Number"
+                                value={insuranceId}
+                                type={"text"}
+                                onChange={(v) => setInsuranceId(v.target.value)}
+                            />
+                        </div>
                         <CustomButton
                             buttonText={"Save Insurance Data"}
                             onClick={() => {

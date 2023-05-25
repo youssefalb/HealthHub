@@ -99,9 +99,9 @@ export const authOptions: NextAuthOptions = {
                 user.lastName = profile.family_name;
                 user.image = profile.picture;
                 const existingUser = await prisma.user.findUnique({
-                    where: {id: user.id}
+                    where: { id: user.id }
                 })
-                if(!existingUser){
+                if (!existingUser) {
                     await sendVerificationEmail(user)
                 }
 
@@ -113,25 +113,24 @@ export const authOptions: NextAuthOptions = {
             session.user.id = token.id;
             session.user.name = token.name;
             session.user.role = token.role;
-            //  session.accessToken = token.accessToken
-            //   console.log("===SESSION===");
-            // console.log(token)
-            // console.log(session)
+            session.user.image = token.picture
             return session;
         },
-        jwt: async ({ profile, account, user, token }) => {
+        jwt: async ({ profile, account, user, token, trigger, session }) => {
             if (account) {
                 token.accessToken = account.access_token;
                 token.id = user.id;
                 token.name = user.firstName + " " + user.lastName;
                 token.role = user.role;
-            } //else
-            //token.accessToken =
-            // console.log("===JWT===")
-            // console.log(profile)
-            // console.log(account)
-            // console.log(token)
-            // console.log(user)
+            }
+
+            if (trigger === "update") {
+                if (session?.firstName && session?.lastName)
+                    token.name = session.firstName + " " + session.lastName;
+                else if(session?.image)
+                    token.picture = session.image
+            }
+
             return token;
         },
     },

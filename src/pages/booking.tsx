@@ -74,7 +74,7 @@ const BookingForm = () => {
         const result = await response.json()
         setPesel(result.data?.nationalId)
         if (session?.user?.role === Role.PATIENT) {
-            if (!result.data?.patient.insuranceId)
+            if (!result.data?.patient?.insuranceId)
                 setCompleteUserInfoPromptShown(true)
             else
                 setInsurance(result.data?.patient.insuranceId)
