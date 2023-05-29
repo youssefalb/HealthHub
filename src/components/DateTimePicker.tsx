@@ -2,57 +2,106 @@ import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import Grid from '@mui/material/Grid';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { DayCalendarSkeleton, StaticTimePicker } from '@mui/x-date-pickers';
+import { StaticTimePicker } from '@mui/x-date-pickers';
 import { useEffect, useState } from 'react';
 import { getTakenAppointments } from '@/lib/bookings';
 
 const today = dayjs();
 // const tomorrow = dayjs('2023-05-20')
-const twoPM = dayjs().set('hour', 14).startOf('hour');
 const maxTime = dayjs().set('hour', 17).startOf('hour');
 const minTime = dayjs().set('hour', 9).startOf('hour');
 
-const isWeekend = (date: Dayjs) => {
-    const day = date.day();
-    return day === 0 || day === 6;
-};
-
 const dayFormatter = (day: string) => { return day.toUpperCase() }
 
-//NOTE: do it
-// function getFullyTakenDays(takenSlots) {
-//     const fullyTakenDays = takenSlots.reduce((result, slot) => {
-//         const date = slot.toDateString(); // Extract the date component from the slot
-//         const dayEntry = result.find((entry) => entry.date === date);
-//
-//         if (dayEntry) {
-//             dayEntry.count++;
-//         } else {
-//             result.push({ date: date, count: 1 });
-//         }
-//
-//         return result;
-//     }, []);
+export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
+    const [selectedDate, setSelectedDate] = useState(date)
+    const [fullDays, setFullDays] = useState([])
+    const [takenTimeSlots, setTakenTimeSlots] = useState({})
+    const [clockDisabled, setClockDisabled] = useState(true)
 
-//     const fullyTakenDaysWith32Slots = fullyTakenDays.filter((day) => day.count === 2);
-//     return fullyTakenDaysWith32Slots.map((day) => day.date);
-// }
+    const shouldDisableTime = (value) => {
+        let disable = false
+        if (takenTimeSlots)
+            for (const [key, times] of Object.entries(takenTimeSlots)) {
+                times.forEach((time) => {
+                    if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')){
+                        disable = true
+                    }
+                })
+            }
+        return disable;
+    }
 
-export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDate, changeMonth }) {
-    // const fullyTakenDays = getFullyTakenDays(takenSlots);
-    // console.log(fullyTakenDays);
+    const shouldDisableDate = (date: Dayjs) => {
+        const day = date.day();
+        let disable = false
+        if (fullDays)
+            fullDays.forEach(element => {
+                if (date["$D"] == element) {
+                    disable = true
+                }
+            });
+        return day === 0 || day === 6 || disable;
+    };
+
+    function getFullyTakenDays(takenAppointments) {
+        let results = []
+        if (takenAppointments) {
+            const daysWithAppointments = takenAppointments.map(date => dayjs(date.date)['$D'])
+
+            const appointmentsInEachDay = daysWithAppointments.reduce((count, day) => {
+                count[day] = (count[day] || 0) + 1
+                return count
+            }, {})
+
+            if (appointmentsInEachDay)
+                for (const [key, value] of Object.entries(appointmentsInEachDay)) {
+
+                    if (value > 2)
+                        results.push(key)
+
+                }
+        }
+        return results
+    }
+
+    function getBusyTimeSlots(takenAppointments) {
+        let days = {}
+        if (takenAppointments) {
+            takenAppointments.forEach((date) => {
+                const keyDay = dayjs(date.date)['$D']
+                if (!days.hasOwnProperty(keyDay)) {
+                    days[keyDay] = []
+                }
+                days[keyDay].push(dayjs(date.date).format('HH-mm'))
+            })
+        }
+        return days
+    }
+
+    const getDoctorBusySlots = async (id: String) => {
+        const results = await getTakenAppointments(id, Number(dayjs(selectedDate).format('YYYY')), Number(dayjs(selectedDate).format('MM')) - 1 )
+        const busySlots = await results.json()
+        setFullDays(getFullyTakenDays(busySlots.data))
+        setTakenTimeSlots(getBusyTimeSlots(busySlots.data))
+        return busySlots
+    }
+
+    useEffect(() => {
+        getDoctorBusySlots(doctor.employeeId)
+    }, [selectedDate])
+
 
     const handleChangeTime = (value) => {
-        let time = dayjs(value.$d).format('THH:mm:ss.sss[Z]')
+        let time = dayjs(value.$d).format('HH:mm')
         saveTime(time)
     };
 
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
-        let month = dayjs(value.$d).format('MM')
-        console.log(month)
         saveDate(date)
-        changeMonth(month)
+        setSelectedDate(date)
+        setClockDisabled(false)
     };
 
     return (
@@ -70,21 +119,20 @@ export default function DateAndTimePicker({ doctor, takenSlots, saveTime, saveDa
                 <Grid item>
                     <DateCalendar
                         dayOfWeekFormatter={dayFormatter}
-                        defaultValue={today}
                         disablePast
-                        shouldDisableDate={isWeekend}
-                        // renderLoading={() => <DayCalendarSkeleton />}
+                        shouldDisableDate={shouldDisableDate}
                         onMonthChange={handleChangeDate}
+                        onYearChange={handleChangeDate}
                         onChange={handleChangeDate}
-                    //todo on change
-                    //todo set isloading when fetching data
                     />
                 </Grid>
                 <Grid item>
                     <StaticTimePicker
+                        ampm={false}
                         orientation="landscape"
-                        defaultValue={twoPM}
-                        minutesStep={15}
+                        shouldDisableTime={shouldDisableTime}
+                        disabled={clockDisabled}
+                        minutesStep={30}
                         minTime={minTime}
                         maxTime={maxTime}
                         onChange={handleChangeTime}

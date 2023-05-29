@@ -10,3 +10,8 @@ test pages
 4- for supervisor: 
     1- all tests that are "completed"
     2- tests that have "super_id == his id" (those are the ones that has status == approved or rejected)
+
+
+
+settings pages : 
+    

@@ -1,14 +1,14 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useCallback, useState } from "react";
-import TextInput from '@/components/textInput';
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
 import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TextField } from "@mui/material";
 
 const UserSettings = () => {
-    const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
+    const { data: session, update } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
 
     const role = session?.user?.role;
     const [image, setImage] = useState('');
@@ -18,8 +18,6 @@ const UserSettings = () => {
         }
     }, [session?.user?.image]);
 
-
-
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -28,27 +26,28 @@ const UserSettings = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [pesel, setPesel] = useState('');
 
-
     const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
 
     const updateUserNameAndSurname = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             firstName,
             lastName
         }
         const res = updateUserInfo(userData)
-            if ((await res).ok){
+        if ((await res).ok) {
             toast.success('Data updated successfully');
-        }  
-        else{
+        }
+        else {
             toast.error('Failed to update data');
         }
-
+        console.log(userData)
+        update(userData)
     }
 
+    //TODO: After email change resend verification
+    //also there may be implications with google OA accounts
     const updateUserEmail = async (e) => {
         e.preventDefault();
         console.log("saveUserNameAndSurname");
@@ -56,46 +55,58 @@ const UserSettings = () => {
         const userData = {
             email,
         }
-        const res =  updateUserInfo(userData)
+        const res = updateUserInfo(userData)
 
-        if ((await res).ok){
-            toast.success('Email updated successfully', { autoClose: 50000 });
-        }  
-        else{
+        if ((await res).ok) {
+            toast.success('Email updated successfully');
+        }
+        else {
             toast.error('Failed to update email');
         }
-      }
+    }
+
     const updateUserPassword = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             newPassword,
             oldPassword
         }
-        const res =  updateUserInfo(userData)
-        if ((await res).ok){
-            toast.success('Password updated successfully', { autoClose: 50000 });
+        const res = updateUserInfo(userData)
+        if ((await res).ok) {
+            toast.success('Password updated successfully');
         }
-        else{
+        else {
             toast.error('Failed to update password');
         }
     }
 
     const updateUserPesel = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             pesel,
         }
 
         const res = updateUserInfo(userData)
-        if ((await res).ok){
-            toast.success('Pesel updated successfully', { autoClose: 50000 });
+        if ((await res).ok) {
+            toast.success('Pesel updated successfully');
         }
-        else{
+        else {
             toast.error('Failed to update pesel');
         }
+    }
 
+    const updateUserInsurance = async (e) => {
+        e.preventDefault();
+        const userData = {
+            insuranceId,
+        }
+        const res = updateUserInfo(userData)
+        if ((await res).ok) {
+            toast.success('Insurance data updated successfully');
+        }
+        else {
+            toast.error('Failed to update insurance data');
+        }
     }
 
     const fetchData = async () => {
@@ -104,16 +115,15 @@ const UserSettings = () => {
         setFirstName(result.data?.firstName)
         setLastName(result.data?.lastName)
         setEmail(result.data?.email)
-        setInsuranceId(result.data?.insuranceId)
+        setInsuranceId(result.data?.patient?.insuranceId)
         setEmailVerified(result.data?.emailVerified)
         setPesel(result.data?.nationalId)
-        setHasInsurance(result.data?.insuranceId ? true : false)
+        setHasInsurance(result.data?.patient?.insuranceId ? true : false)
     }
 
     useEffect(() => {
         fetchData()
     }, [session])
-
 
     const handlePictureChange = useCallback((e) => {
         const file = e.target.files[0];
@@ -131,7 +141,7 @@ const UserSettings = () => {
                 updateUserInfo(userData)
                     .then((response) => {
                         if (response.ok) {
-                                console.log("response ok");
+                            console.log("response ok");
                         } else {
                             console.error('Failed to update user data');
                         }
@@ -139,6 +149,9 @@ const UserSettings = () => {
                     .catch((error) => {
                         console.error('Failed to update user data:', error);
                     });
+                //NOTE: updating session image works, but uncomment it only after we change this code to save image on server/cloud
+                //base64 breaks the server 
+                // update(userData)
             };
             reader.readAsDataURL(file);
         }
@@ -156,17 +169,11 @@ const UserSettings = () => {
             >
 
                 <label htmlFor="profileImageInput" className="w-full h-full">
-                    {image ? (
-                        <img
-                            src={image}
-                            alt={session?.user?.name}
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <span className="flex items-center justify-center w-full h-full">
-                            Upload Picture
-                        </span>
-                    )}
+                    <img
+                        src={image ? image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
+                        alt={session?.user?.name}
+                        className="w-full h-full object-cover"
+                    />
                     <input
                         id="profileImageInput"
                         type="file"
@@ -178,30 +185,42 @@ const UserSettings = () => {
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
                 <form onSubmit={updateUserNameAndSurname}>
-                    <TextInput
-                        label="Name*"
-                        value={firstName}
-                        type={"text"}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <TextInput
-                        label="Surname*"
-                        value={lastName}
-                        type={"text"}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Name"
+                            value={firstName}
+                            type={"text"}
+                            onChange={(v) => setFirstName(v.target.value)}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Surname"
+                            value={lastName}
+                            type={"text"}
+                            onChange={(v) => setLastName(v.target.value)}
+                        />
+                    </div>
 
                     <CustomButton
                         buttonText={"Save Changes"}
                     />
                 </form>
                 <form onSubmit={updateUserEmail}>
-                    <TextInput
-                        label="Email*"
-                        value={email}
-                        type='email'
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Email"
+                            value={email}
+                            type='email'
+                            onChange={(v) => setEmail(v.target.value)}
+                        />
+                    </div>
                     {emailVerified ? (
                         <span className="text-green-500 flex mb-2">Email verified</span>
                     ) : (
@@ -212,52 +231,66 @@ const UserSettings = () => {
                 </form>
 
                 <form onSubmit={updateUserPassword}>
-                    <TextInput
-                        label="Old Password*"
-                        value={oldPassword}
-                        type='password'
-                        onChange={(e) => setOldPassword(e.target.value)}
-                    />
-                    <TextInput
-                        label="New Password*"
-                        value={newPassword}
-                        type='password'
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Old Password"
+                            value={oldPassword}
+                            type='password'
+                            onChange={(v) => setOldPassword(v.target.value)}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="New Password"
+                            value={newPassword}
+                            type='password'
+                            onChange={(v) => setNewPassword(v.target.value)}
+                        />
+                    </div>
                     <CustomButton
                         buttonText={"Save Password"}
                     />
                 </form>
 
                 <form onSubmit={updateUserPesel}>
-                    <TextInput
-                        label="Pesel*"
-                        value={pesel}
-                        type='text'
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                    <div className="mb-4">
+                        <TextField
+                            fullWidth
+                            required
+                            label="Pesel"
+                            value={pesel}
+                            type='text'
+                            onChange={(v) => setPesel(v.target.value)}
+                        />
+                    </div>
                     <CustomButton
                         buttonText={"Save Pesel"}
                     />
                 </form>
 
-
-
                 {role == Role.PATIENT && (
+                <form onSubmit={updateUserInsurance}>
+
                     <div>
-                        <TextInput
-                            label="Innsurance Number*"
-                            value={insuranceId}
-                            type={"text"}
-                            onChange={(e) => setInsuranceId(e.target.value)}
-                        />
+                        <div className="mb-4">
+                            <TextField
+                                fullWidth
+                                required
+                                label="Innsurance Number"
+                                value={insuranceId}
+                                type={"text"}
+                                onChange={(v) => setInsuranceId(v.target.value)}
+                            />
+                        </div>
                         <CustomButton
                             buttonText={"Save Insurance Data"}
-                            onClick={() => {
-                                //Change the insurance number
-                            }}
                         />
                     </div>
+                </form>
                 )}
 
 
