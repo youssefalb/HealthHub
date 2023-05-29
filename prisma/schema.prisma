@@ -115,9 +115,9 @@ model Visit {
   receptionistId         String?                 @map("receptionist_id")
   laboratoryExaminations LaboratoryExamination[]
   physicalExaminations   PhysicalExamination[]
-  doctor                 Doctor                  @relation(fields: [doctorId], references: [employeeId])
-  patient                Patient                 @relation(fields: [patientId], references: [patientId])
-  receptionist           Receptionist?           @relation(fields: [receptionistId], references: [employeeId])
+  doctor                 Doctor                  @relation(fields: [doctorId], references: [employeeId], onDelete: Cascade)
+  patient                Patient                 @relation(fields: [patientId], references: [patientId], onDelete: Cascade)
+  receptionist           Receptionist?           @relation(fields: [receptionistId], references: [employeeId], onDelete: Cascade)
 
   @@map("visits")
 }
