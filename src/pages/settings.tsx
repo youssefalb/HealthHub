@@ -26,7 +26,6 @@ const UserSettings = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [pesel, setPesel] = useState('');
 
-    const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
 
     const updateUserNameAndSurname = async (e) => {
@@ -118,7 +117,6 @@ const UserSettings = () => {
         setInsuranceId(result.data?.patient?.insuranceId)
         setEmailVerified(result.data?.emailVerified)
         setPesel(result.data?.nationalId)
-        setHasInsurance(result.data?.patient?.insuranceId ? true : false)
     }
 
     useEffect(() => {
