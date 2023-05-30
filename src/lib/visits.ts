@@ -77,28 +77,13 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
     })
   }
   else if (role == Role.PATIENT) {
-    result = await fetch(`http://localhost:3000${patientVisitsPath}/${visitId}`, {
+    result = await fetch(`${patientVisitsPath}/${visitId}`, {
       method: "GET",
     })
   }
 
-  return result;
-}
-
-export async function getAllVisitsIds() {
-  // Instead of the file system,
-  // fetch post data from an external API endpoint
-  const res = await fetch(`http://localhost:3000${visitsIdPath}`, {method: 'GET'});
-  let visits = await res.json();
-  visits = visits.data
-  console.log(visits)
-  return visits.map((visit) => {
-    return {
-      params: {
-        id: visit.visitId,
-      },
-    };
-  });
+  const ret =  await result.json()
+  return ret;
 }
 
 /**

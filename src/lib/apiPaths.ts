@@ -1,3 +1,4 @@
+
 export const doctorTestsPath: string = "/api/lab-tests/doctor"
 export const patientTestsPath: string = "/api/lab-tests/patient"
 export const supervisorTestsPath: string = "/api/lab-tests/supervisor"
@@ -6,7 +7,7 @@ export const technicianTestsPath: string = "/api/lab-tests/technician"
 export const technicianTestsInProgressPath: string = "/api/lab-tests/technician/in-progress"
 
 export const doctorVisitsPath: string = "/api/visits/doctor"
-export const patientVisitsPath: string = "/api/visits/patient"
+export const patientVisitsPath: string = "http://localhost:3000/api/visits/patient"
 export const visitsIdPath: string = "/api/visits/ids"
 
 export const doctorExaminationsPath: string = "/api/examinations/doctor"
