@@ -1,8 +1,8 @@
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import AppointmentCard from "./AppointmentCard";
 import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
-import { getDoctorVisits, getOwnVisits } from "@/lib/visits";
+import { getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
@@ -12,14 +12,13 @@ export default function AppointmentsList() {
   const [appointments, setAppointments] = useState([]);
 
   const role = session?.user?.role;
-  const user_id = session?.user?.id;
   const router = useRouter();
 
   const fetchData = async () => {
     try {
       const response = await getOwnVisits(role);
       const results = await response.json();
-      setAppointments(results["data"]);
+      setAppointments(results["data"].reverse());
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -29,7 +28,6 @@ export default function AppointmentsList() {
   useEffect(() => {
     if (session) {
       fetchData();
-      // getDoctorVisits("5")
     }
     //else loading state. show loading state
   }, [session]);
@@ -39,7 +37,7 @@ export default function AppointmentsList() {
   return (
     <div className="flex flex-col-reverse gap-4">
       {appointments?.length ? (
-        appointments.reverse().map((appointment) => (
+        appointments.map((appointment) => (
           <AppointmentCard
             // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
             key={appointment.visitId}
