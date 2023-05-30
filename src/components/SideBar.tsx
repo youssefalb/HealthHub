@@ -83,21 +83,18 @@ export default function sideBar() {
             ])
             .reverse();
     } else if (session?.user?.role === Role.RECEPTIONIST) {
-    } else {
-        // menuItems = [
-        //     {
-        //         href: "/about",
-        //         title: "About",
-        //     },
-        //     {
-        //         href: "/contact",
-        //         title: "Contact",
-        //     },
-        //     {
-        //         href: "/locations",
-        //         title: "Find Us",
-        //     },
-        // ];
+    } else if (session?.user?.role === Role.ADMIN) {
+        menuItems = menuItems
+            .concat([
+                {
+                    href: "/admin/patients",
+                    title: "Patients",
+                },
+                {
+                    href: "/admin/personnel",
+                    title: "Receptionists",
+                },
+            ])
     }
 
     return (
