@@ -10,7 +10,9 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions);
 
-    if (session.user?.role != Role.ADMIN) {
+    console.log(session?.user?.name);
+    console.log(session?.user?.role);
+    if (session?.user?.role != Role.ADMIN) {
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because you are not an admin" });
@@ -111,24 +113,24 @@ export default async function handler(
                 .json({ success: false, message: "Failed to retrieve patients" });
         }
     }
-    else if (req.method === "DELETE") {
+    else if (req.method === "PUT") {
         try {
             const id = req.query.id;
             console.log(id);
-            const patient = await prisma.user.delete({
+            const user = await prisma.user.update({
                 where: {
                     id: id.toString(),
                 },
+                data: {
+                    isActive: false,
+                },
             });
-            return res.status(200).json({ success: true, data: patient });
-
+            return res.status(200).json({ success: true, data: user });
         }
-
-
         catch (error) {
             return res
                 .status(500)
-                .json({ success: false, message: "Failed to Delete patients" });
+                .json({ success: false, message: "Failed to delete users" });
         }
 
     }

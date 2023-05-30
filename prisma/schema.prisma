@@ -21,6 +21,7 @@ model User {
   role          Role           @default(PATIENT)
   accounts      Account[]
   doctor        Doctor?
+  isActive     Boolean         @default(true)
   labAssistant  LabAssistant?
   labSupervisor LabSupervisor?
   patient       Patient?
