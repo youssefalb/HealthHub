@@ -1,6 +1,5 @@
-import { useSession, getSession } from 'next-auth/react';
 import { Status, Role } from "@prisma/client";
-import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
+import { doctorVisitsPath, patientVisitsPath, visitsIdPath } from "./apiPaths";
 
 let jsonHeader =  {
   'Content-Type': 'application/json'
@@ -78,7 +77,7 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
     })
   }
   else if (role == Role.PATIENT) {
-    result = await fetch(`${patientVisitsPath}/${visitId}`, {
+    result = await fetch(`http://localhost:3000${patientVisitsPath}/${visitId}`, {
       method: "GET",
     })
   }
@@ -86,6 +85,21 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
   return result;
 }
 
+export async function getAllVisitsIds() {
+  // Instead of the file system,
+  // fetch post data from an external API endpoint
+  const res = await fetch(`http://localhost:3000${visitsIdPath}`, {method: 'GET'});
+  let visits = await res.json();
+  visits = visits.data
+  console.log(visits)
+  return visits.map((visit) => {
+    return {
+      params: {
+        id: visit.visitId,
+      },
+    };
+  });
+}
 
 /**
  * Creates a new visit for the given patient with the provided speciality, doctor ID, and date.

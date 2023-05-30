@@ -7,6 +7,7 @@ export const technicianTestsInProgressPath: string = "/api/lab-tests/technician/
 
 export const doctorVisitsPath: string = "/api/visits/doctor"
 export const patientVisitsPath: string = "/api/visits/patient"
+export const visitsIdPath: string = "/api/visits/ids"
 
 export const doctorExaminationsPath: string = "/api/examinations/doctor"
 export const patientExaminationsPath: string = "/api/examinations/patient"
