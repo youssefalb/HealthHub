@@ -161,7 +161,7 @@ const UserSettings = () => {
                     <img
                         src={image ? image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
                         alt={session?.user?.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:cursor-pointer"
                     />
                     <input
                         id="profileImageInput"
