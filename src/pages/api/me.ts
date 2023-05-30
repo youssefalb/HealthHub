@@ -10,116 +10,121 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
+    try {
+        const session = await getServerSession(req, res, authOptions);
 
-    if (!session)
-        return res
-            .status(401)
-            .json({ success: false, message: "Unauthorized because not logged in" });
+        if (!session) {
+            return res
+                .status(401)
+                .json({ success: false, message: "Unauthorized because not logged in" });
+        }
 
-    if (req.method === "GET") {
-        try {
+        if (req.method === "GET") {
             const result = await prisma.user.findUnique({
                 where: { id: session.user.id },
                 include: {
                     patient: {
-                        select: { insuranceId: true }
-                    }
+                        select: { insuranceId: true },
+                    },
+                },
+            });
+
+            return res.status(200).json({ success: true, data: result });
+        } else if (req.method === "PUT" && session.user?.role === Role.PATIENT) {
+            const {
+                firstName,
+                lastName,
+                image,
+                insuranceId,
+                nationalID,
+                email,
+                newPassword,
+                oldPassword,
+            } = req.body;
+
+            if (email) {
+                const existingUser = await prisma.user.findUnique({
+                    where: { email },
+                });
+
+                if (existingUser) {
+                    return res
+                        .status(401)
+                        .json({ success: false, message: "Email already in use" });
                 }
-            })
+
+                const result = await prisma.user.update({
+                    where: { id: session.user.id.toString() },
+                    data: { email, emailVerified: null },
+                });
+
+                await sendVerificationEmail(result);
+                return res.status(200).json({ success: true, data: result });
+            } else if (newPassword && oldPassword) {
+                const { password: currentHashedPassword } = await prisma.user.findUnique(
+                    {
+                        where: { id: session.user.id.toString() },
+                        select: { password: true },
+                    }
+                );
+
+                const hashedPassword = await hashPassword(newPassword);
+                const isPasswordCorrect = await comparePassword(
+                    oldPassword,
+                    currentHashedPassword
+                );
+
+                if (!isPasswordCorrect) {
+                    return res
+                        .status(401)
+                        .json({ success: false, message: "Wrong password" });
+                }
+
+                if (newPassword === oldPassword) {
+                    return res.status(401).json({
+                        success: false,
+                        message: "New password cannot be the same as the old one",
+                    });
+                }
+
+                const result = await prisma.user.update({
+                    where: { id: session.user.id.toString() },
+                    data: { password: hashedPassword },
+                });
+
+                return res.status(200).json({ success: true, data: result });
+            } else if (insuranceId) {
+                console.log(insuranceId);
+                const result = await prisma.patient.update({
+                    where: { patientId: session.user.id.toString() },
+                    data: { insuranceId: insuranceId},
+                });
+                console.log(result);
+                return res.status(200).json({ success: true, data: result });
+            }
+
+            const dataClause = {
+                firstName,
+                lastName,
+                image,
+                insuranceId,
+                nationalID,
+            };
+
+            const result = await prisma.user.update({
+                where: { id: session.user.id.toString() },
+                data: dataClause,
+            });
+
             return res.status(200).json({ success: true, data: result });
         }
-        catch (error) {
-            return res
-                .status(500)
-                .json({ success: false, message: "ERROR : Failed to retrieve data" });
-        }
+
+        return res
+            .status(400)
+            .json({ success: false, message: "Invalid request method" });
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ success: false, message: "ERROR: Failed to retrieve data" });
     }
-    else if (req.method == "PUT") {
-        if (session.user?.role == Role.PATIENT) {
-            try {
-                //THINGS TO CHANGE
-                //TODO(drago): 'data' to be changed 
-                //firstName, lastName, image, sex, nationalID(pesel), insuranceID 
-                const { firstName, lastName, image, insuranceId,nationalID,  email, newPassword, oldPassword } = req.body
-                if (email) {
-                    const user = await prisma.user.findUnique({
-                        where: {
-                            email: email
-                        }
-                    })
-                    if (user) {
-                        return res.status(401).json({ success: false, message: "Email already in use" });
-                    }
-
-                    const result = await prisma.user.update({
-                        where: {
-                            id: session.user.id.toString(),
-                        },
-                        data: {
-                            email: email,
-                            emailVerified: null
-                        }
-                    })
-                    await sendVerificationEmail(result);
-                    return res.status(200).json({ success: true, data: result });
-
-                }
-                else if (newPassword && oldPassword) {
-
-                    const { password: currentHashedPassword } = await prisma.user.findUnique({
-                        where: {
-                            id: session.user.id.toString(),
-                        },
-                        select: {
-                            password: true
-                        }
-                    })
-                    const hashedPassword = await hashPassword(newPassword)
-                    const isPasswordCorrect = await comparePassword(oldPassword, currentHashedPassword)
-                    if (isPasswordCorrect) {
-                        if (newPassword == oldPassword) {
-                            return res.status(401).json({ success: false, message: "New password cannot be the same as the old one" });
-                        }
-                        const result = await prisma.user.update({
-                            where: {
-                                id: session.user.id.toString(),
-                            },
-                            data: {
-                                password: hashedPassword
-                            }
-                        })
-                        return res.status(200).json({ success: true, data: result });
-                    }
-                    else {
-                        return res.status(401).json({ success: false, message: "Wrong password" });
-                    }
-                }
-
-                else {
-                    const dataClause = {
-                        firstName,
-                        lastName,
-                        image,
-                        insuranceId,
-                        nationalID
-                    };
-                    const result = await prisma.user.update({
-                        where: {
-                            id: session.user.id.toString(),
-                        },
-                        data: dataClause
-                    })
-                    return res.status(200).json({ success: true, data: result });
-                }
-            } catch (error) {
-                return res
-                    .status(500)
-                    .json({ success: false, message: "ERROR : Failed to retrieve data" });
-            }
-        }
-    }
-    return res
-        .status(400)
-        .json({ success: false, message: "Invalid request method" });
 }

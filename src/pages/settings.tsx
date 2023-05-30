@@ -26,12 +26,10 @@ const UserSettings = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [pesel, setPesel] = useState('');
 
-    const [hasInsurance, setHasInsurance] = useState(false);
     const [insuranceId, setInsuranceId] = useState('');
 
     const updateUserNameAndSurname = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             firstName,
             lastName
@@ -59,7 +57,7 @@ const UserSettings = () => {
         const res = updateUserInfo(userData)
 
         if ((await res).ok) {
-            toast.success('Email updated successfully', { autoClose: 50000 });
+            toast.success('Email updated successfully');
         }
         else {
             toast.error('Failed to update email');
@@ -68,14 +66,13 @@ const UserSettings = () => {
 
     const updateUserPassword = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             newPassword,
             oldPassword
         }
         const res = updateUserInfo(userData)
         if ((await res).ok) {
-            toast.success('Password updated successfully', { autoClose: 50000 });
+            toast.success('Password updated successfully');
         }
         else {
             toast.error('Failed to update password');
@@ -84,17 +81,30 @@ const UserSettings = () => {
 
     const updateUserPesel = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
         const userData = {
             pesel,
         }
 
         const res = updateUserInfo(userData)
         if ((await res).ok) {
-            toast.success('Pesel updated successfully', { autoClose: 50000 });
+            toast.success('Pesel updated successfully');
         }
         else {
             toast.error('Failed to update pesel');
+        }
+    }
+
+    const updateUserInsurance = async (e) => {
+        e.preventDefault();
+        const userData = {
+            insuranceId,
+        }
+        const res = updateUserInfo(userData)
+        if ((await res).ok) {
+            toast.success('Insurance data updated successfully');
+        }
+        else {
+            toast.error('Failed to update insurance data');
         }
     }
 
@@ -104,10 +114,9 @@ const UserSettings = () => {
         setFirstName(result.data?.firstName)
         setLastName(result.data?.lastName)
         setEmail(result.data?.email)
-        setInsuranceId(result.data?.insuranceId)
+        setInsuranceId(result.data?.patient?.insuranceId)
         setEmailVerified(result.data?.emailVerified)
         setPesel(result.data?.nationalId)
-        setHasInsurance(result.data?.insuranceId ? true : false)
     }
 
     useEffect(() => {
@@ -253,7 +262,7 @@ const UserSettings = () => {
                             label="Pesel"
                             value={pesel}
                             type='text'
-                            onChange={(v) => setNewPassword(v.target.value)}
+                            onChange={(v) => setPesel(v.target.value)}
                         />
                     </div>
                     <CustomButton
@@ -262,6 +271,8 @@ const UserSettings = () => {
                 </form>
 
                 {role == Role.PATIENT && (
+                <form onSubmit={updateUserInsurance}>
+
                     <div>
                         <div className="mb-4">
                             <TextField
@@ -275,11 +286,9 @@ const UserSettings = () => {
                         </div>
                         <CustomButton
                             buttonText={"Save Insurance Data"}
-                            onClick={() => {
-                                //Change the insurance number
-                            }}
                         />
                     </div>
+                </form>
                 )}
 
 
