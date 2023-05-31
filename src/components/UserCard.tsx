@@ -1,37 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
+import PopupDialog from "./PopupDialog";
+import { banUser, unbanUser } from "@/lib/manageUsers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const UserCard = ({ id, name, surname, role, nationalID }) => {
+const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
 
-  const redirectFun = () => {
+  const [confirmBanUserPopUpShown, setConfirmBanUserPopUpShown] =useState(false);
+  const [confirmUnbanUserPopUpShown, setConfirmUnbanUserPopUpShown] = useState(false);
+
+  const handleBanClick = () => {
+    setConfirmBanUserPopUpShown(true);
   }
 
-
-  const handleBanUser = () => {
-    //Baning user coming soon
-    //some pop_up to confirm ban and then ban the wonderful user
+  const handleUnbanClick = () => {
+    setConfirmUnbanUserPopUpShown(true);
   }
 
-  return (
-    <div className="cursor-pointer">
-      <div className="bg-white hover:bg-gray-100 rounded-lg shadow-md p-6 flex items-center justify-between">
-        <div className="flex items-center">
-          <div>
-            <span className="text-gray-80 text-sm font-semibold">{name} {surname} ({role})</span>
+  const handleBanUser = async () => {
+    setConfirmBanUserPopUpShown(false);
+    const response = await banUser(id);
+    if (response.success) {
+      toast.success("User has been banned successfully.");
+    } else {
+      toast.error("Failed to ban user. Please try again.");
+    }
+  };
+  const handleUnbanUser = async () => {
+    setConfirmUnbanUserPopUpShown(false);
+    const response = await unbanUser(id);
+    if (response.success) {
+      toast.success("User has been unbanned successfully.");
+    } else {
+      toast.error("Failed to unban user. Please try again.");
+    }
+  };
+
+
+
+
+    return (
+
+      <div className="cursor-pointer">
+        <PopupDialog
+          open={confirmBanUserPopUpShown}
+          onClose={() => setConfirmBanUserPopUpShown(false)}
+          title="Are you sure!"
+          message="Before that. Are you sure you want to ban this user?"
+          onConfirm={handleBanUser}
+        />
+        <PopupDialog
+          open={confirmUnbanUserPopUpShown}
+          onClose={() => setConfirmUnbanUserPopUpShown(false)}
+          title="Are you sure!"
+          message="Before that. Are you sure you want to unban this user?"
+          onConfirm={handleUnbanUser}
+        />
+        <div className="bg-white hover:bg-gray-100 rounded-lg shadow-md p-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <div>
+              <span className="text-gray-80 text-sm font-semibold">{name} {surname} ({role})</span>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <div className="relative rounded-full text-white p-5 bg-blue-500 font-semibold w-30 h-10 flex items-center justify-center">
+              <span className="text-sm">ID: {nationalID}</span>
+            </div>
+            {isActive ? (
+              <button onClick={handleBanClick} className="ml-2">
+                <img src="/images/active-user.png"
+                  alt="Ban Icon" className="h-10 w-10"
+                  title="Ban User" />
+              </button>
+            ) : (
+              <button onClick={handleUnbanClick} className="ml-2">
+                <img src="/images/banned-user.png"
+                  alt="Unban Icon" className="h-10 w-10"
+                  title="Ban User" />
+              </button>
+            )
+
+            }
           </div>
         </div>
-        <div className="flex items-center">
-          <div className="relative rounded-full text-white p-5 bg-blue-500 font-semibold w-30 h-10 flex items-center justify-center">
-            <span className="text-sm">ID: {nationalID}</span>
-          </div>
-          <button onClick={handleBanUser} className="ml-2">
-            <img src="/images/ban-user.png"
-              alt="Ban Icon" className="h-10 w-10"
-              title="Ban User" />
-          </button>
-        </div>
+        <ToastContainer />
+
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-export default UserCard;
+  export default UserCard;

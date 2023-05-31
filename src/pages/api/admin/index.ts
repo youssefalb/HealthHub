@@ -29,6 +29,7 @@ export default async function handler(
                                     email: true,
                                     id: true,
                                     nationalId: true,
+                                    isActive: true
                                 },
                             }
                         }
@@ -47,6 +48,7 @@ export default async function handler(
                                     email: true,
                                     id: true,
                                     nationalId: true,
+                                    isActive: true
                                 },
                             }
                         }
@@ -65,6 +67,7 @@ export default async function handler(
                                     email: true,
                                     id: true,
                                     nationalId: true,
+                                    isActive: true
                                 },
                             }
                         }
@@ -82,7 +85,9 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
-                                    nationalId: true
+                                    nationalId: true,
+                                    isActive: true
+
                                 },
                             }
                         }
@@ -100,7 +105,8 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
-                                    nationalId: true
+                                    nationalId: true,
+                                    isActive: true
                                 },
                             }
                         }
@@ -119,13 +125,15 @@ export default async function handler(
     else if (req.method === "PUT") {
         try {
             const id = req.query.id;
+            const { isActive } = req.body; 
+            console.log(isActive);
             console.log(id);
             const user = await prisma.user.update({
                 where: {
                     id: id.toString(),
                 },
                 data: {
-                    isActive: false,
+                    isActive: isActive,
                 },
             });
             return res.status(200).json({ success: true, data: user });
@@ -133,7 +141,7 @@ export default async function handler(
         catch (error) {
             return res
                 .status(500)
-                .json({ success: false, message: "Failed to delete users" });
+                .json({ success: false, message: "Failed to ban or unban users" });
         }
 
     }

@@ -43,3 +43,28 @@ export async function getLabTechnicians() {
     return result.json()
 }
 
+//ban user based  on the id
+// ban user based on the id
+export async function banUser(id: string) {
+    const result = await fetch(`${adminPath}?id=${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isActive: false }), // Pass isActive in the request body
+    });
+    return result.json();
+}
+
+// unban user based on the id
+export async function unbanUser(id: string) {
+    const result = await fetch(`${adminPath}?id=${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isActive: true }), // Pass isActive in the request body
+    });
+    return result.json();
+}
+

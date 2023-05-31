@@ -12,12 +12,7 @@ export default function PatientsList({ techFetchAll = false }) {
   const role = session?.user?.role;
 
   const fetchData = async () => {
-    // Fetch data from your API or data source
-    // Set the fetched data to the state or perform any required operations
     const fetchedPatients = await getPatients();
-    console.log(fetchedPatients);
-
-    // Set the fetched users to the state
     setPatients(fetchedPatients.data);
     setIsLoading(false);
   };
@@ -39,11 +34,12 @@ export default function PatientsList({ techFetchAll = false }) {
       {patients?.length ? (
         patients.map((patient) => (
           <UserCard
-            id={patient.paritentId}
+            id={patient.patientId}
             name={patient.user.firstName}
             surname={patient.user.lastName}
             nationalID={patient.user.nationalId}
             role={Role.PATIENT}
+            isActive={patient.user.isActive}
           />
         ))
       ) : (
@@ -59,6 +55,7 @@ export default function PatientsList({ techFetchAll = false }) {
           </p>
         </div>
       )}
+      
     </div>
   );
 }
