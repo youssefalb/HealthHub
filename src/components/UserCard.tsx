@@ -77,7 +77,7 @@ const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
             <button onClick={handleUnbanClick} className="ml-2">
               <img src="/images/banned-user.png"
                 alt="Unban Icon" className="h-10 w-10"
-                title="Ban User" />
+                title="Unban User" />
             </button>
           )
 
