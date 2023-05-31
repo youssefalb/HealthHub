@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PopupDialog from "./PopupDialog";
 import { banUser, unbanUser } from "@/lib/manageUsers";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {

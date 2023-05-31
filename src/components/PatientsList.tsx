@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getPatients } from "../lib/manageUsers";
 import { Role } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
+import EmptyStateMessage from "./EmptyStateMessage";
 
 export default function PatientsList() {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -45,17 +46,10 @@ export default function PatientsList() {
           />
         ))
       ) : (
-        <div className="flex flex-col items-center justify-center">
-          <img
-            src="/images/empty.png"
-            alt="Placeholder"
-            className="w-58 h-48 mb-4"
-          />
-          <p className="text-2xl font-bold mb-2 mt-6">Nothing's in here</p>
-          <p className="text-gray-500 text-lg mb-6">
-            There are no users for now
-          </p>
-        </div>
+        <EmptyStateMessage
+          title="No Patients"
+          description="There are no patients for now."
+        />
       )}
 
     </div>
