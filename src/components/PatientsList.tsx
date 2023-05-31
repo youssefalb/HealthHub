@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import UserCard from "./UserCard";
 import { useEffect, useState } from "react";
+import { getPatients } from "../lib/manageUsers";
 import { Role } from "@prisma/client";
 
 // This page works for all 3 roles that need to view visits (patient, doctor, recept.)
@@ -13,14 +14,11 @@ export default function PatientsList({ techFetchAll = false }) {
   const fetchData = async () => {
     // Fetch data from your API or data source
     // Set the fetched data to the state or perform any required operations
-    const fetchedUsers = [
-      { id: 1, name: "John", surname: "AL bali", role: "Patient", nationalID: "123456789"},
-      { id: 2, name: "Jane", surname: "Smaluch",role: "Doctor", nationalID: "123456789" },
-      { id: 3, name: "Alice",  surname: "Didyk", role: "Receptionist",  nationalID: "123456789" },
-    ];
+    const fetchedPatients = await getPatients();
+    console.log(fetchedPatients);
 
     // Set the fetched users to the state
-    setUsers(fetchedUsers);
+    setPatients(fetchedPatients.data);
     setIsLoading(false);
   };
 
@@ -31,21 +29,21 @@ export default function PatientsList({ techFetchAll = false }) {
     // else loading state. show loading state
   }, [session]);
 
-  const [users, setUsers] = useState([]);
+  const [patients, setPatients] = useState([]);
 
   // ToDo: loading component
   if (isLoading) return <p>Loading...</p>;
   return (
     // TODO: add hyperlink or redirect to one test details
     <div className="flex flex-col-reverse gap-4">
-      {users?.length ? (
-        users.map((user) => (
+      {patients?.length ? (
+        patients.map((patient) => (
           <UserCard
-            id={user.id}
-            name={user.name}
-            surname={user.surname}
-            nationalID={user.nationalID}
-            role={user.role}
+            id={patient.paritentId}
+            name={patient.user.firstName}
+            surname={patient.user.lastName}
+            nationalID={patient.user.nationalId}
+            role={Role.PATIENT}
           />
         ))
       ) : (

@@ -13,5 +13,6 @@ export const patientExaminationsPath: string = "/api/examinations/patient"
 
 export const patientsPath: string = "/api/patients"
 export const personnelPath: string = "/api/personnel"
+export const adminPath: string = "/api/admin"
 
 export const userInfoPath: string = "/api/me"

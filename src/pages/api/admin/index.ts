@@ -28,6 +28,7 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
+                                    nationalId: true,
                                 },
                             }
                         }
@@ -45,6 +46,7 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
+                                    nationalId: true,
                                 },
                             }
                         }
@@ -62,6 +64,7 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
+                                    nationalId: true,
                                 },
                             }
                         }
@@ -79,6 +82,7 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
+                                    nationalId: true
                                 },
                             }
                         }
@@ -96,6 +100,7 @@ export default async function handler(
                                     lastName: true,
                                     email: true,
                                     id: true,
+                                    nationalId: true
                                 },
                             }
                         }

@@ -1,6 +1,4 @@
 import React from "react";
-import banIcon from "../public/images/ban-icon.png";
-
 
 const UserCard = ({ id, name, surname, role, nationalID }) => {
 
@@ -9,7 +7,8 @@ const UserCard = ({ id, name, surname, role, nationalID }) => {
 
 
   const handleBanUser = () => {
-    console.log("Ban user with ID");
+    //Baning user coming soon
+    //some pop_up to confirm ban and then ban the wonderful user
   }
 
   return (
@@ -25,17 +24,10 @@ const UserCard = ({ id, name, surname, role, nationalID }) => {
             <span className="text-sm">ID: {nationalID}</span>
           </div>
           <button onClick={handleBanUser} className="ml-2">
-              <img src="/images/ban-user.png"
-                alt="Ban Icon" className="h-10 w-10"
-                title="Ban User" />
-            </button>
-          {/* <div className="rounded-full w-10 h-10 flex items-center justify-center mr-2">
-            <img
-              src={profileImage}
-              alt="User Profile Image"
-              className="h-11 w-11"
-            />
-          </div> */}
+            <img src="/images/ban-user.png"
+              alt="Ban Icon" className="h-10 w-10"
+              title="Ban User" />
+          </button>
         </div>
       </div>
     </div>
