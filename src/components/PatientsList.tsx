@@ -3,11 +3,13 @@ import UserCard from "./UserCard";
 import { useEffect, useState } from "react";
 import { getPatients } from "../lib/manageUsers";
 import { Role } from "@prisma/client";
+import { ToastContainer } from "react-toastify";
 
 // This page works for all 3 roles that need to view visits (patient, doctor, recept.)
 export default function PatientsList({ techFetchAll = false }) {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
   const [isLoading, setIsLoading] = useState(true);
+  const [patients, setPatients] = useState([]);
 
   const role = session?.user?.role;
 
@@ -22,15 +24,16 @@ export default function PatientsList({ techFetchAll = false }) {
       fetchData();
     }
     // else loading state. show loading state
-  }, [session]);
+  }, [session, patients]);
 
-  const [patients, setPatients] = useState([]);
 
   // ToDo: loading component
   if (isLoading) return <p>Loading...</p>;
   return (
     // TODO: add hyperlink or redirect to one test details
     <div className="flex flex-col-reverse gap-4">
+      <ToastContainer />
+
       {patients?.length ? (
         patients.map((patient) => (
           <UserCard
@@ -55,7 +58,7 @@ export default function PatientsList({ techFetchAll = false }) {
           </p>
         </div>
       )}
-      
+
     </div>
   );
 }
