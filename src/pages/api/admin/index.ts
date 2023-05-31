@@ -126,8 +126,6 @@ export default async function handler(
         try {
             const id = req.query.id;
             const { isActive } = req.body; 
-            console.log(isActive);
-            console.log(id);
             const user = await prisma.user.update({
                 where: {
                     id: id.toString(),

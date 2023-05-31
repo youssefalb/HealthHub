@@ -92,7 +92,7 @@ export default function sideBar() {
                 },
                 {
                     href: "/admin/personnel",
-                    title: "Receptionists",
+                    title: "Personnel",
                 },
             ])
     }

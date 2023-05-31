@@ -5,8 +5,7 @@ import { getPatients } from "../lib/manageUsers";
 import { Role } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
 
-// This page works for all 3 roles that need to view visits (patient, doctor, recept.)
-export default function PatientsList({ techFetchAll = false }) {
+export default function PatientsList() {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
   const [isLoading, setIsLoading] = useState(true);
   const [patients, setPatients] = useState([]);
