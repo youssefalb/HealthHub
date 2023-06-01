@@ -19,9 +19,9 @@ model User {
   emailVerified DateTime?      @map("email_verified")
   nationalId    String?        @unique @map("national_id") @db.VarChar(11)
   role          Role           @default(PATIENT)
+  isActive      Boolean        @default(true)
   accounts      Account[]
   doctor        Doctor?
-  isActive     Boolean         @default(true)
   labAssistant  LabAssistant?
   labSupervisor LabSupervisor?
   patient       Patient?

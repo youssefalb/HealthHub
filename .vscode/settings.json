@@ -31,5 +31,8 @@
       ],
       "color": "terminal.ansiRed"
     }
-  }
+  },
+  "githubPullRequests.ignoredPullRequestBranches": [
+    "main"
+  ]
 }

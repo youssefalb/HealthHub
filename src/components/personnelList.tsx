@@ -33,7 +33,7 @@ export default function PersonnelList() {
             fetchData();
         }
         // else loading state. show loading state
-    }, [session, doctors, labAssistants, labSupervisors, receptionists]);
+    }, [session]);
 
 
     // ToDo: loading component
@@ -43,7 +43,7 @@ export default function PersonnelList() {
             <ToastContainer />
             <div>
                 <h2 className="text-2xl font-bold mb-4">Lab Assistants</h2>
-                {labAssistants.length ? (
+                {labAssistants?.length ? (
                     <div>
                         {labAssistants.map((assistant) => (
                             <UserCard
@@ -65,7 +65,7 @@ export default function PersonnelList() {
                 <div>
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Receptionists</h2>
-                {receptionists.length ? (
+                {receptionists?.length ? (
                     <div>
                         {receptionists.map((receptionist) => (
                             <UserCard
@@ -87,7 +87,7 @@ export default function PersonnelList() {
             </div>
             <div>
                 <h2 className="text-2xl font-bold mb-4">Lab Supervisors</h2>
-                {labSupervisors.length ? (
+                {labSupervisors?.length ? (
                     <div>
                         {labSupervisors.map((supervisor) => (
                             <UserCard

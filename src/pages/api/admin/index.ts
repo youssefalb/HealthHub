@@ -96,6 +96,7 @@ export default async function handler(
 
             }
             else if (role === Role.LAB_SUPERVISOR) {
+                console.log("went to super EP")
                 const labSupervisors = await prisma.labSupervisor.findMany(
                     {
                         include: {
@@ -125,7 +126,7 @@ export default async function handler(
     else if (req.method === "PUT") {
         try {
             const id = req.query.id;
-            const { isActive } = req.body; 
+            const { isActive } = req.body;
             const user = await prisma.user.update({
                 where: {
                     id: id.toString(),
