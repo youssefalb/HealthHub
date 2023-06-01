@@ -23,20 +23,8 @@ export default async function handler(
                     where: {
                         visitId: visit_id.toString(),
                     },
-                    include: {
-                        patient: {
-                            select: {
-                                user: {
-                                    select:{
-                                        firstName: true,
-                                        lastName: true,
-                                    }
-                                }
-                            }
-                        }
-                    }
                 })
-                if (visit == null) throw "no data";
+                if(visit == null) throw "no data";
                 return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {

@@ -87,7 +87,7 @@ export default async function handler(
                         },
                         include: {
                             patient: {
-                                select: {
+                                include: {
                                     user: {
                                         select:
                                         {

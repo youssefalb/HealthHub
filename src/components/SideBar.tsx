@@ -73,7 +73,7 @@ export default function sideBar() {
         menuItems = menuItems
             .concat([
                 {
-                    href:"/tests",
+                    href: "/tests",
                     title: "My Tests",
                 },
                 {

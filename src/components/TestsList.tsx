@@ -3,7 +3,6 @@ import TestCard from "./TestCard";
 import { useEffect, useState } from "react";
 import {getOwnTests, getTechOrSupervisorTests} from "@/lib/tests";
 import { Role } from "@prisma/client";
-import Link from "next/link";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function TestsList({techFetchAll = false}) {
@@ -16,12 +15,13 @@ export default function TestsList({techFetchAll = false}) {
   const fetchData = async () => {
     try {
         let response;
-        if(techFetchAll || role == Role.PATIENT || role == Role.DOCTOR)
+        if(techFetchAll || role == Role.PATIENT)
           response = await getOwnTests(role);
         else
           response = await getTechOrSupervisorTests(role);
 
-      setTests(response["data"]);
+      const results = await response.json();
+      setTests(results["data"]);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching tests:", error);
@@ -38,16 +38,16 @@ export default function TestsList({techFetchAll = false}) {
   // ToDo : loading component
   if (isLoading) return <p>Loading...</p>;
   return (
+  // TODO(asser): add hyperling or redirect to one test details
     <div className="flex flex-col-reverse gap-4">
       {tests?.length ? (
         tests.map((test) => (
-        <Link key={test.testId} href={`/tests/${test.testId}`}>
           <TestCard
+            // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
             key={test.testId}
             test={test}
             role={role}
           />
-          </Link>
         ))
       ) : (
         <div className="flex flex-col items-center justify-center">

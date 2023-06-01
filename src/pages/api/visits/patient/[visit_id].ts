@@ -3,15 +3,13 @@ import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
 import { Role, Status } from "@prisma/client";
-import { getSession } from "next-auth/react";
 
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    //const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-    const session = await getSession({ req }); //authenticate user on the server side
+    const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
     if (!session)
         return res
@@ -25,17 +23,8 @@ export default async function handler(
                     where: {
                         visitId: visit_id.toString(),
                     },
-                    include: {
-                        doctor: {
-                            select: {
-                                user: {
-                                    select: {firstName:true, lastName:true}
-                                }
-                            }
-                        }
-                    }
                 })
-                if (visit == null) throw "no data"
+                if(visit == null) throw "no data"
                 if (visit.patientId == session.user?.id) {
                     return res.status(200).json({ success: true, data: visit });
                 }
