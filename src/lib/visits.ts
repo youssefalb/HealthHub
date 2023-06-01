@@ -1,6 +1,5 @@
-import { useSession, getSession } from 'next-auth/react';
 import { Status, Role } from "@prisma/client";
-import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
+import { doctorVisitsPath, patientVisitsPath, visitsIdPath } from "./apiPaths";
 
 let jsonHeader =  {
   'Content-Type': 'application/json'
@@ -83,9 +82,9 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
     })
   }
 
-  return result;
+  const ret =  await result.json()
+  return ret;
 }
-
 
 /**
  * Creates a new visit for the given patient with the provided speciality, doctor ID, and date.

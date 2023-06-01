@@ -16,7 +16,7 @@ const AppointmentCard = ({appointment, role}) => {
   // console.log(appointment)
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
+    <div className="bg-white hover:bg-gray-100 rounded-lg shadow-md p-6 flex items-center justify-between">
       <div className="flex items-center">
         <div>
           <span className="text-blue-500 text-sm block">{date}</span>
