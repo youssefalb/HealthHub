@@ -1,6 +1,6 @@
 //here list of personnell and button to deactivate them
 
-import PersonnelList from "@/components/personnelList";
+import PersonnelList from "@/components/PersonnelList";
 
 
 export default function patientsPage() {
