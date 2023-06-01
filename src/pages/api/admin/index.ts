@@ -96,7 +96,6 @@ export default async function handler(
 
             }
             else if (role === Role.LAB_SUPERVISOR) {
-                console.log("went to super EP")
                 const labSupervisors = await prisma.labSupervisor.findMany(
                     {
                         include: {
