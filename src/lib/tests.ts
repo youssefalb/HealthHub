@@ -47,9 +47,34 @@ export async function getOwnTests(role: Role): Promise<Response>{
             path = technicianTestsPath;
             break;
     }
-    return await fetch(path, {
+    const res = await fetch(path, {
         method: 'GET',
     });
+    let ret = res.json()
+    return ret
+}
+
+export async function getTestsOfAVisit(role: Role, visitId: String){
+    let path = '';
+    switch (role) {
+        case Role.DOCTOR:
+            path = doctorTestsPath;
+            break;
+        case Role.PATIENT:
+            path = patientTestsPath;
+            break;
+        case Role.LAB_SUPERVISOR:
+            path = supervisorTestsPath;
+            break;
+        case Role.LAB_ASSISTANT:
+            path = technicianTestsPath;
+            break;
+    }
+    const result = await fetch(`${path}?visit=${visitId}`, {
+        method: 'GET',
+    });
+    let ret = result.json()
+    return ret;
 }
 
 /**
@@ -75,9 +100,12 @@ export async function getTestDetails(role: Role, testId: String): Promise<Respon
             path = technicianTestsPath;
             break;
     }
-    return await fetch(path + testId, {
+    let result = await fetch(path + '/' +testId, {
         method: 'GET',
     });
+    
+    let ret = result.json()
+    return ret;
 }
 
 //===================== ADMIN ======================

@@ -4,6 +4,7 @@ import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
 import { getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
@@ -38,12 +39,13 @@ export default function AppointmentsList() {
     <div className="flex flex-col-reverse gap-4">
       {appointments?.length ? (
         appointments.map((appointment) => (
+        <Link key={appointment.visitId} href={`/visits/${appointment.visitId}`}>
           <AppointmentCard
-            // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
             key={appointment.visitId}
             appointment={appointment}
             role={role}
           />
+          </Link>
         ))
       ) : (
         <div className="flex flex-col items-center justify-center">

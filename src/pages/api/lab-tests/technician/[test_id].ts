@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { LaboratoryTestStatus, Role } from "@prisma/client";
+import { LaboratoryTestStatus, Role, Status } from "@prisma/client";
 
 
 export default async function handler(
@@ -25,7 +25,7 @@ export default async function handler(
                     },
                 })
                 if(test == null) throw "no data";
-                if (test.labAssistantId == session.user.id)
+                if (test.labAssistantId == session.user.id || test.status == LaboratoryTestStatus.ORDERED)
                     return res.status(200).json({ success: true, data: test });
                 return res
                     .status(401)
