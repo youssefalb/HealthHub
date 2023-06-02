@@ -24,7 +24,7 @@ export default function PatientsList() {
       fetchData();
     }
     // else loading state. show loading state
-  }, [session, patients]);
+  }, [session]);
 
 
   // ToDo: loading component

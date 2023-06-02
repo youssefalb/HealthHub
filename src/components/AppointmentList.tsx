@@ -4,6 +4,7 @@ import CustomButton from "./CustomButton";
 import { useEffect, useState } from "react";
 import { getDoctorVisits, getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
+import EmptyStateMessage from "./EmptyStateMessage";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
@@ -48,17 +49,10 @@ export default function AppointmentsList() {
           />
         ))
       ) : (
-        <div className="flex flex-col items-center justify-center">
-          <img
-            src="/images/empty.png"
-            alt="Placeholder"
-            className="w-58 h-48 mb-4"
-          />
-          <p className="text-2xl font-bold mb-2 mt-6">Nothing's in here</p>
-          <p className="text-gray-500 text-lg mb-6">
-            You don't have any planned appointments, yet.
-          </p>
-        </div>
+     <EmptyStateMessage
+        title="No Appointments"
+        description="You don't have any planned appointments, yet."
+      />
       )}
       <CustomButton
         buttonText={"Book Appointment"}

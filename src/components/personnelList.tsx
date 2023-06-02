@@ -47,7 +47,7 @@ export default function PersonnelList() {
                     <div>
                         {labAssistants.map((assistant) => (
                             <UserCard
-                                id={assistant.id}
+                                id={assistant.employeeId}
                                 nationalID={assistant.user.nationalId}
                                 name={assistant.user.firstName}
                                 surname={assistant.user.lastName}
@@ -69,7 +69,7 @@ export default function PersonnelList() {
                     <div>
                         {receptionists.map((receptionist) => (
                             <UserCard
-                                id={receptionist.id}
+                                id={receptionist.employeeId}
                                 nationalID={receptionist.user.nationalId}
                                 name={receptionist.user.firstName}
                                 surname={receptionist.user.lastName}
@@ -91,7 +91,7 @@ export default function PersonnelList() {
                     <div>
                         {labSupervisors.map((supervisor) => (
                             <UserCard
-                                id={supervisor.id}
+                                id={supervisor.employeeId}
                                 nationalID={supervisor.user.nationalId}
                                 name={supervisor.user.firstName}
                                 surname={supervisor.user.lastName}
@@ -103,6 +103,28 @@ export default function PersonnelList() {
                 ) : (
                     <EmptyStateMessage
                         title="No Lab Supervisors"
+                        description="There are no lab supervisors at the moment."
+                    />
+                )}
+            </div>
+            <div>
+                <h2 className="text-2xl font-bold mb-4">Doctors</h2>
+                {doctors?.length ? (
+                    <div>
+                        {doctors.map((doctor) => (
+                            <UserCard
+                                id={doctor.employeeId}
+                                nationalID={doctor.user.nationalId}
+                                name={doctor.user.firstName}
+                                surname={doctor.user.lastName}
+                                role={Role.DOCTOR}
+                                isActive={doctor.user.isActive}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <EmptyStateMessage
+                        title="No Doctors"
                         description="There are no lab supervisors at the moment."
                     />
                 )}

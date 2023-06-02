@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PopupDialog from "./PopupDialog";
 import { banUser, unbanUser } from "@/lib/manageUsers";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
 
   const [confirmBanUserPopUpShown, setConfirmBanUserPopUpShown] = useState(false);
   const [confirmUnbanUserPopUpShown, setConfirmUnbanUserPopUpShown] = useState(false);
+  const [activeState, setActiveState] = useState(isActive);
+
 
   const handleBanClick = () => {
     setConfirmBanUserPopUpShown(true);
@@ -22,6 +24,8 @@ const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
     const response = await banUser(id);
     if (response.success) {
       toast.success("User has been banned successfully.");
+      setActiveState(false);
+      
     } else {
       toast.error("Failed to ban user. Please try again.");
     }
@@ -32,13 +36,11 @@ const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
     const response = await unbanUser(id);
     if (response.success) {
       toast.success("User has been unbanned successfully.");
+      setActiveState(true);
     } else {
       toast.error("Failed to unban user. Please try again.");
     }
   };
-
-
-
 
   return (
 
@@ -67,7 +69,7 @@ const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
           <div className="relative rounded-full text-white p-5 bg-blue-500 font-semibold w-30 h-10 flex items-center justify-center">
             <span className="text-sm">ID: {nationalID}</span>
           </div>
-          {isActive ? (
+          {activeState ? (
             <button onClick={handleBanClick} className="ml-2">
               <img src="/images/active-user.png"
                 alt="Ban Icon" className="h-10 w-10"
