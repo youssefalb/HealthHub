@@ -6,6 +6,7 @@ import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TextField } from "@mui/material";
+import Axios from "axios";
 
 const UserSettings = () => {
     const { data: session, update } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -49,8 +50,6 @@ const UserSettings = () => {
     //also there may be implications with google OA accounts
     const updateUserEmail = async (e) => {
         e.preventDefault();
-        console.log("saveUserNameAndSurname");
-
         const userData = {
             email,
         }
@@ -84,7 +83,6 @@ const UserSettings = () => {
         const userData = {
             pesel,
         }
-
         const res = updateUserInfo(userData)
         if ((await res).ok) {
             toast.success('Pesel updated successfully');
@@ -117,6 +115,8 @@ const UserSettings = () => {
         setInsuranceId(result.data?.patient?.insuranceId)
         setEmailVerified(result.data?.emailVerified)
         setPesel(result.data?.nationalId)
+        setImage(result.data?.image)
+        console.log(result)
     }
 
     useEffect(() => {
@@ -126,32 +126,19 @@ const UserSettings = () => {
     const handlePictureChange = useCallback((e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const imageData = event.target.result.toString();
-                setImage(imageData);
-
-                const userData = {
-                    image: imageData,
-                };
-                console.log(userData);
-
-                updateUserInfo(userData)
-                    .then((response) => {
-                        if (response.ok) {
-                            console.log("response ok");
-                        } else {
-                            console.error('Failed to update user data');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Failed to update user data:', error);
-                    });
-                //NOTE: updating session image works, but uncomment it only after we change this code to save image on server/cloud
-                //base64 breaks the server 
-                // update(userData)
-            };
-            reader.readAsDataURL(file);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', "gxzmcqaj");
+            Axios.post("https://api.cloudinary.com/v1_1/diylqdyxa/image/upload", formData).then
+                (response => {
+                    console.log(response);
+                    setImage(response.data.url);
+                    const userData = {
+                        image: response.data.url,
+                    };
+                    updateUserInfo(userData)
+                    update(userData)
+                })
         }
     }, []);
 
@@ -271,24 +258,24 @@ const UserSettings = () => {
                 </form>
 
                 {role == Role.PATIENT && (
-                <form onSubmit={updateUserInsurance}>
+                    <form onSubmit={updateUserInsurance}>
 
-                    <div>
-                        <div className="mb-4">
-                            <TextField
-                                fullWidth
-                                required
-                                label="Innsurance Number"
-                                value={insuranceId}
-                                type={"text"}
-                                onChange={(v) => setInsuranceId(v.target.value)}
+                        <div>
+                            <div className="mb-4">
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Innsurance Number"
+                                    value={insuranceId}
+                                    type={"text"}
+                                    onChange={(v) => setInsuranceId(v.target.value)}
+                                />
+                            </div>
+                            <CustomButton
+                                buttonText={"Save Insurance Data"}
                             />
                         </div>
-                        <CustomButton
-                            buttonText={"Save Insurance Data"}
-                        />
-                    </div>
-                </form>
+                    </form>
                 )}
 
 

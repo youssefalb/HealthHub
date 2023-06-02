@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import PopupDialog from "./PopupDialog";
 import { banUser, unbanUser } from "@/lib/manageUsers";
 import { toast } from "react-toastify";
