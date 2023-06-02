@@ -71,19 +71,20 @@ export async function getPatientVisits(patientId: String): Promise<Response> {
  * @returns {Promise} - Returns a Promise that resolves with the result of the fetch request.
  */
 export async function getVisitDetails(role: Role, visitId: String): Promise<Response> {
-  let result
+  let data
   if (role == Role.DOCTOR) {
-    result = await fetch(`${doctorVisitsPath}/${visitId}`, {
+    data = await fetch(`${doctorVisitsPath}/${visitId}`, {
       method: "GET",
     })
   }
   else if (role == Role.PATIENT) {
-    result = await fetch(`${patientVisitsPath}/${visitId}`, {
+    data = await fetch(`${patientVisitsPath}/${visitId}`, {
       method: "GET",
     })
   }
-
-  return result;
+  
+  const result = await data.json()
+  return result
 }
 
 

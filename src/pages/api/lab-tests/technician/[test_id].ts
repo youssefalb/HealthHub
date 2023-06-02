@@ -25,7 +25,7 @@ export default async function handler(
                     },
                 })
                 if(test == null) throw "no data";
-                if (test.labAssistantId == session.user.id)
+                if (test.labAssistantId == session.user.id || test.status == LaboratoryTestStatus.ORDERED)
                     return res.status(200).json({ success: true, data: test });
                 return res
                     .status(401)

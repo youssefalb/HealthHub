@@ -23,6 +23,15 @@ export default async function handler(
                     where: {
                         visitId: visit_id.toString(),
                     },
+                    include: {
+                        doctor: {
+                            select: {
+                                user: {
+                                    select: { firstName: true, lastName: true }
+                                }
+                            }
+                        }
+                    }
                 })
                 if(visit == null) throw "no data"
                 if (visit.patientId == session.user?.id) {
