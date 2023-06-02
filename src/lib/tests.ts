@@ -23,6 +23,30 @@ export async function getTechOrSupervisorTests(role: Role): Promise<Response>{
     });
 }
 
+export async function getTestsOfAVisit(role: Role, visitId: String) {
+    let path = '';
+    switch (role) {
+        case Role.DOCTOR:
+            path = doctorTestsPath;
+            break;
+        case Role.PATIENT:
+            path = patientTestsPath;
+            break;
+        case Role.LAB_SUPERVISOR:
+            path = supervisorTestsPath;
+            break;
+        case Role.LAB_ASSISTANT:
+            path = technicianTestsPath;
+            break;
+    }
+    const result = await fetch(`${path}?visit=${visitId}`, {
+        method: 'GET',
+    });
+    let ret = result.json()
+    return ret;
+}
+
+
 /**
  * Async function that fetches a list of tests based on the user role.
  * consumed by "Doctor", "Patient", "lab supervisor", "lab assistant"
@@ -47,9 +71,12 @@ export async function getOwnTests(role: Role): Promise<Response>{
             path = technicianTestsPath;
             break;
     }
-    return await fetch(path, {
+    const data =  await fetch(path, {
         method: 'GET',
     });
+
+    const result = await data.json()
+    return result
 }
 
 /**
@@ -75,9 +102,12 @@ export async function getTestDetails(role: Role, testId: String): Promise<Respon
             path = technicianTestsPath;
             break;
     }
-    return await fetch(path + testId, {
+    const data =  await fetch(path +'/' + testId, {
         method: 'GET',
     });
+
+    const result = await data.json()
+    return result
 }
 
 //===================== ADMIN ======================

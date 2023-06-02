@@ -14,7 +14,7 @@ const HospitalCard = ({ hospital }) => {
   const center = { lat: latitude, lng: longitude };
 
   return (
-    <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-gray-100 rounded-xl p-8 m-4">
+    <div className="w-full bg-gray-50 md:w-1/2 lg:w-1/3 p-4 bg-gray-100 rounded-xl p-8 m-4">
        <div className="mt-4 mb-6 text-gray-800">
         <p className="text-2xl font-bold">{name}</p>
       </div>

@@ -24,7 +24,7 @@ export default async function handler(
 
     if (req.method === "GET") {
         try {
-            const { doctor } = req.query;
+            const { doctor, visit } = req.query;
             let results: string | any[];
             if (doctor) { // user is admin or reciptionist 
                 if (session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
@@ -35,6 +35,18 @@ export default async function handler(
                         },
                     });
                     if(!results.length) throw "no data";
+                    return res.status(200).json({ success: true, data: results });
+                }
+            }
+            else if (visit) {
+                if (session.user?.role == Role.DOCTOR) {
+                    results = await prisma.laboratoryExamination.findMany({
+                        where: {
+                            visitId: visit.toString(),
+                            visit: { doctorId: session.user?.id },
+                        }
+                    });
+                    if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
                 }
             }

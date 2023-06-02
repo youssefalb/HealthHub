@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getDoctorVisits, getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 import EmptyStateMessage from "./EmptyStateMessage";
+import Link from 'next/link';
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
@@ -41,12 +42,14 @@ export default function AppointmentsList() {
     <div className="flex flex-col-reverse gap-4">
       {appointments?.length ? (
         appointments.reverse().map((appointment) => (
+          <Link key={appointment.visitId} href={`/visits/${appointment.visitId}`} >
           <AppointmentCard
             // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 
             key={appointment.visitId}
             appointment={appointment}
             role={role}
-          />
+            />
+            </Link>
         ))
       ) : (
      <EmptyStateMessage
