@@ -40,7 +40,11 @@ export default async function handler(
                 return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {
-                //here should be a redirect to a general purpose error page
+                if (error == "no data") {
+                    return res
+                        .status(404)
+                        .json({ success: false, message: "No data found" });
+                }
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -77,7 +81,11 @@ export default async function handler(
                             })
                         }
                         catch (error) {
-                            //here should be a redirect to a general purpose error page
+                            if (error == "no data") {
+                                return res
+                                    .status(404)
+                                    .json({ success: false, message: "No data found" });
+                            }
                             return res
                                 .status(500)
                                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -107,7 +115,11 @@ export default async function handler(
                             })
                         }
                         catch (error) {
-                            //here should be a redirect to a general purpose error page
+                            if (error == "no data") {
+                                return res
+                                    .status(404)
+                                    .json({ success: false, message: "No data found" });
+                            }
                             return res
                                 .status(500)
                                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -123,7 +135,11 @@ export default async function handler(
                 }
             }
             catch (error) {
-                //here should be a redirect to a general purpose error page
+                if (error == "no data") {
+                    return res
+                        .status(404)
+                        .json({ success: false, message: "No data found" });
+                }
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });
