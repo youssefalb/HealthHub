@@ -44,6 +44,9 @@ export default async function handler(
                         where: {
                             visitId: visit.toString(),
                             visit: { doctorId: session.user?.id },
+                        },
+                        include: {
+                            examinationDictionary: true
                         }
                     });
                     if (!results.length) throw "no data";

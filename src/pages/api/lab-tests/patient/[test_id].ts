@@ -25,10 +25,11 @@ export default async function handler(
                         testId: test_id.toString(),
                     },
                     include: {
-                        visit: true
+                        visit: true,
+                        examinationDictionary: true,
                     }
                 })
-                if(test == null) throw "no data";
+                if (test == null) throw "no data";
                 if (test.visit.patientId == session.user?.id) {
                     return res.status(200).json({ success: true, data: test });
                 }

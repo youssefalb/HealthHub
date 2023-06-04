@@ -9,13 +9,14 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+
 export default function Visit() {
 
     const [visit, setVisit] = useState({})
     const [tests, setTests] = useState([])
     const [CurrentlyInProgress, setCurrentlyInProgress] = useState(false)
     const router = useRouter()
-    const { id } = router.query
+    const { id }  = router.query 
     const { data: session } = useSession()
 
     const fetchData = async () => {
@@ -41,10 +42,22 @@ export default function Visit() {
     }
     
     return (
-        <div className="mx-auto max-w-screen-lg my-8 px-4">
+        <div className="mx-auto max-w-screen-lg my-8 px-4 flex flex-col items-center">
             <h1 className="text-3xl font-bold mb-6">Visit details</h1>
-            {visit['description'] &&
+
+            {session?.user?.role == Role.PATIENT && visit['doctorId'] &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
+                    <Label name="Doctor" value={visit['doctor']['user']['firstName'] + " " + visit['doctor']['user']['lastName']} />
+                </div>
+            }
+            {session?.user?.role == Role.DOCTOR && visit['patientId'] &&
+                <div className="w-full md:w-1/2 px-4 mb-4">
+                    <Label name="Patient" value={visit['patient']['user']['firstName'] + " " + visit['patient']['user']['lastName']} />
+                </div>
+            }
+
+            {visit['description'] &&
+                <div className="w-full md:w-1/2 px-4 mb-4 ">
                     <Label name="Visit description" value={visit['description']} />
                 </div>
             }
@@ -64,42 +77,33 @@ export default function Visit() {
                     <Label name="Visit date" value={dayjs(visit['date']).toString()} />
                 </div>
             }
-            {session?.user?.role == Role.PATIENT && visit['doctorId'] &&
+            
+            {tests.length &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
-                    <Label name="Doctor" value={visit['doctor']['user']['firstName'] + " " + visit['doctor']['user']['lastName']} />
+                    <Label name="Tests" value={
+                        tests?.map((test=> test.examinationDictionary.type)).join(", ") +"."
+                    } />
                 </div>
             }
-            {session?.user?.role == Role.DOCTOR && visit['patientId'] &&
-                <div className="w-full md:w-1/2 px-4 mb-4">
-                    <Label name="Patient" value={visit['patient']['user']['firstName'] + " " + visit['patient']['user']['lastName']} />
-                </div>
-            }
-            {tests != null &&
-                <div className="w-full md:w-1/2 px-4 mb-4">
-                     <Label name="Tests" value={tests?.map((test)=> test['doctorNote'])} />
-                </div>
-            }
+            <div className="flex flex-row gap-2 md:gap-8 items-stretch">
             {visit['status'] == Status.REGISTERED &&
-                <div className="w-full md:w-1/2 px-4 mb-4">
                     <CustomButton
                         buttonText={"Cancel visit"}
                         onClick={() => {
                             router.push("#");
                         }}
                     />
-                </div>
             }
 
             {visit['status'] == Status.REGISTERED && session.user?.role == Role.DOCTOR &&
-                <div className="w-full md:w-1/2 px-4 mb-4">
                     <CustomButton
-                        buttonText={"Accept visit"}
+                        buttonText={"Start visit"}
                         onClick={() => {
                             setCurrentlyInProgress(true);
                         }}
                     />
+                }
                 </div>
-            }
         </div>
     );
 }

@@ -2,7 +2,7 @@ to protect a page use a protected layout that takes "role" as a prob and compare
 
 
   - [ ] front end for dynamic pages (asser)
-  - [ ] delete book appointmint button for a doctor 
+  - [x] delete book appointmint button for a doctor 
   - [ ] visit filter in doctor's page (sorted by date / time) 
   - [ ] receptionist (everything)
   - [ ] make changing role of a user changes the connecttion (db ?)

@@ -22,17 +22,23 @@ export default function VisitInProgress({ visitInfo }) {
     const [doctorInfo, setDoctorInfo] = useState({})
     const [testsNames, setTests] = useState([])
 
-    const [selectedTest, setSelectedTest] = useState('')
-    const [selectedExamination, setSelectedExamination] = useState('')
+    const [selectedTest, setSelectedTest] = useState([{
+        code: '',
+        name: '',
+        ordered: true,
+    }])
+    const [selectedExamination, setSelectedExamination] = useState([{
+        code: '',
+        name: '',
+        performed: true,
+    }])
 
     const [diagnosis, setDiagnosis] = useState("")
     const [description, setDescription] = useState("")
     const [doctorNoteOnTest, setDoctorNoteOnTest] = useState("")
-
-
+    const [doctorNoteOnExamination, setDoctorNoteOnExamination] = useState("")
 
     useEffect(() => {
-
         const fetchData = async () => {
             const tests = await getTestsNames()
             setTests(tests.data)
@@ -43,8 +49,6 @@ export default function VisitInProgress({ visitInfo }) {
         setTests(visitInfo['tests'])
 
         fetchData()
-
-
     }, [])
 
 
@@ -56,7 +60,7 @@ export default function VisitInProgress({ visitInfo }) {
                     router.push("/visits");
                 }}
             />
-            <div className="bg-gray-400 rounded-lg flex flex-col items-center gap-4 max-w-lg self-center md:min-w-full">
+            <div className="bg-gray-100 rounded-lg flex flex-col items-center gap-4 max-w-lg self-center sm:px-4 md:min-w-full">
 
                 <ProfilePicture
                     src={patientInfo.user?.image ? patientInfo.user?.image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
@@ -81,7 +85,8 @@ export default function VisitInProgress({ visitInfo }) {
                 </div>
             </div>
             <div className='p-6 flex flex-col gap-4 FORM'>
-                <div className='flex flex-col'>
+
+                <div className='flex flex-col' id='DIAGNOSIS'>
                     <TextField
                         fullWidth
                         required
@@ -91,7 +96,7 @@ export default function VisitInProgress({ visitInfo }) {
                     />
                 </div>
 
-                <div className='flex flex-col'>
+                <div className='flex flex-col' id='DESCRIPTION'>
                     <TextField
                         fullWidth
                         required
@@ -100,7 +105,8 @@ export default function VisitInProgress({ visitInfo }) {
                         onChange={(v) => setDescription(v.target.value)}
                     />
                 </div>
-                <div className='flex flex-col TESTS'> 
+
+                <div className='flex flex-col gap-2' id='TESTS'>
                     <div className='flex flex-row gap-2'>
                         <FormControl fullWidth className=''>
                             <InputLabel id="tests">Tests</InputLabel>
@@ -126,19 +132,19 @@ export default function VisitInProgress({ visitInfo }) {
                             }}
                         />
                     </div>
-                    {selectedTest && 
-                    
-                    <TextField
-                    fullWidth
-                    multiline
-                        placeholder='Note to the lab assistant'
-                        onChange={(v) => setDoctorNoteOnTest(v.target.value)
-                        }
-                    />
-                }
+                    {selectedTest &&
+                        <TextField
+                            fullWidth
+                            multiline
+                            placeholder='Note to the lab assistant'
+                            onChange={(v) => setDoctorNoteOnTest(v.target.value)
+                            }
+                        />
+                    }
                 </div>
 
-                <div className='flex flex-row gap-2 EXAMINATION'>
+                <div className='flex flex-col gap-2' id='EXAMS'>
+                    <div className='flex flex-row gap-2 EXAMINATION'>
                         <FormControl fullWidth className=''>
                             <InputLabel id="Exams">Physical Examinations</InputLabel>
                             <Select
@@ -162,6 +168,30 @@ export default function VisitInProgress({ visitInfo }) {
                             }}
                         />
                     </div>
+                    {selectedExamination &&
+                        <TextField
+                            fullWidth
+                            multiline
+                            placeholder='note'
+                            onChange={(v) => setDoctorNoteOnExamination(v.target.value)
+                            }
+                        />
+                    }
+                </div>
+                    
+                <div className='flex gap-4' id='BUTTONS'>
+                    <CustomButton
+                        buttonText="Visit Completed"
+                        onClick={() => console.log("s")}
+                    />
+
+                    <CustomButton
+                        buttonText="Cancel Visit"
+                        onClick={() => console.log("s")}
+                        color='red'
+                    />
+
+                </div>
             </div>
         </div>
     )

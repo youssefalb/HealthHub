@@ -6,6 +6,7 @@ import { getDoctorVisits, getOwnVisits } from "@/lib/visits";
 import { useRouter } from "next/router";
 import EmptyStateMessage from "./EmptyStateMessage";
 import Link from 'next/link';
+import { Role } from '@prisma/client';
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
 export default function AppointmentsList() {
@@ -57,12 +58,15 @@ export default function AppointmentsList() {
         description="You don't have any planned appointments, yet."
       />
       )}
-      <CustomButton
+      {(session.user?.role == Role.PATIENT || session.user?.role == Role.RECEPTIONIST) && (
+        
+        <CustomButton
         buttonText={"Book Appointment"}
         onClick={() => {
           router.push("/booking");
         }}
-      />
+        />
+        )}
       </div>
   );
 }
