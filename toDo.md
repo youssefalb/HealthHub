@@ -4,10 +4,10 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [ ] front end for dynamic pages (asser)
   - [x] delete book appointmint button for a doctor 
   - [ ] visit filter in doctor's page (sorted by date / time) 
+  - [ ] middleware 
   - [ ] receptionist (everything)
   - [ ] make changing role of a user changes the connecttion (db ?)
   - [ ] loading conmponent
-  - [ ] middleware 
   - [ ] search for auto-docs (swager, openApi)
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
 
@@ -27,9 +27,21 @@ scenario 2 :
 2- admin revoking accounts for personnel 
 
 
-proposed workflow: 
 
-asser & victor : finish up visits endpoint according to his notes 
-youssef : front end part for the tests page (which one?)
-michal: start tests endpoint 
-me and victor : help and then functions 
+
+
+when choose a test : {
+- [x] display its name in the select option 
+- [x] clear the note
+}
+when wrote the note : 
+- [x] save it in state
+
+when press order: {
+  - [x] push object to ordered test
+  - [x] reset select
+  - [x] disable previously chosen test
+}
+
+button disabled when nothing chosen 
+delete hover should be on icon 

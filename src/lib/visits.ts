@@ -189,12 +189,15 @@ export async function changeVisitDoctor(visitId: string, doctorId: string): Prom
  * @param {any} params - The parameters to update the visit with.
  * @returns {Promise<Response>} - A Promise that resolves to the updated visit details.
  */
-export async function changeVisitDetails(visitId: string, ...params: any): Promise<Response> {
-  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
+export async function changeVisitDetails(visitId: string, params: any): Promise<Response> {
+  console.log(params)
+  const result = await fetch(`${doctorVisitsPath}/${visitId}`, {
     method: "PUT",
+    headers: jsonHeader,
     body: JSON.stringify({
       status: params.status,
       diagnosis: params.diagnosis,
+      description: params.description
     })
   });
   return result;

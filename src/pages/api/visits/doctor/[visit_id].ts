@@ -52,6 +52,7 @@ export default async function handler(
     }
 
     if (req.method == "PUT") {
+        console.log("body: ", req.body)
         if (session.user?.role == Role.DOCTOR) {
             try {
                 const visit = await prisma.visit.findUnique({
@@ -64,6 +65,7 @@ export default async function handler(
                     let results;
                     let dataClause = {}
                     if (currentStatus == Status.REGISTERED) {
+                        console.log("cs is reg")
                         dataClause = {
                             status: Status.IN_PROGRESS,
                         }
@@ -106,6 +108,7 @@ export default async function handler(
                                     ...dataClause,
                                     dateRealized: new Date(),
                                     diagnosis: req.body.diagnosis,
+                                    description: req.body.description
                                 }
                             })
                         }

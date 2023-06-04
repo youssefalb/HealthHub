@@ -2,7 +2,7 @@ import CustomButton from "@/components/CustomButton";
 import Label from "@/components/Label";
 import VisitInProgress from '@/components/VisitInProgress';
 import { getOwnTests, getTestsOfAVisit } from "@/lib/tests";
-import { getVisitDetails } from "@/lib/visits";
+import { changeVisitDetails, getVisitDetails } from "@/lib/visits";
 import { Role, Status } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
@@ -78,7 +78,7 @@ export default function Visit() {
                 </div>
             }
             
-            {tests.length &&
+            {tests  &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
                     <Label name="Tests" value={
                         tests?.map((test=> test.examinationDictionary.type)).join(", ") +"."
@@ -100,6 +100,7 @@ export default function Visit() {
                         buttonText={"Start visit"}
                         onClick={() => {
                             setCurrentlyInProgress(true);
+                            // changeVisitDetails(visit['visitId'], { "status": Status.IN_PROGRESS })
                         }}
                     />
                 }
