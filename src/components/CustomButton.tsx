@@ -4,7 +4,7 @@ import React from 'react';
 const CustomButton = ({buttonText, onClick = () =>{}}) => {
   return (
     <button
-      className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-3xl mb-8"
+      className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-3xl my-2 max-w-xs mx-auto inline-block"
       onClick={onClick}
     >
       {buttonText}

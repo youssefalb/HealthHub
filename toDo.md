@@ -1,11 +1,11 @@
 to protect a page use a protected layout that takes "role" as a prob and compares role of current user and either continues or redirects 
 
 
-  - [ ] front end for dynamic pages 
-  - [ ] visit filter in doctor's page (sorted by date / time)
+  - [ ] front end for dynamic pages (asser)
   - [ ] delete book appointmint button for a doctor 
-  - [ ] make changing role of a user changes the connecttion (db ?)
+  - [ ] visit filter in doctor's page (sorted by date / time) 
   - [ ] receptionist (everything)
+  - [ ] make changing role of a user changes the connecttion (db ?)
   - [ ] loading conmponent
   - [ ] middleware 
   - [ ] search for auto-docs (swager, openApi)

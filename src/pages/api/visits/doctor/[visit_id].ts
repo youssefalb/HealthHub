@@ -25,18 +25,13 @@ export default async function handler(
                     },
                     include: {
                         patient: {
-                            select: {
-                                user: {
-                                    select: {
-                                        firstName: true,
-                                        lastName: true,
-                                    }
-                                }
+                            include: {
+                                user: true
                             }
                         }
                     }
                 })
-                if(visit == null) throw "no data";
+                if (visit == null) throw "no data";
                 return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {
