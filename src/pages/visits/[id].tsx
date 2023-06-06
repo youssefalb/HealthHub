@@ -16,7 +16,7 @@ export default function Visit() {
     const [tests, setTests] = useState([])
     const [CurrentlyInProgress, setCurrentlyInProgress] = useState(false)
     const router = useRouter()
-    const { id }  = router.query 
+    const { id } = router.query
     const { data: session } = useSession()
 
     const fetchData = async () => {
@@ -36,11 +36,11 @@ export default function Visit() {
         return (
             <div className="mx-auto max-w-screen-lg my-8 px-4">
                 <VisitInProgress
-                visitInfo={visit}/>
+                    visitInfo={visit} />
             </div>
         )
     }
-    
+
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4 flex flex-col items-center">
             <h1 className="text-3xl font-bold mb-6">Visit details</h1>
@@ -77,25 +77,25 @@ export default function Visit() {
                     <Label name="Visit date" value={dayjs(visit['date']).toString()} />
                 </div>
             }
-            
-            {tests  &&
+
+            {tests &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
                     <Label name="Tests" value={
-                        tests?.map((test=> test.examinationDictionary.type)).join(", ") +"."
+                        tests?.map((test => test.examinationDictionary.name)).join(", ") + "."
                     } />
                 </div>
             }
             <div className="flex flex-row gap-2 md:gap-8 items-stretch">
-            {visit['status'] == Status.REGISTERED &&
+                {visit['status'] == Status.REGISTERED &&
                     <CustomButton
                         buttonText={"Cancel visit"}
                         onClick={() => {
                             router.push("#");
                         }}
                     />
-            }
+                }
 
-            {visit['status'] == Status.REGISTERED && session.user?.role == Role.DOCTOR &&
+                {visit['status'] == Status.REGISTERED && session.user?.role == Role.DOCTOR &&
                     <CustomButton
                         buttonText={"Start visit"}
                         onClick={() => {
@@ -104,7 +104,7 @@ export default function Visit() {
                         }}
                     />
                 }
-                </div>
+            </div>
         </div>
     );
 }
