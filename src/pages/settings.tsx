@@ -26,7 +26,7 @@ const UserSettings = () => {
     const [emailVerified, setEmailVerified] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
-    const [pesel, setPesel] = useState('');
+    const [nationalId, setPesel] = useState('');
 
     const [insuranceId, setInsuranceId] = useState('');
 
@@ -82,8 +82,9 @@ const UserSettings = () => {
     const updateUserPesel = async (e) => {
         e.preventDefault();
         const userData = {
-            pesel,
+            nationalId,
         }
+        console.log(userData)
         const res = updateUserInfo(userData)
         if ((await res).ok) {
             toast.success('Pesel updated successfully');
@@ -248,7 +249,7 @@ const UserSettings = () => {
                             fullWidth
                             required
                             label="Pesel"
-                            value={pesel}
+                            value={nationalId}
                             type='text'
                             onChange={(v) => setPesel(v.target.value)}
                         />
