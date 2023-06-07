@@ -13,11 +13,6 @@ const UserSettings = () => {
 
     const role = session?.user?.role;
     const [image, setImage] = useState('');
-    // useEffect(() => {
-    //     if (session?.user?.image) {
-    //         setImage(session.user.image);
-    //     }
-    // }, [session?.user?.image]);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -150,12 +145,10 @@ const UserSettings = () => {
 
     return (
         <div>
-            {/* Cover image with gray overlay */}
             <div className="relative">
                 <img src="https://picsum.photos/900" alt="Cover" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
             </div>
-            {/* Profile picture with edit icon */}
             <div className="relative mx-auto -mt-16 w-32 h-32 rounded-full overflow-hidden border-4 border-white hover:cursor-pointer"
             >
 

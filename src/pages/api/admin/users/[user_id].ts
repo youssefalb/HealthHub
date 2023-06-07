@@ -23,7 +23,6 @@ export default async function handler(
     
     else if (req.method === "PUT") {
       const user_id = req.query.user_id;
-      console.log(req.body);
       const user = await prisma.user.update({
         where: {
           id: user_id.toString(),
