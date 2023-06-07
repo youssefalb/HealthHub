@@ -32,16 +32,16 @@ export default function PatientsList() {
       <ToastContainer />
       {patients?.length ? (
         patients.map((patient) => (
-        <Link key={patient.patientId} href={`admin/users/${patient.patientId}`} >
-          <UserCard
-            id={patient.patientId}
-            name={patient.user.firstName}
-            surname={patient.user.lastName}
-            nationalID={patient.user.nationalId}
-            role={Role.PATIENT}
-            isActive={patient.user.isActive}
-          />
-        </Link>
+          <Link key={patient.patientId} href={`user-settings/${patient.patientId}`} >
+            <UserCard
+              id={patient.patientId}
+              name={patient.user.firstName}
+              surname={patient.user.lastName}
+              nationalID={patient.user.nationalId}
+              role={Role.PATIENT}
+              isActive={patient.user.isActive}
+            />
+          </Link>
         ))
       ) : (
         <EmptyStateMessage

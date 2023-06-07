@@ -13,11 +13,11 @@ const UserSettings = () => {
 
     const role = session?.user?.role;
     const [image, setImage] = useState('');
-    useEffect(() => {
-        if (session?.user?.image) {
-            setImage(session.user.image);
-        }
-    }, [session?.user?.image]);
+    // useEffect(() => {
+    //     if (session?.user?.image) {
+    //         setImage(session.user.image);
+    //     }
+    // }, [session?.user?.image]);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

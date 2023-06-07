@@ -45,7 +45,7 @@ export default function PersonnelList() {
                 <h2 className="text-2xl font-bold mb-4">Lab Assistants</h2>
                 {labAssistants?.length ? (
                     <div>
-                        {/* {labAssistants.map((assistant) => (
+                        {labAssistants.map((assistant) => (
                             <UserCard
                                 id={assistant.employeeId}
                                 nationalID={assistant.user.nationalId}
@@ -54,7 +54,7 @@ export default function PersonnelList() {
                                 role={Role.LAB_ASSISTANT}
                                 isActive={assistant.user.isActive}
                             />
-                        ))} */}
+                        ))}
                     </div>
                 ) : (
                     <EmptyStateMessage
