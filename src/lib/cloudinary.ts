@@ -3,10 +3,9 @@ import axios from 'axios';
 export const uploadImage = (file) => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET);
-  formData.append('folder', process.env.CLOUDINARY_IMAGE_FOLDER);
-
-  return axios.post(process.env.CLOUDINARY_API_URL, formData)
+  formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+  formData.append('folder', process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_FOLDER);
+  return axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_API_URL, formData)
     .then(response => {
       return response.data.url;
     })
@@ -19,10 +18,9 @@ export const uploadImage = (file) => {
 export const uploadPdfFile = (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET);
-    formData.append('folder', process.env.CLOUDINARY_PDF_FOLDER);
-    
-    return axios.post(process.env.CLOUDINARY_API_URL, formData)
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', process.env.NEXT_PUBLIC_CLOUDINARY_PDF_FOLDER);    
+    return axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_API_URL, formData)
         .then(response => {
         return response.data.url;
         })

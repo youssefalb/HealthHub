@@ -163,7 +163,7 @@ const UserSettings = () => {
                     <input
                         id="profileImageInput"
                         type="file"
-                        accept="application/pdf"
+                        accept="image/*"
                         className="hidden"
                         onChange={handlePictureChange}
                     />

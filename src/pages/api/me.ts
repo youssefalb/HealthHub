@@ -12,7 +12,6 @@ export default async function handler(
 ) {
     try {
         const session = await getServerSession(req, res, authOptions);
-
         if (!session) {
             return res
                 .status(401)
@@ -30,7 +29,7 @@ export default async function handler(
             });
 
             return res.status(200).json({ success: true, data: result });
-        } else if (req.method === "PUT" && session.user?.role === Role.PATIENT) {
+        } else if (req.method === "PUT") {
             const {
                 firstName,
                 lastName,
@@ -107,7 +106,6 @@ export default async function handler(
                 firstName,
                 lastName,
                 image,
-                insuranceId,
                 nationalID,
             };
 
