@@ -10,14 +10,14 @@ datasource db {
 
 model User {
   id            String         @id @default(cuid())
-  firstName      String?        @map("first_name") @db.VarChar(32)
+  firstName     String?        @map("first_name") @db.VarChar(32)
   lastName      String?        @map("last_name") @db.VarChar(32)
   image         String?
   sex           String?        @db.VarChar(32)
   email         String?        @unique @db.VarChar(64)
   password      String?
   emailVerified DateTime?      @map("email_verified")
-  nationalId    String?        @unique @map("national_id") 
+  nationalId    String?        @unique @map("national_id")
   role          Role           @default(PATIENT)
   isActive      Boolean        @default(true)
   accounts      Account[]
@@ -105,7 +105,6 @@ model Patient {
 
 model Visit {
   visitId                String                  @id @default(cuid()) @map("visit_id")
-  patientNote            String?               @map("patient_note")
   description            String?
   diagnosis              String?
   status                 Status                  @default(REGISTERED)
@@ -115,6 +114,7 @@ model Visit {
   doctorId               String                  @map("doctor_id")
   patientId              String                  @map("patient_id")
   receptionistId         String?                 @map("receptionist_id")
+  patientNote            String?                 @map("patient_note")
   laboratoryExaminations LaboratoryExamination[]
   physicalExaminations   PhysicalExamination[]
   doctor                 Doctor                  @relation(fields: [doctorId], references: [employeeId], onDelete: Cascade)
@@ -126,10 +126,10 @@ model Visit {
 
 model PhysicalExamination {
   physicalExamId        String                @id @default(cuid())
-  result                String?               @map("doctor_note")
   dictionaryCode        String                @map("dictionary_code")
   visitId               String                @map("visit_id")
   status                ExaminationStatus     @default(COMPLETED)
+  result                String?               @map("doctor_note")
   examinationDictionary ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   visit                 Visit                 @relation(fields: [visitId], references: [visitId], onDelete: Cascade)
 
@@ -141,15 +141,15 @@ model LaboratoryExamination {
   doctorNote                   String?               @map("doctor_note")
   labTechnicianNote            String?               @map("lab_technician_note")
   supervisorNote               String?               @map("supervisor_note")
-  result                       String?
   status                       LaboratoryTestStatus  @default(ORDERED)
   dateOfExecutionXorCancelling DateTime?             @map("date_of_execution_xor_cancelling")
   dateOfApprovalXorRejection   DateTime?             @map("date_of_approval_xor_rejection")
-  dateCreated                  DateTime              @default(now()) @map("date_created")
   dictionaryCode               String                @map("dictionary_code")
   labAssistantId               String?               @map("lab_assistant_id")
   labSupervisorId              String?               @map("lab_supervisor_id")
   visitId                      String?               @map("visit_id")
+  dateCreated                  DateTime              @default(now()) @map("date_created")
+  result                       String?
   examinationDictionary        ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   labAssistant                 LabAssistant?         @relation(fields: [labAssistantId], references: [employeeId], onDelete: Cascade)
   labSupervisor                LabSupervisor?        @relation(fields: [labSupervisorId], references: [employeeId], onDelete: Cascade)
@@ -159,10 +159,10 @@ model LaboratoryExamination {
 }
 
 model ExaminationDictionary {
-  code                  String                     @id @default(cuid())
-  type                  String    @default("")
-  name                  String    @default("")
+  code                  String                  @id @default(cuid())
+  type                  String                  @default("")
   description           String?
+  name                  String                  @default("")
   LaboratoryExamination LaboratoryExamination[]
   PhysicalExamination   PhysicalExamination[]
 

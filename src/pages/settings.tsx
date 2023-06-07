@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TextField } from "@mui/material";
 import Axios from "axios";
+import { uploadImage } from "@/lib/cloudinary";
 
 const UserSettings = () => {
     const { data: session, update } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -126,19 +127,19 @@ const UserSettings = () => {
     const handlePictureChange = useCallback((e) => {
         const file = e.target.files[0];
         if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', "gxzmcqaj");
-            Axios.post("https://api.cloudinary.com/v1_1/diylqdyxa/image/upload", formData).then
-                (response => {
-                    console.log(response);
-                    setImage(response.data.url);
+            uploadImage(file)
+                .then(url => {
+                    console.log(url);
+                    setImage(url);
                     const userData = {
-                        image: response.data.url,
+                        image: url,
                     };
                     updateUserInfo(userData)
                     update(userData)
                 })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
         }
     }, []);
 
@@ -162,7 +163,7 @@ const UserSettings = () => {
                     <input
                         id="profileImageInput"
                         type="file"
-                        accept="image/*"
+                        accept="application/pdf"
                         className="hidden"
                         onChange={handlePictureChange}
                     />
