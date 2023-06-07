@@ -6,7 +6,6 @@ import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TextField } from "@mui/material";
-import Axios from "axios";
 import { uploadImage } from "@/lib/cloudinary";
 
 const UserSettings = () => {
@@ -84,7 +83,6 @@ const UserSettings = () => {
         const userData = {
             nationalId,
         }
-        console.log(userData)
         const res = updateUserInfo(userData)
         if ((await res).ok) {
             toast.success('Pesel updated successfully');
@@ -118,31 +116,37 @@ const UserSettings = () => {
         setEmailVerified(result.data?.emailVerified)
         setPesel(result.data?.nationalId)
         setImage(result.data?.image)
-        console.log(result)
     }
 
     useEffect(() => {
         fetchData()
     }, [session])
 
-    const handlePictureChange = useCallback((e) => {
+    const handlePictureChange = async (e) => {
+        e.preventDefault();
         const file = e.target.files[0];
         if (file) {
             uploadImage(file)
-                .then(url => {
+                .then(async url => {
                     console.log(url);
                     setImage(url);
                     const userData = {
                         image: url,
                     };
-                    updateUserInfo(userData)
+                    const res = updateUserInfo(userData)
+
                     update(userData)
+                    if ((await res).ok) {
+                        toast.success('Profile picture updated successfully');
+                    }
+
                 })
                 .catch(error => {
                     console.error('Error uploading file:', error);
+                    toast.error('Failed to update profile picture');
                 });
         }
-    }, []);
+    };
 
     return (
         <div>

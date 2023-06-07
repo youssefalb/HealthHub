@@ -1,8 +1,11 @@
 //get all the patients from the admin api
 
-import { adminPath } from "./apiPaths"
+import { adminPath, adminUsersPath } from "./apiPaths"
 
 
+let jsonHeader = {
+    'Content-Type': 'application/json'
+}
 export async function getPatients() {
     const result = await fetch(`${adminPath}?role=PATIENT` , {
         method: "GET",
@@ -51,7 +54,7 @@ export async function banUser(id: string) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ isActive: false }), // Pass isActive in the request body
+        body: JSON.stringify({ isActive: false }),
     });
     return result.json();
 }
@@ -63,8 +66,25 @@ export async function unbanUser(id: string) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ isActive: true }), // Pass isActive in the request body
+        body: JSON.stringify({ isActive: true }), 
     });
     return result.json();
 }
 
+export async function getUserInfoWithId(userId) {
+    const result = await fetch(`${adminUsersPath}/${userId}`, {
+        method: 'GET',
+    })
+    return result
+}
+
+
+export async function updateUserInfo(userData, userId) {
+    const result = await fetch(`${adminUsersPath}/${userId}`, {
+        method: 'PUT',
+        headers: jsonHeader,
+        body: JSON.stringify(userData)
+    })
+
+    return result;
+}

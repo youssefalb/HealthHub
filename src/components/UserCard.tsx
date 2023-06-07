@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import PopupDialog from "./PopupDialog";
 import { banUser, unbanUser } from "@/lib/manageUsers";
 import { toast } from "react-toastify";
@@ -25,7 +25,7 @@ const UserCard = ({ id, name, surname, role, nationalID, isActive }) => {
     if (response.success) {
       toast.success("User has been banned successfully.");
       setActiveState(false);
-      
+
     } else {
       toast.error("Failed to ban user. Please try again.");
     }
