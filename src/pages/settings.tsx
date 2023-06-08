@@ -21,7 +21,6 @@ const UserSettings = () => {
     const [newPassword, setNewPassword] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [nationalId, setPesel] = useState('');
-
     const [insuranceId, setInsuranceId] = useState('');
 
     const updateUserNameAndSurname = async (e) => {

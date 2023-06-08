@@ -23,6 +23,7 @@ const AdminUserSettings = () => {
     const [nationalId, setPesel] = useState('');
     const [image, setImage] = useState('');
     const [activeState, setActiveState] = useState(false);
+    const [insuranceId, setInsuranceId] = useState(null);
 
 
 
@@ -39,6 +40,7 @@ const AdminUserSettings = () => {
                 setPesel(result.data.nationalId);
                 setImage(result.data.image);
                 setActiveState(result.data.isActive);
+                setInsuranceId(result.data.patient?.insuranceId);
                 setUser(result.data);
             }
         };
@@ -116,6 +118,20 @@ const AdminUserSettings = () => {
             toast.error('Failed to update pesel');
         }
     }
+    const updateUserInsurance = async (e) => {
+        e.preventDefault();
+        const userData = {
+            insuranceId,
+        }
+        const res = updateUserInfo(userData, user_id)
+        if ((await res).ok) {
+            toast.success('Insurance data updated successfully');
+        }
+        else {
+            toast.error('Failed to update insurance data');
+        }
+    }
+
 
     const handleBanClick = () => {
         setConfirmBanUserPopUpShown(true);
@@ -248,14 +264,35 @@ const AdminUserSettings = () => {
                     </div>
                     <CustomButton buttonText="Save Pesel" />
                 </form>
+
+                {insuranceId && (
+                    <form onSubmit={updateUserInsurance}>
+
+                        <div>
+                            <div className="mb-4">
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Innsurance Number"
+                                    value={insuranceId}
+                                    type={"text"}
+                                    onChange={(v) => setInsuranceId(v.target.value)}
+                                />
+                            </div>
+                            <CustomButton
+                                buttonText={"Save Insurance Data"}
+                            />
+                        </div>
+                    </form>
+                )}
                 {activeState ? (
-                        <span onClick={handleBanClick} className="cursor-pointer mr-2">
-                            <img src="/images/active-user.png" alt="Ban Icon" className="h-10 w-10" title="Ban User" />
-                        </span>
+                    <span onClick={handleBanClick} className="cursor-pointer mr-2">
+                        <img src="/images/active-user.png" alt="Ban Icon" className="h-10 w-10" title="Ban User" />
+                    </span>
                 ) : (
-                        <span onClick={handleUnbanClick} className="cursor-pointer mr-2">
-                            <img src="/images/banned-user.png" alt="Unban Icon" className="h-10 w-10" title="Unban User" />
-                        </span>
+                    <span onClick={handleUnbanClick} className="cursor-pointer mr-2">
+                        <img src="/images/banned-user.png" alt="Unban Icon" className="h-10 w-10" title="Unban User" />
+                    </span>
                 )}
             </div>
             <ToastContainer />

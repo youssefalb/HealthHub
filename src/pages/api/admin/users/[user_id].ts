@@ -12,7 +12,9 @@ export default async function handler(
         where: {
           id: user_id.toString(),
         },
-
+        include: {
+          patient: true,
+        },
       })
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -22,6 +24,21 @@ export default async function handler(
     
     else if (req.method === "PUT") {
       const user_id = req.query.user_id;
+      if(req.body.insuranceId) {
+        const user = await prisma.patient.update({
+          where: {
+            patientId: user_id.toString(),
+          },
+          data: req.body,
+        })
+
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
+        }
+        return res.status(200).json({ data: user });
+
+      }
+
       const user = await prisma.user.update({
         where: {
           id: user_id.toString(),
