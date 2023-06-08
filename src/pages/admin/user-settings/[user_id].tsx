@@ -204,10 +204,22 @@ const AdminUserSettings = () => {
                         onChange={handlePictureChange}
                     />
                 </label>
+
+            </div>
+            <div className="flex justify-center">
+                {activeState ? (
+                    <span onClick={handleBanClick} className="cursor-pointer mr-2">
+                        <CustomButton buttonText="Ban User" color="red" />
+                    </span>
+                ) : (
+                    <span onClick={handleUnbanClick} className="cursor-pointer mr-2">
+                        <CustomButton buttonText="Unban User" color="green" />
+                    </span>
+                )}
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
                 <form onSubmit={updateUserNameAndSurname}>
-                    <div className="mb-4">
+                    <div className="my-6">
                         <TextField
                             fullWidth
                             required
@@ -231,7 +243,7 @@ const AdminUserSettings = () => {
                     <CustomButton buttonText="Save Changes" />
                 </form>
                 <form onSubmit={updateUserEmail}>
-                    <div className="mb-4">
+                    <div className="my-10">
                         <TextField
                             fullWidth
                             required
@@ -241,17 +253,18 @@ const AdminUserSettings = () => {
                             type="email"
                             onChange={(v) => setEmail(v.target.value)}
                         />
+                        {emailVerified ? (
+                            <span className="text-green-500 flex my-2">Email verified</span>
+                        ) : (
+                            <span className="text-red-500 flex my-2">Email not verified</span>
+                        )}
+                        <CustomButton buttonText="Save Email" />
                     </div>
-                    {emailVerified ? (
-                        <span className="text-green-500 flex mb-2">Email verified</span>
-                    ) : (
-                        <span className="text-red-500 flex mb-2">Email not verified</span>
-                    )}
-                    <CustomButton buttonText="Save Email" />
+
                 </form>
 
                 <form onSubmit={updateUserPesel}>
-                    <div className="mb-4">
+                    <div className="mt-10 mb-4">
                         <TextField
                             fullWidth
                             required
@@ -269,7 +282,7 @@ const AdminUserSettings = () => {
                     <form onSubmit={updateUserInsurance}>
 
                         <div>
-                            <div className="mb-4">
+                            <div className="mt-10 mb-4">
                                 <TextField
                                     fullWidth
                                     required
@@ -284,15 +297,6 @@ const AdminUserSettings = () => {
                             />
                         </div>
                     </form>
-                )}
-                {activeState ? (
-                    <span onClick={handleBanClick} className="cursor-pointer mr-2">
-                        <img src="/images/active-user.png" alt="Ban Icon" className="h-10 w-10" title="Ban User" />
-                    </span>
-                ) : (
-                    <span onClick={handleUnbanClick} className="cursor-pointer mr-2">
-                        <img src="/images/banned-user.png" alt="Unban Icon" className="h-10 w-10" title="Unban User" />
-                    </span>
                 )}
             </div>
             <ToastContainer />

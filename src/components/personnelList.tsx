@@ -49,7 +49,6 @@ export default function PersonnelList() {
                 className="w-full p-2 border border-gray-300 rounded"
             />
             <div className="flex flex-col-reverse gap-4">
-                <div>
                     {filteredPersonnel?.length ? (
                         filteredPersonnel.map((person) => (
                             <Link key={person.patientId} href={`user-settings/${person.id}`} >
@@ -69,7 +68,6 @@ export default function PersonnelList() {
                             description="There are no Personnel for now."
                         />
                     )}
-                </div>
 
             </div>
         </div >

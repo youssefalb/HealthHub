@@ -41,36 +41,35 @@ export default function PatientsList() {
   if (isLoading) return <p>Loading...</p>;
   return (
     <div>
-        <TextField
-          type="text"
-          placeholder="Search patients..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-    <div className="flex flex-col-reverse gap-4">
+      <TextField
+        type="text"
+        placeholder="Search patients..."
+        value={searchQuery}
+        onChange={handleSearch}
+        className="w-full p-2 border border-gray-300 rounded"
+      />
+      <div className="flex flex-col-reverse gap-4">
+        {filteredPatients?.length ? (
+          filteredPatients.map((patient) => (
+            <Link key={patient.patientId} href={`user-settings/${patient.patientId}`} >
+              <UserCard
+                id={patient.patientId}
+                name={patient.user.firstName}
+                surname={patient.user.lastName}
+                nationalID={patient.user.nationalId}
+                role={Role.PATIENT}
+                isActive={patient.user.isActive}
+              />
+            </Link>
+          ))
+        ) : (
+          <EmptyStateMessage
+            title="No Patients"
+            description="There are no patients for now."
+          />
+        )}
 
-      {filteredPatients?.length ? (
-        filteredPatients.map((patient) => (
-          <Link key={patient.patientId} href={`user-settings/${patient.patientId}`} >
-            <UserCard
-              id={patient.patientId}
-              name={patient.user.firstName}
-              surname={patient.user.lastName}
-              nationalID={patient.user.nationalId}
-              role={Role.PATIENT}
-              isActive={patient.user.isActive}
-            />
-          </Link>
-        ))
-      ) : (
-        <EmptyStateMessage
-          title="No Patients"
-          description="There are no patients for now."
-        />
-      )}
-
-    </div>
+      </div>
     </div>
   );
 }
