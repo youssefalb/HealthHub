@@ -248,21 +248,15 @@ const AdminUserSettings = () => {
                     </div>
                     <CustomButton buttonText="Save Pesel" />
                 </form>
-
                 {activeState ? (
-                    <button onClick={handleBanClick} className="ml-2">
-                        <img src="/images/active-user.png"
-                            alt="Ban Icon" className="h-10 w-10"
-                            title="Ban User" />
-                    </button>
+                        <span onClick={handleBanClick} className="cursor-pointer mr-2">
+                            <img src="/images/active-user.png" alt="Ban Icon" className="h-10 w-10" title="Ban User" />
+                        </span>
                 ) : (
-                    <button onClick={handleUnbanClick} className="ml-2">
-                        <img src="/images/banned-user.png"
-                            alt="Unban Icon" className="h-10 w-10"
-                            title="Unban User" />
-                    </button>
-                )
-                }
+                        <span onClick={handleUnbanClick} className="cursor-pointer mr-2">
+                            <img src="/images/banned-user.png" alt="Unban Icon" className="h-10 w-10" title="Unban User" />
+                        </span>
+                )}
             </div>
             <ToastContainer />
         </div>
