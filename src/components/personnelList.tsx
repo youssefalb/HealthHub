@@ -5,6 +5,7 @@ import { getDoctors, getLabSupervisors, getLabTechnicians, getReceptionists } fr
 import { Role } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
 import EmptyStateMessage from "./EmptyStateMessage";
+import Link from "next/link";
 
 export default function PersonnelList() {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
@@ -46,14 +47,16 @@ export default function PersonnelList() {
                 {labAssistants?.length ? (
                     <div>
                         {labAssistants.map((assistant) => (
-                            <UserCard
-                                id={assistant.employeeId}
-                                nationalID={assistant.user.nationalId}
-                                name={assistant.user.firstName}
-                                surname={assistant.user.lastName}
-                                role={Role.LAB_ASSISTANT}
-                                isActive={assistant.user.isActive}
-                            />
+                            <Link key={assistant.employeeId} href={`user-settings/${assistant.employeeId}`} >
+                                <UserCard
+                                    id={assistant.employeeId}
+                                    nationalID={assistant.user.nationalId}
+                                    name={assistant.user.firstName}
+                                    surname={assistant.user.lastName}
+                                    role={Role.LAB_ASSISTANT}
+                                    isActive={assistant.user.isActive}
+                                />
+                            </Link>
                         ))}
                     </div>
                 ) : (
@@ -68,14 +71,16 @@ export default function PersonnelList() {
                 {receptionists?.length ? (
                     <div>
                         {receptionists.map((receptionist) => (
-                            <UserCard
-                                id={receptionist.employeeId}
-                                nationalID={receptionist.user.nationalId}
-                                name={receptionist.user.firstName}
-                                surname={receptionist.user.lastName}
-                                role={Role.RECEPTIONIST}
-                                isActive={receptionist.user.isActive}
-                            />
+                            <Link key={receptionist.employeeId} href={`user-settings/${receptionist.employeeId}`} >
+                                <UserCard
+                                    id={receptionist.employeeId}
+                                    nationalID={receptionist.user.nationalId}
+                                    name={receptionist.user.firstName}
+                                    surname={receptionist.user.lastName}
+                                    role={Role.RECEPTIONIST}
+                                    isActive={receptionist.user.isActive}
+                                />
+                            </Link>
                         ))}
                     </div>
                 ) : (
@@ -90,6 +95,7 @@ export default function PersonnelList() {
                 {labSupervisors?.length ? (
                     <div>
                         {labSupervisors.map((supervisor) => (
+                        <Link key={supervisor.employeeId} href={`user-settings/${supervisor.employeeId}`} >
                             <UserCard
                                 id={supervisor.employeeId}
                                 nationalID={supervisor.user.nationalId}
@@ -98,6 +104,7 @@ export default function PersonnelList() {
                                 role={Role.LAB_SUPERVISOR}
                                 isActive={supervisor.user.isActive}
                             />
+                            </Link>
                         ))}
                     </div>
                 ) : (
@@ -112,6 +119,7 @@ export default function PersonnelList() {
                 {doctors?.length ? (
                     <div>
                         {doctors.map((doctor) => (
+                            <Link key={doctor.employeeId} href={`user-settings/${doctor.employeeId}`} >
                             <UserCard
                                 id={doctor.employeeId}
                                 nationalID={doctor.user.nationalId}
@@ -120,6 +128,7 @@ export default function PersonnelList() {
                                 role={Role.DOCTOR}
                                 isActive={doctor.user.isActive}
                             />
+                            </Link>
                         ))}
                     </div>
                 ) : (

@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserInfo } from "@/lib/userInfo";
 import prisma from "@/lib/prisma";
 
 export default async function handler(

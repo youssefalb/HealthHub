@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import CustomButton from '@/components/CustomButton';
 import { Role } from '@prisma/client';
 import { getUserInfo, updateUserInfo } from "@/lib/userInfo";
