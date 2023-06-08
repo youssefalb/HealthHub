@@ -88,12 +88,16 @@ export default function sideBar() {
             .concat([
                 {
                     href: "/admin/patients",
-                    title: "Patients",
+                    title: "Patients"
                 },
                 {
                     href: "/admin/personnel",
-                    title: "Personnel",
+                    title: "Personnel"
                 },
+                {
+                    href: "/admin/addAccount",
+                    title: "Add Account"
+                }
             ])
     }
 

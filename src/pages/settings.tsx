@@ -168,7 +168,7 @@ const UserSettings = () => {
             </div>
             <div className="mx-auto max-w-screen-lg my-8 px-4">
                 <form onSubmit={updateUserNameAndSurname}>
-                    <div className="mb-4">
+                    <div className="my-6">
                         <TextField
                             fullWidth
                             required
@@ -194,7 +194,7 @@ const UserSettings = () => {
                     />
                 </form>
                 <form onSubmit={updateUserEmail}>
-                    <div className="mb-4">
+                    <div className="my-10">
                         <TextField
                             fullWidth
                             required
@@ -203,18 +203,18 @@ const UserSettings = () => {
                             type='email'
                             onChange={(v) => setEmail(v.target.value)}
                         />
+                        {emailVerified ? (
+                            <span className="text-green-500 flex my-2">Email verified</span>
+                        ) : (
+                            <span className="text-red-500 flex my-2">Email not verified</span>)}
+                        <CustomButton
+                            buttonText={"Save Email"}
+                        />
                     </div>
-                    {emailVerified ? (
-                        <span className="text-green-500 flex mb-2">Email verified</span>
-                    ) : (
-                        <span className="text-red-500 flex mb-2">Email not verified</span>)}
-                    <CustomButton
-                        buttonText={"Save Email"}
-                    />
                 </form>
 
                 <form onSubmit={updateUserPassword}>
-                    <div className="mb-4">
+                    <div className="mt-10 mb-4">
                         <TextField
                             fullWidth
                             required
@@ -240,7 +240,7 @@ const UserSettings = () => {
                 </form>
 
                 <form onSubmit={updateUserPesel}>
-                    <div className="mb-4">
+                    <div className="mt-10 mb-4">
                         <TextField
                             fullWidth
                             required
@@ -259,7 +259,7 @@ const UserSettings = () => {
                     <form onSubmit={updateUserInsurance}>
 
                         <div>
-                            <div className="mb-4">
+                            <div className="mt-10 mb-4">
                                 <TextField
                                     fullWidth
                                     required
