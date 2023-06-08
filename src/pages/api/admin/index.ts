@@ -37,84 +37,19 @@ export default async function handler(
                 );
                 return res.status(200).json({ success: true, data: patients });
             }
-            else if (role === Role.DOCTOR) {
-                const doctors = await prisma.doctor.findMany(
+            else if (role === "PERSONNEL") {
+                const personnel = await prisma.user.findMany(
                     {
-                        include: {
-                            user: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    email: true,
-                                    id: true,
-                                    nationalId: true,
-                                    isActive: true
-                                },
+                        where: {
+                            patient: null,
+                            role: {
+                                not: Role.ADMIN
                             }
                         }
                     }
                 );
-                return res.status(200).json({ success: true, data: doctors });
+                return res.status(200).json({ success: true, data: personnel });
             }
-            else if (role === Role.RECEPTIONIST) {
-                const receptionists = await prisma.receptionist.findMany(
-                    {
-                        include: {
-                            user: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    email: true,
-                                    id: true,
-                                    nationalId: true,
-                                    isActive: true
-                                },
-                            }
-                        }
-                    }
-                );
-                return res.status(200).json({ success: true, data: receptionists });
-            }
-            else if (role === Role.LAB_ASSISTANT) {
-                const labAssistants = await prisma.labAssistant.findMany(
-                    {
-                        include: {
-                            user: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    email: true,
-                                    id: true,
-                                    nationalId: true,
-                                    isActive: true
-
-                                },
-                            }
-                        }
-                    });
-                return res.status(200).json({ success: true, data: labAssistants });
-
-            }
-            else if (role === Role.LAB_SUPERVISOR) {
-                const labSupervisors = await prisma.labSupervisor.findMany(
-                    {
-                        include: {
-                            user: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    email: true,
-                                    id: true,
-                                    nationalId: true,
-                                    isActive: true
-                                },
-                            }
-                        }
-                    }
-                );
-                return res.status(200).json({ success: true, data: labSupervisors });
-            }
-
 
         } catch (error) {
             return res

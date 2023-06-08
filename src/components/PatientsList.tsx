@@ -3,7 +3,6 @@ import UserCard from "./UserCard";
 import { useEffect, useState } from "react";
 import { getPatients } from "../lib/manageUsers";
 import { Role } from "@prisma/client";
-import { ToastContainer } from "react-toastify";
 import EmptyStateMessage from "./EmptyStateMessage";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -39,6 +38,7 @@ export default function PatientsList() {
       .includes(searchQuery.toLowerCase())
   );
 
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div>
         <TextField
