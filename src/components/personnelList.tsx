@@ -15,8 +15,6 @@ export default function PersonnelList() {
     const [labAssistants, setLabAssistants] = useState([]);
     const [receptionists, setReceptionists] = useState([]);
 
-    const role = session?.user?.role;
-
     const fetchData = async () => {
         const fetchedLabAssistants = await getLabTechnicians();
         const fetchedDoctors = await getDoctors();
@@ -95,15 +93,15 @@ export default function PersonnelList() {
                 {labSupervisors?.length ? (
                     <div>
                         {labSupervisors.map((supervisor) => (
-                        <Link key={supervisor.employeeId} href={`user-settings/${supervisor.employeeId}`} >
-                            <UserCard
-                                id={supervisor.employeeId}
-                                nationalID={supervisor.user.nationalId}
-                                name={supervisor.user.firstName}
-                                surname={supervisor.user.lastName}
-                                role={Role.LAB_SUPERVISOR}
-                                isActive={supervisor.user.isActive}
-                            />
+                            <Link key={supervisor.employeeId} href={`user-settings/${supervisor.employeeId}`} >
+                                <UserCard
+                                    id={supervisor.employeeId}
+                                    nationalID={supervisor.user.nationalId}
+                                    name={supervisor.user.firstName}
+                                    surname={supervisor.user.lastName}
+                                    role={Role.LAB_SUPERVISOR}
+                                    isActive={supervisor.user.isActive}
+                                />
                             </Link>
                         ))}
                     </div>
@@ -120,14 +118,14 @@ export default function PersonnelList() {
                     <div>
                         {doctors.map((doctor) => (
                             <Link key={doctor.employeeId} href={`user-settings/${doctor.employeeId}`} >
-                            <UserCard
-                                id={doctor.employeeId}
-                                nationalID={doctor.user.nationalId}
-                                name={doctor.user.firstName}
-                                surname={doctor.user.lastName}
-                                role={Role.DOCTOR}
-                                isActive={doctor.user.isActive}
-                            />
+                                <UserCard
+                                    id={doctor.employeeId}
+                                    nationalID={doctor.user.nationalId}
+                                    name={doctor.user.firstName}
+                                    surname={doctor.user.lastName}
+                                    role={Role.DOCTOR}
+                                    isActive={doctor.user.isActive}
+                                />
                             </Link>
                         ))}
                     </div>

@@ -4,15 +4,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TextField } from "@mui/material";
 import { uploadImage } from "@/lib/cloudinary";
-import { getUserInfoWithId, updateUserInfo } from "@/lib/manageUsers";
+import { banUser, getUserInfoWithId, unbanUser, updateUserInfo } from "@/lib/manageUsers";
 import { useRouter } from "next/router";
+import PopupDialog from "@/components/PopupDialog";
 
 const AdminUserSettings = () => {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const { user_id } = router.query;
 
-
+    const [confirmBanUserPopUpShown, setConfirmBanUserPopUpShown] = useState(false);
+    const [confirmUnbanUserPopUpShown, setConfirmUnbanUserPopUpShown] = useState(false);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -20,6 +22,8 @@ const AdminUserSettings = () => {
     const [emailVerified, setEmailVerified] = useState('');
     const [nationalId, setPesel] = useState('');
     const [image, setImage] = useState('');
+    const [activeState, setActiveState] = useState(false);
+
 
 
     useEffect(() => {
@@ -34,6 +38,7 @@ const AdminUserSettings = () => {
                 setLastName(result.data.lastName);
                 setPesel(result.data.nationalId);
                 setImage(result.data.image);
+                setActiveState(result.data.isActive);
                 setUser(result.data);
             }
         };
@@ -112,13 +117,34 @@ const AdminUserSettings = () => {
         }
     }
 
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await updateUserInfo(user, user_id);
-            toast.success("Data updated successfully");
-        } catch (error) {
-            toast.error("Failed to update data");
+    const handleBanClick = () => {
+        setConfirmBanUserPopUpShown(true);
+    }
+
+    const handleUnbanClick = () => {
+        setConfirmUnbanUserPopUpShown(true);
+    }
+
+    const handleBanUser = async () => {
+        setConfirmBanUserPopUpShown(false);
+        const response = await banUser(user_id.toString());
+        if (response.success) {
+            toast.success("User has been banned successfully.");
+            setActiveState(false);
+
+        } else {
+            toast.error("Failed to ban user. Please try again.");
+        }
+    };
+
+    const handleUnbanUser = async () => {
+        setConfirmUnbanUserPopUpShown(false);
+        const response = await unbanUser(user_id.toString());
+        if (response.success) {
+            toast.success("User has been unbanned successfully.");
+            setActiveState(true);
+        } else {
+            toast.error("Failed to unban user. Please try again.");
         }
     };
 
@@ -128,7 +154,20 @@ const AdminUserSettings = () => {
 
     return (
         <div>
-            {/* Cover image with gray overlay */}
+            <PopupDialog
+                open={confirmBanUserPopUpShown}
+                onClose={() => setConfirmBanUserPopUpShown(false)}
+                title="Are you sure!"
+                message="Before that. Are you sure you want to ban this user?"
+                onConfirm={handleBanUser}
+            />
+            <PopupDialog
+                open={confirmUnbanUserPopUpShown}
+                onClose={() => setConfirmUnbanUserPopUpShown(false)}
+                title="Are you sure!"
+                message="Before that. Are you sure you want to unban this user?"
+                onConfirm={handleUnbanUser}
+            />
             <div className="relative">
                 <img src="https://picsum.photos/900" alt="Cover" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
@@ -209,6 +248,21 @@ const AdminUserSettings = () => {
                     </div>
                     <CustomButton buttonText="Save Pesel" />
                 </form>
+
+                {activeState ? (
+                    <button onClick={handleBanClick} className="ml-2">
+                        <img src="/images/active-user.png"
+                            alt="Ban Icon" className="h-10 w-10"
+                            title="Ban User" />
+                    </button>
+                ) : (
+                    <button onClick={handleUnbanClick} className="ml-2">
+                        <img src="/images/banned-user.png"
+                            alt="Unban Icon" className="h-10 w-10"
+                            title="Unban User" />
+                    </button>
+                )
+                }
             </div>
             <ToastContainer />
         </div>
