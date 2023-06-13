@@ -21,8 +21,16 @@ export default async function handler(
             try {
                 const test = await prisma.laboratoryExamination.findFirst({
                     where: {
-                        testId: test_id.toString(),
-                        status: LaboratoryTestStatus.COMPLETED,
+                            testId: test_id.toString(),
+                        OR: [{
+                            status: LaboratoryTestStatus.APPROVED,
+                        },
+                        {
+                            status: LaboratoryTestStatus.REJECTED,
+                        },
+                        {
+                            status: LaboratoryTestStatus.COMPLETED,
+                        },]
                     },
                 })
                 if (test == null) throw "no data";

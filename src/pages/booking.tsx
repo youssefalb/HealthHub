@@ -99,8 +99,8 @@ const BookingForm = () => {
         fetchUserData()
     }, [session])
 
-    const handleSubmit = () => {
-        createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+    const  handleSubmit = async () => {
+        await createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
         router.push('/visits')
     };
 
@@ -143,7 +143,7 @@ const BookingForm = () => {
             />
 
             <h1 className="text-3xl font-bold mb-6">Booking Your Appointment</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e)=>e.preventDefault()}>
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-4">
                         <Label name="Name" value={session?.user?.name} />

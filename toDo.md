@@ -3,23 +3,23 @@ to protect a page use a protected layout that takes "role" as a prob and compare
 
   - [ ] front end for dynamic pages (asser)
   - [x] delete book appointmint button for a doctor 
+  - [ ] receptionist (everything)
   - [ ] visit filter in doctor's page (sorted by date / time) 
   - [ ] middleware 
-  - [ ] receptionist (everything)
   - [ ] make changing role of a user changes the connecttion (db ?)
   - [ ] loading conmponent
   - [ ] search for auto-docs (swager, openApi)
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
 
   scenario: 
-  1- (patient) register 
-  2- (patient) add appointments 
-  3- (doctor) changes status of visit (date/time)
-  3- (doctor) add 3 new tests and 2 examinations (with date/time)
-  4- (tech) performs 2 tests (results) and cancel 1 (reasons) (with date/time of each step)
-  5- (supervisor) accept 1, deny 1 --> with reason ofc
-  6- (registrar) makes a new visit 
-  6- (doctor) accesses the results of all test + visit history 
+  1-[x](patient) register 
+  2-[x](patient) add appointments 
+  3-[x](doctor) casynchanges status of visit (date/time)
+  3-[x](doctor) add 3 new tests and 2 examinations (with date/time)
+  4-[x](tech) performs 2 tests (results) and cancel 1 (reasons) (with date/time of each step)
+  5-[x](supervisor) accept 1, deny 1 --> with reason ofc
+  6-[ ](registrar) makes a new visit 
+  7-[x](doctor) accesses the results of all test + visit history (kinda)
 
 
 scenario 2 : 

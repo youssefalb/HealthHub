@@ -63,18 +63,14 @@ export default async function handler(
                 if (visit.doctorId == session.user?.id) {
                     const currentStatus = visit.status
                     let results;
-                    let dataClause = {}
                     if (currentStatus == Status.REGISTERED) {
                         console.log("cs is reg")
-                        dataClause = {
-                            status: Status.IN_PROGRESS,
-                        }
                         try {
                             results = await prisma.visit.update({
                                 where: {
                                     visitId: visit_id.toString(),
                                 },
-                                data: dataClause,
+                                data: { ...req.body },
                             })
                         }
                         catch (error) {
@@ -89,23 +85,13 @@ export default async function handler(
                         }
                     }
                     else if (currentStatus == Status.IN_PROGRESS) {
-                        if (req.body.status == Status.CANCELLED) {
-                            dataClause = {
-                                status: Status.CANCELLED,
-                            }
-                        }
-                        else if (req.body.status == Status.COMPLETED) {
-                            dataClause = {
-                                status: Status.COMPLETED,
-                            }
-                        }
                         try {
                             results = await prisma.visit.update({
                                 where: {
                                     visitId: visit_id.toString(),
                                 },
                                 data: {
-                                    ...dataClause,
+                                    ...req.body,
                                     dateRealized: new Date(),
                                     diagnosis: req.body.diagnosis,
                                     description: req.body.description

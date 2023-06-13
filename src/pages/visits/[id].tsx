@@ -90,7 +90,8 @@ export default function Visit() {
                     <CustomButton
                         buttonText={"Cancel visit"}
                         onClick={() => {
-                            router.push("#");
+                            changeVisitDetails(visit['visitId'], { "status": Status.CANCELLED })
+                            router.push("/visits");
                         }}
                     />
                 }
@@ -100,7 +101,7 @@ export default function Visit() {
                         buttonText={"Start visit"}
                         onClick={() => {
                             setCurrentlyInProgress(true);
-                            // changeVisitDetails(visit['visitId'], { "status": Status.IN_PROGRESS })
+                            changeVisitDetails(visit['visitId'], { "status": Status.IN_PROGRESS })
                         }}
                     />
                 }

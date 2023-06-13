@@ -11,14 +11,11 @@ const TestCard = ({test, role}) => {
       doctorNote = doctorNote.slice(0,40)+ "..."
 
   const status = test.status;
-  const redirectFun = () => {
-      console.log("redirect");
-  }
 
   const displayStatus = (role == Role.DOCTOR || role == Role.LAB_ASSISTANT || role == Role.LAB_SUPERVISOR)
 
   return (
-    <div onClick={redirectFun} className="cursor-pointer">
+    <div className="cursor-pointer">
         <div className="bg-white hover:bg-gray-100 rounded-lg shadow-md p-6 flex items-center justify-between">
           <div className="flex items-center">
             <div>

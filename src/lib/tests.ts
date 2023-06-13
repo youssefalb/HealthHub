@@ -18,9 +18,11 @@ export async function getTechOrSupervisorTests(role: Role): Promise<Response>{
             path = technicianTestsInProgressPath;
             break;
     }
-    return await fetch(path, {
+    const result = await fetch(path, {
         method: 'GET',
     });
+    let ret = result.json()
+    return ret;
 }
 
 export async function getTestsOfAVisit(role: Role, visitId: String) {
@@ -203,8 +205,8 @@ export async function orderTestAsDoctor(visitId: String, dictionaryCode: number,
  * @return {Promise<Response>} A Promise that resolves to a Response object representing the result
  * of the PUT request.
  */
-export async function startPerformingTest(testId:String): Promise<Response> {
-    const result = await fetch(`${technicianTestsPath} + "/" + ${testId}`, {
+export async function startPerformingTest(testId: String): Promise<Response> {
+    const result = await fetch(`${technicianTestsPath}/${testId}`, {
         method: 'PUT',
     });
     return result;
@@ -219,7 +221,7 @@ export async function startPerformingTest(testId:String): Promise<Response> {
  * @return {Promise<Response>} - A Promise that resolves with a Response object when the PUT request is complete.
  */
 export async function finishPerformingTest(testId: String, status : LaboratoryTestStatus, note : String): Promise<Response> {
-    const result = await fetch(`${technicianTestsPath} + "/" + ${testId}`, {
+    const result = await fetch(`${technicianTestsPath}/${testId}`, {
         method: 'PUT',
         headers: jsonHeader,
         body: JSON.stringify({
@@ -238,7 +240,7 @@ export async function finishPerformingTest(testId: String, status : LaboratoryTe
  * @return {Promise<Response>} A promise that resolves with a Response object representing the server's response to the approval request.
  */
 export async function approveTest(testId: String): Promise<Response> {
-    return await fetch(`${supervisorTestsPath} +"/" + ${testId}`, {
+    return await fetch(`${supervisorTestsPath}/${testId}`, {
         method: 'PUT',
         headers: jsonHeader,
         body: JSON.stringify({
@@ -255,7 +257,7 @@ export async function approveTest(testId: String): Promise<Response> {
  * @return {Promise<Response>} A promise that resolves with the response of the PUT request.
  */
 export async function rejectTest(testId: String): Promise<Response> {
-    return await fetch(`${supervisorTestsPath} +"/" + ${testId}`, {
+    return await fetch(`${supervisorTestsPath}/${testId}`, {
         method: 'PUT',
         headers: jsonHeader,
         body: JSON.stringify({
