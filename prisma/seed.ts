@@ -1528,7 +1528,7 @@ async function seed() {
       patient: { connect: { patientId: "P9" } },
       receptionist: { connect: { employeeId: "R2" } }
     },
-    
+
   ]
 
   //30
@@ -2116,11 +2116,11 @@ async function seed() {
 
   i = 0;
   for (const labExamination of labExaminationData) {
-    i++; 
+    i++;
     const l = await prisma.laboratoryExamination.create({
       data: labExamination,
     });
-    console.log(`Created labExamination with id: ${l.testId}`) 
+    console.log(`Created labExamination with id: ${l.testId}`)
   }
   console.log(`created ${i} lab exams`)
   console.log("=============================================\n")

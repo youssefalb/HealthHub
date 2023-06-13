@@ -1,8 +1,19 @@
 import React, { useState } from "react";
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
 import { Role } from "@prisma/client";
 import { Specializations } from "@prisma/client";
 import CustomButton from "@/components/CustomButton";
+import { addNewUser } from "@/lib/manageUsers";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {
+    TextField,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Checkbox,
+    FormControlLabel
+} from "@mui/material";
 
 const AddAccount = () => {
     const [email, setEmail] = useState("");
@@ -11,12 +22,30 @@ const AddAccount = () => {
     const [pesel, setPesel] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedSpecialization, setSelectedSpecialization] = useState("");
+    const [hasInsurance, setHasInsurance] = useState(false);
+    const [insurance, setInsurance] = useState(null);
 
     const roles = Object.values(Role);
     const specializations = Object.values(Specializations);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const userData = {
+            email,
+            firstName,
+            lastName,
+            nationalId: pesel,
+            role: selectedRole,
+            speciality: selectedSpecialization,
+            insuranceId: insurance,
+        };
+        const res = addNewUser(userData)
+        if ((await res).ok) {
+            toast.success("Account added successfully")
+        }
+        else {
+            toast.error("Could not add account, something went wrong")
+        }
     };
 
     const handleRoleChange = (event) => {
@@ -26,6 +55,14 @@ const AddAccount = () => {
 
     const handleSpecializationChange = (event) => {
         setSelectedSpecialization(event.target.value);
+    };
+
+    const handleInsuranceChange = (event) => {
+        setInsurance(event.target.value);
+    };
+
+    const handleCheckboxChange = (event) => {
+        setHasInsurance(event.target.checked);
     };
 
     return (
@@ -93,8 +130,33 @@ const AddAccount = () => {
                     onChange={(e) => setPesel(e.target.value)}
                     required
                 />
+
+                {selectedRole == Role.PATIENT && (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={hasInsurance}
+                                onChange={handleCheckboxChange}
+                                name="hasInsurance"
+                                color="primary"
+                            />
+                        }
+                        label="Insurance"
+                    />
+                )}
+
+                {hasInsurance && selectedRole == Role.PATIENT && (
+                    <TextField
+                        label="Insurance"
+                        variant="outlined"
+                        value={insurance}
+                        onChange={handleInsuranceChange}
+                        required
+                    />
+                )}
                 <CustomButton buttonText={"Add account"} width="full" />
             </form>
+            <ToastContainer />
         </div>
     );
 };

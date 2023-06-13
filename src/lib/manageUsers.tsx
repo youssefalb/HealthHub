@@ -61,3 +61,13 @@ export async function updateUserInfo(userData, userId) {
 
     return result;
 }
+
+export async function addNewUser(userData) {
+    const result = await fetch(`${adminPath}`, {
+        method: 'POST',
+        headers: jsonHeader,
+        body: JSON.stringify(userData)
+    })
+
+    return result;
+}

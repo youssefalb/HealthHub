@@ -22,10 +22,7 @@ export default function sideBar() {
         },
     ];
 
-    let path = "/";
-
     if (session?.user?.role === Role.PATIENT) {
-        path = "/patient";
         menuItems = menuItems
             .concat([
                 {
@@ -43,7 +40,6 @@ export default function sideBar() {
             ])
             .reverse();
     } else if (session?.user?.role === Role.DOCTOR) {
-        path = "/doctor";
         menuItems = menuItems
             .concat([
                 {
