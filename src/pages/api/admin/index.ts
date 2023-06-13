@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { hashPassword } from "@/lib/hashPassword";
 
 export default async function handler(
     req: NextApiRequest,
@@ -80,17 +81,19 @@ export default async function handler(
     }
     else if (req.method === "POST") {
         try {
-            const { firstName, lastName, email, role } = req.body;
+            const { firstName, lastName, email, role, insuranceId, nationalId, speciality } = req.body;
             if (role === Role.PATIENT) {
                 const patient = await prisma.patient.create({
                     data: {
+                        insuranceId: insuranceId,
                         user: {
                             create: {
                                 firstName: firstName,
                                 lastName: lastName,
                                 email: email,
-                            
                                 role: role,
+                                nationalId: nationalId,
+                                password: await hashPassword(process.env.DEFAULT_PASSWORD),
                             }
                         }
                     },
@@ -98,16 +101,92 @@ export default async function handler(
 
                 return res.status(200).json({ success: true, data: patient });
             }
+            else if (role === Role.DOCTOR) {
+                const doctor = await prisma.doctor.create({
+                    data: {
+                        speciality: speciality,
+                        user: {
+                            create: {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                role: role,
+                                nationalId: nationalId,
+                                password: await hashPassword(process.env.DEFAULT_PASSWORD),
+                            }
+                        }
+                    },
+                });
 
-            const user = await prisma.user.create({
-                data: {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    role: role,
-                },
-            });
-            return res.status(200).json({ success: true, data: user });
+                return res.status(200).json({ success: true, data: doctor });
+            }
+            else if (role === Role.LAB_SUPERVISOR) {
+                const labSupervisor = await prisma.labSupervisor.create({
+                    data: {
+                        user: {
+                            create: {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                role: role,
+                                nationalId: nationalId,
+                                password: await hashPassword(process.env.DEFAULT_PASSWORD),
+
+                            }
+                        }
+                    },
+                });
+
+                return res.status(200).json({ success: true, data: labSupervisor });
+            }
+            else if (role === Role.LAB_ASSISTANT) {
+                const labAssistant = await prisma.labAssistant.create({
+                    data: {
+                        user: {
+                            create: {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                role: role,
+                                password: await hashPassword(process.env.DEFAULT_PASSWORD),
+                            }
+                        }
+                    },
+                });
+
+                return res.status(200).json({ success: true, data: labAssistant });
+            }
+            else if (role === Role.ADMIN) {
+                const admin = await prisma.user.create({
+                    data: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        role: role,
+                        password: await hashPassword(process.env.DEFAULT_PASSWORD),
+                    }
+                });
+
+                return res.status(200).json({ success: true, data: admin });
+            }
+
+            else if (role === Role.RECEPTIONIST) {
+                const receptionist = await prisma.receptionist.create({
+                    data: {
+                        user: {
+                            create: {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                role: role,
+                                password: await hashPassword(process.env.DEFAULT_PASSWORD),
+                            }
+                        }
+                    },
+                });
+                return res.status(200).json({ success: true, data: receptionist });
+
+            }
         }
         catch (error) {
             return res
@@ -115,7 +194,7 @@ export default async function handler(
                 .json({ success: false, message: "Failed to create user" });
         }
 
-    }	
+    }
     return res
         .status(400)
         .json({ success: false, message: "Invalid request method" });

@@ -1,18 +1,19 @@
 import React, { useState } from "react";
+import { Role } from "@prisma/client";
+import { Specializations } from "@prisma/client";
+import CustomButton from "@/components/CustomButton";
+import { addNewUser } from "@/lib/manageUsers";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     TextField,
-    Button,
     Select,
     MenuItem,
     FormControl,
     InputLabel,
-    Box,
     Checkbox,
     FormControlLabel
 } from "@mui/material";
-import { Role } from "@prisma/client";
-import { Specializations } from "@prisma/client";
-import CustomButton from "@/components/CustomButton";
 
 const AddAccount = () => {
     const [email, setEmail] = useState("");
@@ -22,13 +23,29 @@ const AddAccount = () => {
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedSpecialization, setSelectedSpecialization] = useState("");
     const [hasInsurance, setHasInsurance] = useState(false);
-    const [insurance, setInsurance] = useState("");
+    const [insurance, setInsurance] = useState(null);
 
     const roles = Object.values(Role);
     const specializations = Object.values(Specializations);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const userData = {
+            email,
+            firstName,
+            lastName,
+            nationalId: pesel,
+            role: selectedRole,
+            speciality: selectedSpecialization,
+            insuranceId: insurance,
+        };
+        const res = addNewUser(userData)
+        if ((await res).ok) {
+            toast.success("Account added successfully")
+        }
+        else {
+            toast.error("Could not add account, something went wrong")
+        }
     };
 
     const handleRoleChange = (event) => {
@@ -139,6 +156,7 @@ const AddAccount = () => {
                 )}
                 <CustomButton buttonText={"Add account"} width="full" />
             </form>
+            <ToastContainer />
         </div>
     );
 };
