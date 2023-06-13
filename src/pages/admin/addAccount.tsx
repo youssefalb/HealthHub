@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
+import {
+    TextField,
+    Button,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Box,
+    Checkbox,
+    FormControlLabel
+} from "@mui/material";
 import { Role } from "@prisma/client";
 import { Specializations } from "@prisma/client";
 import CustomButton from "@/components/CustomButton";
@@ -11,6 +21,8 @@ const AddAccount = () => {
     const [pesel, setPesel] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedSpecialization, setSelectedSpecialization] = useState("");
+    const [hasInsurance, setHasInsurance] = useState(false);
+    const [insurance, setInsurance] = useState("");
 
     const roles = Object.values(Role);
     const specializations = Object.values(Specializations);
@@ -26,6 +38,14 @@ const AddAccount = () => {
 
     const handleSpecializationChange = (event) => {
         setSelectedSpecialization(event.target.value);
+    };
+
+    const handleInsuranceChange = (event) => {
+        setInsurance(event.target.value);
+    };
+
+    const handleCheckboxChange = (event) => {
+        setHasInsurance(event.target.checked);
     };
 
     return (
@@ -93,6 +113,30 @@ const AddAccount = () => {
                     onChange={(e) => setPesel(e.target.value)}
                     required
                 />
+
+                {selectedRole == Role.PATIENT && (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={hasInsurance}
+                                onChange={handleCheckboxChange}
+                                name="hasInsurance"
+                                color="primary"
+                            />
+                        }
+                        label="Insurance"
+                    />
+                )}
+
+                {hasInsurance && selectedRole == Role.PATIENT && (
+                    <TextField
+                        label="Insurance"
+                        variant="outlined"
+                        value={insurance}
+                        onChange={handleInsuranceChange}
+                        required
+                    />
+                )}
                 <CustomButton buttonText={"Add account"} width="full" />
             </form>
         </div>

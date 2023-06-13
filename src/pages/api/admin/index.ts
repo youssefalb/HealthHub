@@ -78,6 +78,44 @@ export default async function handler(
         }
 
     }
+    else if (req.method === "POST") {
+        try {
+            const { firstName, lastName, email, role } = req.body;
+            if (role === Role.PATIENT) {
+                const patient = await prisma.patient.create({
+                    data: {
+                        user: {
+                            create: {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                            
+                                role: role,
+                            }
+                        }
+                    },
+                });
+
+                return res.status(200).json({ success: true, data: patient });
+            }
+
+            const user = await prisma.user.create({
+                data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    role: role,
+                },
+            });
+            return res.status(200).json({ success: true, data: user });
+        }
+        catch (error) {
+            return res
+                .status(500)
+                .json({ success: false, message: "Failed to create user" });
+        }
+
+    }	
     return res
         .status(400)
         .json({ success: false, message: "Invalid request method" });
