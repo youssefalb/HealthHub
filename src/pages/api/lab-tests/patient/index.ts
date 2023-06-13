@@ -23,7 +23,7 @@ export default async function handler(
 
     if (req.method === "GET") {
         try {
-            const { patient , visit} = req.query;
+            const { patient, visit } = req.query;
             let results: string | any[];
             if (patient) { // user is doctor or or reciptionist or admin
                 if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
@@ -43,6 +43,9 @@ export default async function handler(
                         where: {
                             visitId: visit.toString(),
                             visit: { patientId: session.user?.id },
+                        },
+                        include: {
+                            examinationDictionary: true
                         }
                     });
                     if (!results.length) throw "no data";
@@ -57,6 +60,9 @@ export default async function handler(
                         where: {
                             visit: { patientId: session.user?.id },
                             status: LaboratoryTestStatus.APPROVED
+                        },
+                        include: {
+                            examinationDictionary: true
                         }
                     });
                     if (!results.length) throw "no data";
@@ -65,7 +71,11 @@ export default async function handler(
             }
 
         } catch (error) {
-            //here should be a redirect to a general purpose error page
+            if (error == "no data") {
+                return res
+                    .status(404)
+                    .json({ success: false, message: "No data found" });
+            }
             return res
                 .status(500)
                 .json({ success: false, message: "ERROR : Failed to retrieve data" });

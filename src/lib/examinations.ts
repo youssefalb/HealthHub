@@ -105,7 +105,7 @@ export async function getExaminationDetails(role: Role, examId: String) {
  * @param {number} dictionaryCode - The code for the type of examination to create.
  * @returns {Promise} A Promise that resolves with the result of the POST request to create the examination.
  */
-export async function createExamination(visitId: String, dictionaryCode: number) {
+export async function createExamination(visitId: String, dictionaryCode: number, note: string) {
   let result;
   result = await fetch(`${doctorExaminationsPath}`, {
     method: "POST",
@@ -113,6 +113,7 @@ export async function createExamination(visitId: String, dictionaryCode: number)
     body: JSON.stringify({
       visitId: visitId,
       dictionaryCode: dictionaryCode,
+      doctorNote : note
     })
   });
   return result;

@@ -25,22 +25,21 @@ export default async function handler(
                     },
                     include: {
                         patient: {
-                            select: {
-                                user: {
-                                    select: {
-                                        firstName: true,
-                                        lastName: true,
-                                    }
-                                }
+                            include: {
+                                user: true
                             }
                         }
                     }
                 })
-                if(visit == null) throw "no data";
+                if (visit == null) throw "no data";
                 return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {
-                //here should be a redirect to a general purpose error page
+                if (error == "no data") {
+                    return res
+                        .status(404)
+                        .json({ success: false, message: "No data found" });
+                }
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -53,6 +52,7 @@ export default async function handler(
     }
 
     if (req.method == "PUT") {
+        console.log("body: ", req.body)
         if (session.user?.role == Role.DOCTOR) {
             try {
                 const visit = await prisma.visit.findUnique({
@@ -65,6 +65,7 @@ export default async function handler(
                     let results;
                     let dataClause = {}
                     if (currentStatus == Status.REGISTERED) {
+                        console.log("cs is reg")
                         dataClause = {
                             status: Status.IN_PROGRESS,
                         }
@@ -77,7 +78,11 @@ export default async function handler(
                             })
                         }
                         catch (error) {
-                            //here should be a redirect to a general purpose error page
+                            if (error == "no data") {
+                                return res
+                                    .status(404)
+                                    .json({ success: false, message: "No data found" });
+                            }
                             return res
                                 .status(500)
                                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -103,11 +108,16 @@ export default async function handler(
                                     ...dataClause,
                                     dateRealized: new Date(),
                                     diagnosis: req.body.diagnosis,
+                                    description: req.body.description
                                 }
                             })
                         }
                         catch (error) {
-                            //here should be a redirect to a general purpose error page
+                            if (error == "no data") {
+                                return res
+                                    .status(404)
+                                    .json({ success: false, message: "No data found" });
+                            }
                             return res
                                 .status(500)
                                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
@@ -123,7 +133,11 @@ export default async function handler(
                 }
             }
             catch (error) {
-                //here should be a redirect to a general purpose error page
+                if (error == "no data") {
+                    return res
+                        .status(404)
+                        .json({ success: false, message: "No data found" });
+                }
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });

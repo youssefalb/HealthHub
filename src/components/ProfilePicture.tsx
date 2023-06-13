@@ -1,13 +1,14 @@
 import React from "react";
 
 export const ProfilePicture = ({ src, alt, size }) => {
-  const imageSize : Number= 1 / 12; // default size is 48px
+  const imageSize: Number = size? Number(size) : 1/12 // default size is 48px
+
 
   return (
     <img
       src={src}
       alt={alt}
-      className={`m-2 rounded-full  w-1/3 h-${imageSize}`}
+      className={`m-2 rounded-full  w-${1/size} max-h-12`}
     />
   );
 };

@@ -12,7 +12,6 @@ export default async function handler(
 ) {
     try {
         const session = await getServerSession(req, res, authOptions);
-
         if (!session) {
             return res
                 .status(401)
@@ -30,13 +29,13 @@ export default async function handler(
             });
 
             return res.status(200).json({ success: true, data: result });
-        } else if (req.method === "PUT" && session.user?.role === Role.PATIENT) {
+        } else if (req.method === "PUT") {
             const {
                 firstName,
                 lastName,
                 image,
                 insuranceId,
-                nationalID,
+                nationalId,
                 email,
                 newPassword,
                 oldPassword,
@@ -102,14 +101,14 @@ export default async function handler(
                 console.log(result);
                 return res.status(200).json({ success: true, data: result });
             }
-
+            console.log("here");
             const dataClause = {
                 firstName,
                 lastName,
                 image,
-                insuranceId,
-                nationalID,
+                nationalId,
             };
+            console.log("Data", dataClause);
 
             const result = await prisma.user.update({
                 where: { id: session.user.id.toString() },

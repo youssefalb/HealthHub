@@ -25,10 +25,11 @@ export default async function handler(
                         testId: test_id.toString(),
                     },
                     include: {
-                        visit: true
+                        visit: true,
+                        examinationDictionary: true,
                     }
                 })
-                if(test == null) throw "no data";
+                if (test == null) throw "no data";
                 if (test.visit.patientId == session.user?.id) {
                     return res.status(200).json({ success: true, data: test });
                 }
@@ -37,7 +38,11 @@ export default async function handler(
                 }
             }
             catch (error) {
-                //here should be a redirect to a general purpose error page
+                if (error == "no data") {
+                    return res
+                        .status(404)
+                        .json({ success: false, message: "No data found" });
+                }
                 return res
                     .status(500)
                     .json({ success: false, message: "ERROR : Failed to retrieve data" });

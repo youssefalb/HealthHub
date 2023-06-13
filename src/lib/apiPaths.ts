@@ -9,10 +9,12 @@ export const doctorVisitsPath: string = "/api/visits/doctor"
 export const patientVisitsPath: string = "/api/visits/patient"
 
 export const doctorExaminationsPath: string = "/api/examinations/doctor"
+export const testDictPath: string = "/api/testsDict"
 export const patientExaminationsPath: string = "/api/examinations/patient"
 
 export const patientsPath: string = "/api/patients"
 export const personnelPath: string = "/api/personnel"
 export const adminPath: string = "/api/admin"
+export const adminUsersPath: string = "/api/admin/users"
 
 export const userInfoPath: string = "/api/me"

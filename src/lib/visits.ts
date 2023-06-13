@@ -2,9 +2,9 @@ import { useSession, getSession } from 'next-auth/react';
 import { Status, Role } from "@prisma/client";
 import { doctorVisitsPath, patientVisitsPath } from "./apiPaths";
 
-let jsonHeader =  {
+let jsonHeader = {
   'Content-Type': 'application/json'
-    }
+}
 
 /**
  * Asynchronously gets the visits of the user with the specified role.
@@ -40,7 +40,7 @@ export async function getOwnVisits(role: Role): Promise<Response> { //working
  * @param doctorId ID of the doctor to retrieve visits for.
  * @returns A Promise that resolves with the result of the GET request to the doctor visits endpoint.
  */
-export async function getDoctorVisits(doctorId: String): Promise<Response> {
+export async function getDoctorVisits(doctorId: string): Promise<Response> {
   let result;
   result = await fetch(`${doctorVisitsPath}?doctor=${doctorId}`, {
     method: "GET",
@@ -53,10 +53,10 @@ export async function getDoctorVisits(doctorId: String): Promise<Response> {
  * Retrieves a list of patient visits for a given patient ID.
  * used only by receptionist or an admin.
  * @param {Role} role - The user role.
- * @param {String} patientId - The ID of the patient.
+ * @param {string} patientId - The ID of the patient.
  * @returns {Promise<Response>} A promise that resolves with the response object containing the patient visits.
  */
-export async function getPatientVisits(patientId: String): Promise<Response> {
+export async function getPatientVisits(patientId: string): Promise<Response> {
   let result;
   result = await fetch(`${patientVisitsPath}?patient=${patientId}`, {
     method: "GET",
@@ -67,10 +67,10 @@ export async function getPatientVisits(patientId: String): Promise<Response> {
 /**
  * Retrieves a visit by ID based on the specified role.
  * @param {Role} role - The role of the user making the request.
- * @param {String} visitId - The ID of the visit to retrieve.
+ * @param {string} visitId - The ID of the visit to retrieve.
  * @returns {Promise} - Returns a Promise that resolves with the result of the fetch request.
  */
-export async function getVisitDetails(role: Role, visitId: String): Promise<Response> {
+export async function getVisitDetails(role: Role, visitId: string): Promise<Response> {
   let data
   if (role == Role.DOCTOR) {
     data = await fetch(`${doctorVisitsPath}/${visitId}`, {
@@ -82,7 +82,7 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
       method: "GET",
     })
   }
-  
+
   const result = await data.json()
   return result
 }
@@ -95,7 +95,7 @@ export async function getVisitDetails(role: Role, visitId: String): Promise<Resp
  * @param date The date of the visit.
  * @returns {Promise<Response>} A Promise that resolves to the result of the POST request to create the visit.
  */
-export async function createVisitByPatient(note: String, doctorId: String, date: String): Promise<Response> {
+export async function createVisitByPatient(note: string, doctorId: string, date: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
     headers: jsonHeader,
@@ -110,13 +110,13 @@ export async function createVisitByPatient(note: String, doctorId: String, date:
 
 /**
  * Creates a new visit by receptionist for the given patientId, speciality, doctorId, and date.
- * @param {String} patientId - The ID of the patient for whom the visit is being created.
- * @param {String} speciality - The speciality of the doctor for whom the visit is being created.
- * @param {String} doctorId - The ID of the doctor for whom the visit is being created.
- * @param {String} date - The date of the visit for which the visit is being created.
+ * @param {string} patientId - The ID of the patient for whom the visit is being created.
+ * @param {string} speciality - The speciality of the doctor for whom the visit is being created.
+ * @param {string} doctorId - The ID of the doctor for whom the visit is being created.
+ * @param {string} date - The date of the visit for which the visit is being created.
  * @returns {Promise<Response>} A Promise that resolves to the result of the POST request.
  */
-export async function createVisitByReceptionist(patientId: String, speciality: String, doctorId: String, date: String): Promise<Response> {
+export async function createVisitByReceptionist(patientId: string, speciality: string, doctorId: string, date: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
     headers: jsonHeader,
@@ -133,10 +133,10 @@ export async function createVisitByReceptionist(patientId: String, speciality: S
 //by patient and recep to change status 
 /**
  * Cancel a visit by changing its status to cancelled.
- * @param {String} visitId - The ID of the visit to be cancelled.
+ * @param {string} visitId - The ID of the visit to be cancelled.
  * @returns {Promise} - A Promise that resolves with the result of the PUT request.
  */
-export async function cancelVisit(visitId: String): Promise<Response> {
+export async function cancelVisit(visitId: string): Promise<Response> {
   //put request to change status of the visit
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
@@ -151,11 +151,11 @@ export async function cancelVisit(visitId: String): Promise<Response> {
 //by recep and patient, to change date 
 /**
  * Update the visit date for a patient by ID.
- * @param {String} visitId - The ID of the visit to update.
- * @param {String} date - The new date for the visit.
+ * @param {string} visitId - The ID of the visit to update.
+ * @param {string} date - The new date for the visit.
  * @returns {Promise<Response>} - A promise that resolves with the response from the server.
  */
-export async function changeVisitDate(visitId: String, date: String): Promise<Response> {
+export async function changeVisitDate(visitId: string, date: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
     body: JSON.stringify({
@@ -168,11 +168,11 @@ export async function changeVisitDate(visitId: String, date: String): Promise<Re
 //by recep only, to change doctor
 /**
  * Changes the doctor assigned to a patient visit by sending a PUT request to the server
- * @param {String} visitId - The ID of the visit to change the doctor for
- * @param {String} doctorId - The ID of the new doctor to assign to the visit
+ * @param {string} visitId - The ID of the visit to change the doctor for
+ * @param {string} doctorId - The ID of the new doctor to assign to the visit
  * @returns {Promise<Response>} - A Promise that resolves to the result of the PUT request
  */
-export async function changeVisitDoctor(visitId: String, doctorId: String): Promise<Response> {
+export async function changeVisitDoctor(visitId: string, doctorId: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
     body: JSON.stringify({
@@ -189,12 +189,15 @@ export async function changeVisitDoctor(visitId: String, doctorId: String): Prom
  * @param {any} params - The parameters to update the visit with.
  * @returns {Promise<Response>} - A Promise that resolves to the updated visit details.
  */
-export async function changeVisitDetails(visitId: String, ...params: any): Promise<Response> {
-  const result = await fetch(`${patientVisitsPath}/${visitId}`, {
+export async function changeVisitDetails(visitId: string, params: any): Promise<Response> {
+  console.log(params)
+  const result = await fetch(`${doctorVisitsPath}/${visitId}`, {
     method: "PUT",
+    headers: jsonHeader,
     body: JSON.stringify({
       status: params.status,
       diagnosis: params.diagnosis,
+      description: params.description
     })
   });
   return result;

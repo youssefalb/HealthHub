@@ -41,7 +41,12 @@ export default async function handler(
             if (!results.length) throw "no data";
             return res.status(200).json({ success: true, data: results });
         }
-        catch (e) {
+        catch (error) {
+            if (error == "no data") {
+                return res
+                    .status(404)
+                    .json({ success: false, message: "No data found" });
+            }
             return res.status(404).json({ success: false, message: "Not found" });
         }
     }

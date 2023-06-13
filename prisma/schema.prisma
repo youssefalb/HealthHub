@@ -17,7 +17,7 @@ model User {
   email         String?        @unique @db.VarChar(64)
   password      String?
   emailVerified DateTime?      @map("email_verified")
-  nationalId    String?        @unique @map("national_id") @db.VarChar(11)
+  nationalId    String?        @unique @map("national_id")
   role          Role           @default(PATIENT)
   isActive      Boolean        @default(true)
   accounts      Account[]
@@ -114,6 +114,7 @@ model Visit {
   doctorId               String                  @map("doctor_id")
   patientId              String                  @map("patient_id")
   receptionistId         String?                 @map("receptionist_id")
+  patientNote            String?                 @map("patient_note")
   laboratoryExaminations LaboratoryExamination[]
   physicalExaminations   PhysicalExamination[]
   doctor                 Doctor                  @relation(fields: [doctorId], references: [employeeId], onDelete: Cascade)
@@ -125,9 +126,10 @@ model Visit {
 
 model PhysicalExamination {
   physicalExamId        String                @id @default(cuid())
-  dictionaryCode        Int                   @map("dictionary_code")
+  dictionaryCode        String                @map("dictionary_code")
   visitId               String                @map("visit_id")
   status                ExaminationStatus     @default(COMPLETED)
+  result                String?               @map("doctor_note")
   examinationDictionary ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   visit                 Visit                 @relation(fields: [visitId], references: [visitId], onDelete: Cascade)
 
@@ -142,10 +144,12 @@ model LaboratoryExamination {
   status                       LaboratoryTestStatus  @default(ORDERED)
   dateOfExecutionXorCancelling DateTime?             @map("date_of_execution_xor_cancelling")
   dateOfApprovalXorRejection   DateTime?             @map("date_of_approval_xor_rejection")
-  dictionaryCode               Int                   @map("dictionary_code")
+  dictionaryCode               String                @map("dictionary_code")
   labAssistantId               String?               @map("lab_assistant_id")
   labSupervisorId              String?               @map("lab_supervisor_id")
   visitId                      String?               @map("visit_id")
+  dateCreated                  DateTime              @default(now()) @map("date_created")
+  result                       String?
   examinationDictionary        ExaminationDictionary @relation(fields: [dictionaryCode], references: [code])
   labAssistant                 LabAssistant?         @relation(fields: [labAssistantId], references: [employeeId], onDelete: Cascade)
   labSupervisor                LabSupervisor?        @relation(fields: [labSupervisorId], references: [employeeId], onDelete: Cascade)
@@ -155,9 +159,10 @@ model LaboratoryExamination {
 }
 
 model ExaminationDictionary {
-  code                  Int                     @id @default(autoincrement())
-  type                  String
+  code                  String                  @id @default(cuid())
+  type                  String                  @default("")
   description           String?
+  name                  String                  @default("")
   LaboratoryExamination LaboratoryExamination[]
   PhysicalExamination   PhysicalExamination[]
 
@@ -195,22 +200,21 @@ enum LaboratoryTestStatus {
 }
 
 enum Specializations {
-  SURGERY
-  GYNECOLOGY
-  NEUROLOGY
-  OPHTHALMOLOGY
-  OTOLARYNGOLOGY
+  GENERAL_PRACTICE
+  INTERNAL_MEDICINE
   PEDIATRICS
+  OBSTETRICS_AND_GYNECOLOGY
+  CARDIOLOGY
+  DERMATOLOGY
+  ORTHOPEDICS
+  GASTROENTEROLOGY
+  NEUROLOGY
   PSYCHIATRY
   UROLOGY
+  OPHTHALMOLOGY
+  ENDOCRINOLOGY
   ONCOLOGY
-  PULMONOLOGY
   RHEUMATOLOGY
-  ANESTHESIOLOGY
-  ORTHOPEDICS
-  PATHOLOGY
-  RADIOLOGY
-  DENTISTRY
-  DIETETICS
-  BIOCHEMISTRY
+  ALLERGY_AND_IMMUNOLOGY
+  SURGERY
 }

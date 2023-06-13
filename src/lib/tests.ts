@@ -1,5 +1,5 @@
 import { LaboratoryTestStatus, Role, Status } from '@prisma/client';
-import { doctorTestsPath, patientTestsPath, supervisorTestsPath, technicianTestsPath, technicianTestsInProgressPath, supervisorTestsHistoryPath} from './apiPaths';
+import { doctorTestsPath, patientTestsPath, supervisorTestsPath, technicianTestsPath, technicianTestsInProgressPath, supervisorTestsHistoryPath, testDictPath} from './apiPaths';
 import { getVisitDetails } from './visits';
 
 let jsonHeader = {
@@ -166,6 +166,12 @@ export async function getSupervisorTests(supervisorId: String): Promise<Response
 
 //===================== DOCTOR ======================
 
+export async function getTestsNames() {
+    const data = await fetch(testDictPath)
+    const result = await data.json()
+    return result
+}
+
 /**
  * Sends an order for a test as a doctor.
  *
@@ -225,7 +231,6 @@ export async function finishPerformingTest(testId: String, status : LaboratoryTe
 }
 
 //===================== LAB SUPERVISOR ======================
-
 /**
  * Approves a test with the specified ID.
  * Consumed only by a Lab Supervior
