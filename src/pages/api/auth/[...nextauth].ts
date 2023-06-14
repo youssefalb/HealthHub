@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
 
                 // If no error and we have user data, return it
 
-                if (res.ok && temp && temp.emailVerified) {
+                if (res.ok && temp && temp.emailVerified && temp.isActive) {
                     return temp;
                 }
                 // Return null if user data could not be retrieved
@@ -103,6 +103,9 @@ export const authOptions: NextAuthOptions = {
                 })
                 if (!existingUser) {
                     await sendVerificationEmail(user)
+                }
+                else if (!existingUser.isActive) {
+                    return false;
                 }
 
                 delete user.name;
