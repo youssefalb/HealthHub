@@ -10,6 +10,9 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [ ] loading conmponent
   - [ ] search for auto-docs (swager, openApi)
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
+  - [ ] Receptionist changing the status of the visits
+  - [ ] Receptionist functionality to add new visits
+
 
   scenario: 
   1-[x](patient) register 
