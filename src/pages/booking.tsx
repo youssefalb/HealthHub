@@ -184,6 +184,8 @@ const BookingForm = () => {
 
             {session?.user?.role === Role.RECEPTIONIST && (
                 <PopupDialog
+                    onClose={() => { setSelectedPatient(null); setCompleteUserInfoPromptShown(false) }}
+                    onConfirm={() => { setSelectedPatient(null); setCompleteUserInfoPromptShown(false) }}
                     open={completeUserInfoPromptShown}
                     title="Ooooops!"
                     message="Before booking the visit all the personal details should be filled."
