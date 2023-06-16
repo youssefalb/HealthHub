@@ -140,7 +140,12 @@ const BookingForm = () => {
         console.log("Patient ID", selectedPatientId)
         const selectedPatient = patients.find(patient => patient.patientId === selectedPatientId);
         setSelectedPatient(selectedPatient);
-        console.log(selectedPatient)
+        if (!selectedPatient?.insuranceId) {
+            setCompleteUserInfoPromptShown(true);
+        }
+        else {
+            setCompleteUserInfoPromptShown(false);
+        }
     };
 
     const handleSpecialityChange = (event: SelectChangeEvent) => {
@@ -180,10 +185,8 @@ const BookingForm = () => {
             {session?.user?.role === Role.RECEPTIONIST && (
                 <PopupDialog
                     open={completeUserInfoPromptShown}
-                    onClose={handleGoToSettings}
-                    title="Another Title"
-                    message="Another message for receptionist role."
-                    onConfirm={handleGoToSettings}
+                    title="Ooooops!"
+                    message="Before booking the visit all the personal details should be filled."
                 />
             )}
 
