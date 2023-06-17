@@ -23,14 +23,14 @@ export default async function handler(
 
     if (req.method === "GET") {
         try {
-            const { patient } = req.query;
+            const  {patientId} = req.query;
             let results: string | any[];
-            if (patient) { // user is doctor or or reciptionist or admin
+            if (patientId) { // user is doctor or or reciptionist or admin
                 if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
                     accessGranted = true;
                     results = await prisma.visit.findMany({
                         where: {
-                            patientId: patient.toString()
+                            patientId: patientId.toString()
                         },
                         include: { //because we want doctor name
                             doctor: {

@@ -59,7 +59,7 @@ export default async function handler(
                                 select: {
                                     user: {
                                         select: {
-                                            firstName: true,
+                                            firstName: true,    
                                             lastName: true,
                                             email: true,
                                             id: true,

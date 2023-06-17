@@ -12,7 +12,7 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
   - [ ] (Receptionist) see all the visits and edit their data
   - [ ] (Receptionist) cancel visit
-  - [ ] (Receptionist) functionality to add new visits (booking page + chossing patient)
+  - [x] (Receptionist) functionality to add new visits (booking page + chossing patient)
 
 
   scenario: 

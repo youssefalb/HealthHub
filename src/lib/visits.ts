@@ -58,7 +58,8 @@ export async function getDoctorVisits(doctorId: string): Promise<Response> {
  */
 export async function getPatientVisits(patientId: string): Promise<Response> {
   let result;
-  result = await fetch(`${patientVisitsPath}?patient=${patientId}`, {
+  console.log(patientId)
+  result = await fetch(`${patientVisitsPath}?patientId=${patientId}`, {
     method: "GET",
   });
   return result;
