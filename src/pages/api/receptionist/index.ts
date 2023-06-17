@@ -20,7 +20,6 @@ export default async function handler(
         try {
             const fetchKey = req.query.fetchKey;
             if (fetchKey === Role.PATIENT) {
-                console.log("fetching patients");
                 const patients = await prisma.patient.findMany(
                     {
                         include: {

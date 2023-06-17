@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Role } from '@prisma/client';
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
-export default function AppointmentsList(patientId = null) {
+export default function AppointmentsList(patient = null) {
   const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
   const [isLoading, setIsLoading] = useState(true);
   const [appointments, setAppointments] = useState([]);
@@ -26,7 +26,7 @@ export default function AppointmentsList(patientId = null) {
         setIsLoading(false);
       }
       else if (role == Role.RECEPTIONIST) {
-        const response = await getPatientVisits(patientId.patientId);
+        const response = await getPatientVisits(patient.patientId);
         const results = await response.json();
         setAppointments(results["data"]);
         setIsLoading(false);
@@ -62,10 +62,10 @@ export default function AppointmentsList(patientId = null) {
       ) : (
         <EmptyStateMessage
           title="No Appointments"
-          description="You don't have any planned appointments, yet."
+          description="There are no planned appointments, yet."
         />
       )}
-      {(session.user?.role == Role.PATIENT || session.user?.role == Role.RECEPTIONIST) && (
+      {(session.user?.role == Role.PATIENT) && (
 
         <CustomButton
           buttonText={"Book Appointment"}
