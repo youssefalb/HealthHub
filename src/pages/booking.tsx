@@ -225,10 +225,11 @@ const BookingForm = () => {
                 <div className="mb-4">
                     {session?.user?.role === Role.RECEPTIONIST && (
                         <FormControl fullWidth>
-                            <InputLabel id="patient-select-label">Patient</InputLabel>
+                            <InputLabel id="patient">Patient</InputLabel>
                             <Select
-                                labelId="patient-select-label"
+                                labelId="patient"
                                 id="patient-select"
+                                label="Patient"
                                 value={selectedPatient || ''}
                                 onChange={handlePatientChange}
                             >
