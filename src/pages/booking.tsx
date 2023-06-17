@@ -19,6 +19,8 @@ import { createVisitByPatient } from '@/lib/visits';
 import dayjs from 'dayjs';
 import { getPatients } from '@/lib/manageVisits';
 import { createVisitByReceptionist } from '@/lib/visits';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /*
  keep track of : 
@@ -124,10 +126,23 @@ const BookingForm = () => {
 
     const handleSubmit = async () => {
         if (session?.user?.role === Role.PATIENT) {
-            await createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+
+            const res = createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+            if ((await res).ok) {
+                toast.success("Your appointment has been booked successfully!")
+            }
+            else {
+                toast.error("Could not book appointment, something went wrong")
+            }
             router.push('/visits')
         } else if (session?.user?.role === Role.RECEPTIONIST) {
-            await createVisitByReceptionist(selectedPatient.patientId, note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+            const res = createVisitByReceptionist(selectedPatient.patientId, note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+            if ((await res).ok) {
+                toast.success("The appointment has been booked successfully!")
+            }
+            else {
+                toast.error("Could not book appointment, something went wrong")
+            }
         }
     };
 
@@ -317,6 +332,7 @@ const BookingForm = () => {
                     )}
                 </div>
             </form>
+            <ToastContainer />
         </div>
     );
 };
