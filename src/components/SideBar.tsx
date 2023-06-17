@@ -79,6 +79,17 @@ export default function sideBar() {
             ])
             .reverse();
     } else if (session?.user?.role === Role.RECEPTIONIST) {
+        menuItems = menuItems
+            .concat([
+                {
+                    href: "/booking",
+                    title: "Add a Booking",
+                },
+                {
+                    href: "/receptionist/visits",
+                    title: "Appointments",
+                },
+            ]);
     } else if (session?.user?.role === Role.ADMIN) {
         menuItems = menuItems
             .concat([
@@ -94,6 +105,7 @@ export default function sideBar() {
                     href: "/admin/addAccount",
                     title: "Add Account"
                 }
+
             ])
     }
 

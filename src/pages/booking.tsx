@@ -18,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import { createVisitByPatient } from '@/lib/visits';
 import dayjs from 'dayjs';
 import { getPatients } from '@/lib/manageVisits';
+import { createVisitByReceptionist } from '@/lib/visits';
 
 /*
  keep track of : 
@@ -126,7 +127,7 @@ const BookingForm = () => {
             await createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
             router.push('/visits')
         } else if (session?.user?.role === Role.RECEPTIONIST) {
-            console.log(selectedPatient)
+            await createVisitByReceptionist(selectedPatient.patientId, note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
         }
     };
 

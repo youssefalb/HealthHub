@@ -100,9 +100,9 @@ export async function createVisitByPatient(note: string, doctorId: string, date:
     method: "POST",
     headers: jsonHeader,
     body: JSON.stringify({
-      "description": note,
-      "doctorId": doctorId,
-      "date": date,
+      description: note,
+      doctorId: doctorId,
+      date: date,
     }),
   });
   return result;
@@ -116,13 +116,13 @@ export async function createVisitByPatient(note: string, doctorId: string, date:
  * @param {string} date - The date of the visit for which the visit is being created.
  * @returns {Promise<Response>} A Promise that resolves to the result of the POST request.
  */
-export async function createVisitByReceptionist(patientId: string, speciality: string, doctorId: string, date: string): Promise<Response> {
+export async function createVisitByReceptionist(patientId: string, note: string, doctorId: string, date: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}`, {
     method: "POST",
     headers: jsonHeader,
     body: JSON.stringify({
       patientId: patientId,
-      description: speciality,
+      description: note,
       doctorId: doctorId,
       date: date,
     }),
