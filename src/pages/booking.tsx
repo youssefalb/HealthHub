@@ -143,6 +143,7 @@ const BookingForm = () => {
             else {
                 toast.error("Could not book appointment, something went wrong")
             }
+            router.push('/receptionist/visits')
         }
     };
 

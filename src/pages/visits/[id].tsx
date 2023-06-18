@@ -1,4 +1,5 @@
 import CustomButton from "@/components/CustomButton";
+import DateAndTimePicker from "@/components/DateTimePicker";
 import Label from "@/components/Label";
 import VisitInProgress from '@/components/VisitInProgress';
 import { getOwnTests, getTestsOfAVisit } from "@/lib/tests";
@@ -19,11 +20,32 @@ export default function Visit() {
     const { id } = router.query
     const { data: session } = useSession()
 
+    //for receptionist to change the visit date
+    const [selectedTime, setSelectedTime] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDoctor, setSelectedDoctor] = useState({ doctor: "" });
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+
+    // const initialTimeState = {
+    //     date: dayjs().format('YYYY-MM-DD'),
+    //     time: "",
+    //     note: "",
+    //     selectedDoctor: {
+    //         doctor: ""
+    //     },
+    //     selectedSpecialization: "",
+    // }
+
     const fetchData = async () => {
         if (session?.user) {
             let res = await getVisitDetails(session.user?.role, id)
             setVisit(res['data'])
-            console.log(res['data'])
+            setSelectedDate(dayjs(res['data']['date']).format('YYYY-MM-DD'))
+            setSelectedTime(dayjs(res['data']['date']).format('HH:mm'))
+            setSelectedDoctor({ doctor: res['data']['doctor'] })
+            console.log(selectedDate)
+            console.log(selectedTime)
             res = await getTestsOfAVisit(session.user?.role, id)
             setTests(res['data'])
         }
@@ -79,22 +101,44 @@ export default function Visit() {
                 </div>
             }
 
-            {tests &&
+            {tests && (session?.user?.role == Role.PATIENT || session?.user?.role == Role.DOCTOR) &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
                     <Label name="Tests" value={
                         tests?.map((test => test.examinationDictionary.name)).join(", ") + "."
                     } />
                 </div>
             }
+            {session?.user?.role === Role.RECEPTIONIST && visit['status'] === Status.REGISTERED && (
+                <>
+                    {showDatePicker ? (
+                        <div className="flex-col flex">
+                            <DateAndTimePicker
+                                doctor={selectedDoctor?.doctor}
+                                date={selectedDate}
+                                saveDate={setSelectedDate}
+                                saveTime={setSelectedTime}
+                            />
+                            <CustomButton onClick={() => { }} buttonText="Save the date" />
+                        </div>
+
+                    ) : (
+                        <CustomButton onClick={() => setShowDatePicker(true)} buttonText="Change the visit Date" />
+                    )}
+                </>
+            )
+            }
+
             <div className="flex flex-row gap-2 md:gap-8 items-stretch">
                 {visit['status'] == Status.REGISTERED &&
-                    <CustomButton
-                        buttonText={"Cancel visit"}
-                        onClick={() => {
-                            changeVisitDetails(visit['visitId'], { "status": Status.CANCELLED })
-                            router.push("/visits");
-                        }}
-                    />
+                    <div>
+                        <CustomButton
+                            buttonText={"Cancel visit"}
+                            onClick={() => {
+                                changeVisitDetails(visit['visitId'], { "status": Status.CANCELLED })
+                                router.push("/visits"); //Ths works just for patient or doctor (To change later)
+                            }}
+                        />
+                    </div>
                 }
 
                 {visit['status'] == Status.REGISTERED && session.user?.role == Role.DOCTOR &&
@@ -107,6 +151,6 @@ export default function Visit() {
                     />
                 }
             </div>
-        </div>
+        </div >
     );
 }
