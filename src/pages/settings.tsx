@@ -217,7 +217,6 @@ const UserSettings = () => {
                     <div className="mt-10 mb-4">
                         <TextField
                             fullWidth
-                            required
                             label="Old Password"
                             value={oldPassword}
                             type='password'

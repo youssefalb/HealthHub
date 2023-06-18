@@ -823,9 +823,9 @@ async function seed() {
       nationalId: cuid(),
       email: "doctor18@gmail.com",
       emailVerified: "2022-04-07T21:05:53.424Z",
-      password: "await hashPassword(\"password123\")",
+      password: await hashPassword("password123"),
       role: "DOCTOR",
-      "doctor": { "create": { "speciality": "GENERAL_PRACTICE" } }
+      doctor: { create: { speciality: "GENERAL_PRACTICE" } }
     },
     {
       firstName: "Doctor",
@@ -835,9 +835,9 @@ async function seed() {
       nationalId: cuid(),
       email: "doctor19@gmail.com",
       emailVerified: "2022-04-07T21:05:53.424Z",
-      password: "await hashPassword(\"password123\")",
+      password: await hashPassword("password123"),
       role: "DOCTOR",
-      "doctor": { "create": { "speciality": "INTERNAL_MEDICINE" } }
+      doctor: { create: { speciality: "INTERNAL_MEDICINE" } }
     },
     {
       firstName: "Doctor",
@@ -847,9 +847,9 @@ async function seed() {
       nationalId: cuid(),
       email: "doctor20@gmail.com",
       emailVerified: "2022-04-07T21:05:53.424Z",
-      password: "await hashPassword(\"password123\")",
+      password: await hashPassword("password123"),
       role: "DOCTOR",
-      "doctor": { "create": { "speciality": "PEDIATRICS" } }
+      doctor: { create: { speciality: "PEDIATRICS" } }
     },
     {
       firstName: "Doctor",
@@ -859,9 +859,9 @@ async function seed() {
       nationalId: cuid(),
       email: "doctor21@gmail.com",
       emailVerified: "2022-04-07T21:05:53.424Z",
-      password: "await hashPassword(\"password123\")",
+      password: await hashPassword("password123"),
       role: "DOCTOR",
-      "doctor": { "create": { "speciality": "OBSTETRICS_AND_GYNECOLOGY" } }
+      doctor: { create: { speciality: "OBSTETRICS_AND_GYNECOLOGY" } }
     },
     {
       firstName: "Doctor",
@@ -871,9 +871,9 @@ async function seed() {
       nationalId: cuid(),
       email: "doctor22@gmail.com",
       emailVerified: "2022-04-07T21:05:53.424Z",
-      password: "await hashPassword(\"password123\")",
+      password: await hashPassword("password123"),
       role: "DOCTOR",
-      "doctor": { "create": { "speciality": "CARDIOLOGY" } }
+      doctor: { create: { speciality: "CARDIOLOGY" } }
     },
     //====================RECEPTIONIST=================
     {

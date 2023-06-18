@@ -49,7 +49,7 @@ export default function AppointmentsList(patient = null) {
   return (
     <div className="flex flex-col-reverse gap-4">
       {appointments?.length ? (
-        appointments.reverse().map((appointment) => (
+        appointments.map((appointment) => (
           <Link key={appointment.visitId} href={`/visits/${appointment.visitId}`} >
             <AppointmentCard
               // ToDo: filter visits by status and display scheduled first, then completed, then cancelled 

@@ -150,6 +150,15 @@ export default function Visit() {
                         }}
                     />
                 }
+
+                {visit['status'] == Status.IN_PROGRESS && session.user?.role == Role.DOCTOR &&
+                    <CustomButton
+                        buttonText={"Continue visit"}
+                        onClick={() => {
+                            setCurrentlyInProgress(true);
+                        }}
+                    />
+                }
             </div>
         </div >
     );

@@ -2,39 +2,31 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role, Status } from "@prisma/client";
-
-interface JSONClause {
-    [key: string]: any;
-}
-
+import { Role  } from "@prisma/client";
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
-    let accessGranted = false;
 
     if (!session)
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
 
+    //For patient and doctor
     if (req.method === "GET") {
         try {
-            const  {patientId} = req.query;
             let results: string | any[];
-            if (patientId) { // user is doctor or or reciptionist or admin
-                if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST || session.user?.role == Role.ADMIN) {
-                    accessGranted = true;
-                    results = await prisma.visit.findMany({
+                if (session.user?.role == Role.DOCTOR) {
+                    results = await prisma.message.findMany({
                         where: {
-                            patientId: patientId.toString()
+                            doctorId: session.user?.id,
                         },
                         include: { //because we want doctor name
                             doctor: {
-                                include: {
+                                select: {
                                     user: {
                                         select:
                                         {
@@ -45,22 +37,17 @@ export default async function handler(
                                 }
                             }
                         },
-                        orderBy: { date: "desc" }
+                        orderBy: [{ dateCreated: "asc" },]
                     });
-                    if(!results.length) throw "no data";
-                    
-                    return res.status(200).json({ success: true, data: results });
                 }
-            }
-            else { //no params passed, logged in user should be the patient
-                if (session.user?.role == Role.PATIENT) {
-                    results = await prisma.visit.findMany({
+                else if (session.user?.role == Role.PATIENT) {
+                    results = await prisma.message.findMany({
                         where: {
                             patientId: session.user?.id,
                         },
                         include: { //because we want doctor name
                             doctor: {
-                                include: {
+                                select: {
                                     user: {
                                         select:
                                         {
@@ -71,13 +58,11 @@ export default async function handler(
                                 }
                             }
                         },
-                        orderBy: [{ date: "desc" },]
+                        orderBy: [{ dateCreated: "asc" },]
                     });
                 }
                 if(!results.length) throw "no data";
                 return res.status(200).json({ success: true, data: results });
-            }
-
         } catch (error) {
             if (error == "no data") {
                 return res
@@ -88,37 +73,22 @@ export default async function handler(
                 .status(500)
                 .json({ success: false, message: "ERROR : Failed to retrieve data" });
         }
-        if (!accessGranted) {
-            return res
-                .status(401)
-                .json({ success: false, message: "You are not authorized to perform this action" });
-        }
     }
 
     if (req.method === "POST") {
-        //Patient or Registrar creating a visit
-        if (session.user?.role === Role.PATIENT || session.user?.role === Role.RECEPTIONIST) {
+        if (session.user?.role === Role.DOCTOR) {
             try {
-                let { patientId, description, doctorId, date } = req.body;
-                let receptionist
-                if (!patientId) {
-                    patientId = session.user?.id;
-                }
-                else if (patientId) {
-                    receptionist = { receptionist: { connect: { employeeId: session.user?.id } } }
-                }
-                const results = await prisma.visit.create({
+                let { patientId, content } = req.body;
+                const results = await prisma.message.create({
                     data: {
-                        description: description,
-                        date: date,
-                        doctor: { connect: { employeeId: doctorId } },
+                        content: content,
+                        doctor: { connect: { employeeId: session.user.doctorId } },
                         patient: { connect: { patientId: patientId } },
-                        ...receptionist,
                     },
                 });
                 return res.status(201).json({
                     success: true,
-                    message: "Visit created successfully by patient",
+                    message: "Message created successfully by patient",
                     data: results,
                 });
             } catch (error) {
@@ -134,7 +104,7 @@ export default async function handler(
         } else {
             return res.status(401).json({
                 success: false,
-                message: "only patients and receptionists can create appointments",
+                message: "only doctor can create messages",
             });
         }
     }

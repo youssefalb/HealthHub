@@ -92,16 +92,54 @@ export default async function handler(
                 });
 
                 return res.status(200).json({ success: true, data: result });
-            } else if (insuranceId) {
-                console.log(insuranceId);
-                const result = await prisma.patient.update({
-                    where: { patientId: session.user.id.toString() },
-                    data: { insuranceId: insuranceId},
+            } else if (newPassword) {
+                const { password: currentHashedPassword } = await prisma.user.findUnique(
+                    {
+                        where: { id: session.user.id.toString() },
+                        select: { password: true },
+                    }
+                );
+                if (currentHashedPassword != null) {
+                    return res
+                        .status(401)
+                        .json({ success: false, message: "Provide old password" });
+                }
+
+                const hashedPassword = await hashPassword(newPassword);
+
+                const result = await prisma.user.update({
+                    where: { id: session.user.id.toString() },
+                    data: { password: hashedPassword },
                 });
-                console.log(result);
+
                 return res.status(200).json({ success: true, data: result });
+
+
+            } else if (insuranceId) {
+                const patient = await prisma.patient.findUnique({
+                    where: { patientId: session.user.id.toString() }
+                })
+                if (patient) {
+                    const result = await prisma.patient.update({
+                        where: { patientId: session.user.id.toString() },
+                        data: { insuranceId: insuranceId },
+                    });
+                    return res.status(200).json({ success: true, data: result });
+                }
+                else {
+                    const result = await prisma.user.update({
+                        where: { id: session.user.id.toString() },
+                        data: {
+                            patient: {
+                                create: {
+                                    insuranceId: insuranceId.toString()
+                                }
+                            }
+                        },
+                    });
+                    return res.status(200).json({ success: true, data: result });
+                }
             }
-            console.log("here");
             const dataClause = {
                 firstName,
                 lastName,
