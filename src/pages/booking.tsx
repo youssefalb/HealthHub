@@ -208,7 +208,7 @@ const BookingForm = () => {
                 />
             )}
 
-            <h1 className="text-3xl font-bold mb-6">Booking Your Appointment</h1>
+            <h1 className="text-3xl font-bold mb-6">Appointment Booking</h1>
             <form onSubmit={(e) => e.preventDefault()}>
                 {session?.user?.role === Role.PATIENT && (
                     <div className="flex flex-wrap -mx-4">

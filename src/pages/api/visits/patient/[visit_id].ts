@@ -17,7 +17,7 @@ export default async function handler(
             .json({ success: false, message: "Unauthorized because not logged in" });
     const { visit_id } = req.query
     if (req.method == "GET") {
-        if (session.user?.role == Role.PATIENT) {
+        if (session.user?.role == Role.PATIENT || session.user?.role == Role.RECEPTIONIST) {
             try {
                 const visit = await prisma.visit.findUnique({
                     where: {
@@ -34,33 +34,12 @@ export default async function handler(
                     }
                 })
                 if(visit == null) throw "no data"
-                if (visit.patientId == session.user?.id) {
+                if (visit.patientId == session.user?.id || session.user?.role == Role.RECEPTIONIST) {
                     return res.status(200).json({ success: true, data: visit });
                 }
                 else {
                     return res.status(401).json({ success: false, message: "You can't see this patient's data" });
                 }
-            }
-            catch (error) {
-                if (error == "no data") {
-                    return res
-                        .status(404)
-                        .json({ success: false, message: "No data found" });
-                }
-                return res
-                    .status(500)
-                    .json({ success: false, message: "ERROR : Failed to retrieve data" });
-            }
-        }
-
-        if (session.user?.role == Role.RECEPTIONIST) {
-            try {
-                const visit = await prisma.visit.findUnique({
-                    where: {
-                        visitId: visit_id.toString(),
-                    },
-                })
-                return res.status(200).json({ success: true, data: visit });
             }
             catch (error) {
                 if (error == "no data") {

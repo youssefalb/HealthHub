@@ -78,7 +78,7 @@ export async function getVisitDetails(role: Role, visitId: string): Promise<Resp
       method: "GET",
     })
   }
-  else if (role == Role.PATIENT) {
+  else if (role == Role.PATIENT || role == Role.RECEPTIONIST) {
     data = await fetch(`${patientVisitsPath}/${visitId}`, {
       method: "GET",
     })

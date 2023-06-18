@@ -23,6 +23,7 @@ export default function Visit() {
         if (session?.user) {
             let res = await getVisitDetails(session.user?.role, id)
             setVisit(res['data'])
+            console.log(res['data'])
             res = await getTestsOfAVisit(session.user?.role, id)
             setTests(res['data'])
         }
@@ -45,7 +46,7 @@ export default function Visit() {
         <div className="mx-auto max-w-screen-lg my-8 px-4 flex flex-col items-center">
             <h1 className="text-3xl font-bold mb-6">Visit details</h1>
 
-            {session?.user?.role == Role.PATIENT && visit['doctorId'] &&
+            {(session?.user?.role == Role.PATIENT || session?.user?.role == Role.RECEPTIONIST) && visit['doctorId'] &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
                     <Label name="Doctor" value={visit['doctor']['user']['firstName'] + " " + visit['doctor']['user']['lastName']} />
                 </div>
@@ -56,7 +57,7 @@ export default function Visit() {
                 </div>
             }
 
-            {visit['description'] &&
+            {visit['description'] && (session?.user?.role == Role.PATIENT || session?.user?.role == Role.DOCTOR) &&
                 <div className="w-full md:w-1/2 px-4 mb-4 ">
                     <Label name="Visit description" value={visit['description']} />
                 </div>
