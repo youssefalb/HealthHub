@@ -60,11 +60,12 @@ export default function AppointmentsList(patient = null) {
           </Link>
         ))
       ) : (
-        <EmptyStateMessage
-          title="No Appointments"
-          description="There are no planned appointments, yet."
-        />
-      )}
+        (role !== Role.RECEPTIONIST) && (
+          <EmptyStateMessage
+            title="No Appointments"
+            description="There are no planned appointments, yet."
+          />
+        ))}
       {(session.user?.role == Role.PATIENT) && (
 
         <CustomButton

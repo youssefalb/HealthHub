@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import AppointmentList from '@/components/AppointmentList';
 import { getPatients } from '@/lib/manageVisits';
 import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import EmptyStateMessage from '@/components/EmptyStateMessage';
 
 export default function VisitsPage() {
     const [patients, setPatients] = useState([]);
@@ -27,6 +28,7 @@ export default function VisitsPage() {
     }, [patients]);
 
     useEffect(() => {
+        console
         const filtered = patients.filter((patient) => {
             return patient.patientId === searchValue;
         });
@@ -51,9 +53,19 @@ export default function VisitsPage() {
                     ))}
                 </Select>
             </FormControl>
-            {filteredPatients.map((patient) => (
-                <AppointmentList key={patient.patientId} {...patient} />
-            ))}
+            {filteredPatients.length === 1 && filteredPatients[0].visits?.length === 0 ? (
+                <EmptyStateMessage
+                    title="No Appointments"
+                    description="There are no planned appointments for the selected patient."
+                />
+            ) : (
+                filteredPatients.map((patient) => (
+                    <div key={patient.patientId}>
+                        <AppointmentList {...patient} />
+                    </div>
+                ))
+            )}
+
         </div>
     );
 }

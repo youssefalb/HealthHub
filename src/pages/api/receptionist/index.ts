@@ -23,6 +23,7 @@ export default async function handler(
                 const patients = await prisma.patient.findMany(
                     {
                         include: {
+
                             user: {
                                 select: {
                                     firstName: true,
@@ -31,7 +32,8 @@ export default async function handler(
                                     id: true,
                                     nationalId: true,
                                 },
-                            }
+                            },
+                            visits: true
                         }
                     }
                 );
