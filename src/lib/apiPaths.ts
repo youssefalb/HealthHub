@@ -8,6 +8,8 @@ export const technicianTestsInProgressPath: string = "/api/lab-tests/technician/
 export const doctorVisitsPath: string = "/api/visits/doctor"
 export const patientVisitsPath: string = "/api/visits/patient"
 
+export const messagesPath: string = "/api/messages"
+
 export const doctorExaminationsPath: string = "/api/examinations/doctor"
 export const testDictPath: string = "/api/testsDict"
 export const patientExaminationsPath: string = "/api/examinations/patient"

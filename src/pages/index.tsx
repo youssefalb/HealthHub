@@ -1,27 +1,51 @@
 import React from "react";
-import { useSession, signOut } from 'next-auth/react'
-import { Session } from 'next-auth'
+import { useSession } from 'next-auth/react'
 
 
 function index() {
     // we have data retrieved from global context, and can be used 
 
-    const { data: session } = useSession();
+    const { data: session } = useSession()
     if (session) {
         if (session.user.role == "DOCTOR") {
-            return doctorIndex(session.user)
+            return (
+                <div className="mx-auto max-w-screen-lg my-8 px-4">
+                    <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
+                    <h3 className="text-xl font-bold mb-6">Dr. {session.user.name}</h3>
+                </div>
+            )
         }
         else if (session.user.role == "PATIENT") {
-            return patientIndex(session.user)
+            return (
+                <div className="mx-auto max-w-screen-lg my-8 px-4">
+                    <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
+                    <h3 className="text-xl font-bold mb-6">Patient {session.user.name}</h3>
+                </div>
+            )
         }
         else if (session.user.role == "RECEPTIONIST") {
-            return receptionistIndex(session.user)
+            return (
+                <div className="mx-auto max-w-screen-lg my-8 px-4">
+                    <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
+                    <h3 className="text-xl font-bold mb-6">Receptionist {session.user.name}</h3>
+                </div>
+            )
         }
         else if (session.user.role == "LAB_ASSISTANT") {
-            return labAssistantIndex(session.user)
+            return (
+                <div className="mx-auto max-w-screen-lg my-8 px-4">
+                    <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
+                    <h3 className="text-xl font-bold mb-6">Assistant {session.user.name}</h3>
+                </div>
+            )
         }
         else if (session.user.role == "LAB_SUPERVISOR") {
-            return labSupervisorIndex(session.user)
+            return (
+                <div className="mx-auto max-w-screen-lg my-8 px-4">
+                    <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
+                    <h3 className="text-xl font-bold mb-6">Supervisor {session.user.name}</h3>
+                </div>
+            )
         }
     } else {
         return (
@@ -99,59 +123,4 @@ function index() {
     }
 }
 
-function handleSignOut() {
-    // console.log("signing out MF");
-    // setUser(initialState);
-    localStorage.removeItem('userInfo');
-    // localStorage.clear();
-    signOut();
-}
-
-function doctorIndex(user: Session["user"]) {
-    return (
-        <div>
-            <p>{user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back panie doktorze {user.name}</p>
-            <button onClick={() => handleSignOut()}>Sign out </button>
-        </div>
-    )
-}
-
-function patientIndex(user: Session["user"]) {
-    return (
-        <div>
-            <p>{user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back commander {user.name}</p>
-            <button onClick={() => handleSignOut()}>Sign out </button>
-        </div>
-    )
-}
-function labAssistantIndex(user: Session["user"]) {
-    return (
-        <div>
-            <p>{user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back commander {user.name}</p>
-            <button onClick={() => handleSignOut()}>Sign out </button>
-        </div>
-    )
-}
-function labSupervisorIndex(user: Session["user"]) {
-    return (
-        <div>
-            <p>{user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back commander {user.name}</p>
-            <button onClick={() => handleSignOut()}>Sign out </button>
-        </div>
-    )
-}
-
-function receptionistIndex(user: Session["user"]) {
-    return (
-        <div>
-            <p>{user.name} + {user.role} hekllooooo </p>
-            <p>Welcome back commander {user.name}</p>
-            <button onClick={() => handleSignOut()}>Sign out </button>
-        </div>
-    )
-}
 export default index

@@ -9,11 +9,11 @@ import { getTakenAppointments } from '@/lib/bookings';
 const today = dayjs();
 // const tomorrow = dayjs('2023-05-20')
 const maxTime = dayjs().set('hour', 17).startOf('hour');
-const minTime = dayjs().set('hour', 9).startOf('hour');
+let minTime = dayjs().set('hour', 9).startOf('hour');
 
 const dayFormatter = (day: string) => { return day.toUpperCase() }
 
-export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
+export default function DateAndTimePicker({ doctor, saveTime, saveDate, date }) {
     const [selectedDate, setSelectedDate] = useState(date)
     const [fullDays, setFullDays] = useState([])
     const [takenTimeSlots, setTakenTimeSlots] = useState({})
@@ -24,7 +24,7 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
         if (takenTimeSlots)
             for (const [key, times] of Object.entries(takenTimeSlots)) {
                 times.forEach((time) => {
-                    if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')){
+                    if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')) {
                         disable = true
                     }
                 })
@@ -80,7 +80,7 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
     }
 
     const getDoctorBusySlots = async (id: String) => {
-        const results = await getTakenAppointments(id, Number(dayjs(selectedDate).format('YYYY')), Number(dayjs(selectedDate).format('MM')) - 1 )
+        const results = await getTakenAppointments(id, Number(dayjs(selectedDate).format('YYYY')), Number(dayjs(selectedDate).format('MM')) - 1)
         const busySlots = await results.json()
         setFullDays(getFullyTakenDays(busySlots.data))
         setTakenTimeSlots(getBusyTimeSlots(busySlots.data))
@@ -99,6 +99,12 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date}) {
 
     const handleChangeDate = (value) => {
         let date = dayjs(value.$d).format('YYYY-MM-DD')
+        console.log(date, today.format('YYYY-MM-DD'))
+        if (date == today.format('YYYY-MM-DD') && minTime.format('HH') < today.format('HH')) {
+            minTime = today;
+        } else {
+            minTime = dayjs().set('hour', 9).startOf('hour');
+        }
         saveDate(date)
         setSelectedDate(date)
         setClockDisabled(false)

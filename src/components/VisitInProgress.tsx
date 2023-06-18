@@ -114,46 +114,46 @@ export default function VisitInProgress({ visitInfo }) {
         setDoctorNoteOnExamination('')
         setSelectedTest('')
         setSelectedExamination('')
-        router.push('/visits')        
+        router.push('/visits')
 
     }
 
 
     return (
-            <div className='flex flex-col justify-center'>
-                <CustomButton
-                    buttonText="Back to Appointments"
-                    onClick={() => {
-                        router.push("/visits");
-                    }}
+        <div className='flex flex-col justify-center'>
+            <CustomButton
+                buttonText="Back to Appointments"
+                onClick={() => {
+                    router.push("/visits");
+                }}
+            />
+            <div className="bg-gray-100 rounded-lg flex flex-col items-center gap-4 max-w-lg self-center sm:px-4 md:min-w-full" id='USERINFO'>
+
+                <ProfilePicture
+                    src={patientInfo.user?.image ? patientInfo.user?.image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
+                    alt={'image of the user'}
+                    size={3}
                 />
-                <div className="bg-gray-100 rounded-lg flex flex-col items-center gap-4 max-w-lg self-center sm:px-4 md:min-w-full" id='USERINFO'>
+                <h3>{patientInfo.user?.firstName}</h3>
 
-                    <ProfilePicture
-                        src={patientInfo.user?.image ? patientInfo.user?.image : "https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"}
-                        alt={'image of the user'}
-                        size={3}
+                <div className='flex flex-row items-stretch h-auto justify-between  gap-4 mx-2'>
+                    <CustomButton
+                        buttonText="Show History"
+                        onClick={() => {
+                            router.push("/tests");
+                        }}
                     />
-                    <h3>{patientInfo.user?.firstName}</h3>
-
-                    <div className='flex flex-row items-stretch h-auto justify-between  gap-4 mx-2'>
-                        <CustomButton
-                            buttonText="Show History"
-                            onClick={() => {
-                                router.push("/tests");
-                            }}
-                        />
-                        <CustomButton
-                            buttonText="Message"
-                            onClick={() => {
-                                router.push("/visits");
-                            }}
-                        />
-                    </div>
+                    <CustomButton
+                        buttonText="Message"
+                        onClick={() => {
+                            router.push("/visits");
+                        }}
+                    />
                 </div>
+            </div>
 
             <div className='mt-2'>
-                <ExaminationsToOrder 
+                <ExaminationsToOrder
                     title="Ordered Tests:"
                     itemList={orderedTests}
                     callBack={handleRemoveTest}
@@ -164,145 +164,147 @@ export default function VisitInProgress({ visitInfo }) {
                     itemList={performedExaminations}
                     callBack={handleRemoveExamination}
                 />
+            </div>
+
+            <div className='p-6 flex flex-col gap-4 FORM'>
+
+                <div className='flex flex-col' id='DESCRIPTION'>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Description"
+                        value={description}
+                        onChange={(v) => setDescription(v.target.value)}
+                    />
                 </div>
 
-                <div className='p-6 flex flex-col gap-4 FORM'>
+                <div className='flex flex-col gap-2' id='TESTS'>
+                    <div className='flex flex-row gap-2'>
+                        <FormControl fullWidth className=''>
+                            <InputLabel id="tests">Tests</InputLabel>
+                            <Select
+                                labelId="tests"
+                                value={selectedTest}
+                                autoWidth={true}
+                                input={<OutlinedInput label="Tests" />}
+                                onChange={(v) => {
+                                    setSelectedTest(v.target.value)
+                                    setDoctorNoteOnTest('')
+                                }
+                                }
+                            >
+                                {testsNames?.map((test) => (
+                                    <MenuItem
+                                        disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
+                                        key={test.code}
+                                        value={test.code}
+                                    >
+                                        {test.type}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
 
-                    <div className='flex flex-col' id='DESCRIPTION'>
-                        <TextField
-                            fullWidth
-                            required
-                            label="Description"
-                            value={description}
-                            onChange={(v) => setDescription(v.target.value)}
-                        />
-                    </div>
-
-                    <div className='flex flex-col gap-2' id='TESTS'>
-                        <div className='flex flex-row gap-2'>
-                            <FormControl fullWidth className=''>
-                                <InputLabel id="tests">Tests</InputLabel>
-                                <Select
-                                    labelId="tests"
-                                    value={selectedTest}
-                                    autoWidth={true}
-                                    input={<OutlinedInput label="Tests" />}
-                                    onChange={(v) => {
-                                        setSelectedTest(v.target.value)
-                                        setDoctorNoteOnTest('')
-                                    }
-                                    }
-                                >
-                                    {testsNames?.map((test) => (
-                                        <MenuItem
-                                            disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
-                                            key={test.code}
-                                            value={test.code}
-                                        >
-                                            {test.type}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <CustomButton
+                        <CustomButton
                             buttonText="Order"
                             disabled={selectedTest == ""}
                             color='green'
-                                onClick={() => {
-                                    handleOrderTest()
-                                }}
-                            />
-                        </div>
-                        {selectedTest !== "" &&
-                            <TextField
-                                fullWidth
-                                multiline
-                                placeholder='Note to the lab assistant'
-                                value={doctorNoteOnTest}
-                                onChange={(v) => setDoctorNoteOnTest(v.target.value)
-                                }
-                            />
-                        }
-                    </div>
-
-                    <div className='flex flex-col gap-2' id='EXAMS'>
-                        <div className='flex flex-row gap-2 EXAMINATION'>
-                            <FormControl fullWidth className=''>
-                                <InputLabel id="exams">Physical Examinations</InputLabel>
-                                <Select
-                                    labelId="exams"
-                                    value={selectedExamination}
-                                    autoWidth={true}
-                                    input={<OutlinedInput label="Physical Examinations" />}
-                                    onChange={(v) => {
-                                        setSelectedExamination(v.target.value)
-                                        setDoctorNoteOnExamination('')
-                                    }}
-                                >
-                                    {testsNames?.map((test) => (
-                                        <MenuItem
-                                            disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
-                                            key={test.code}
-                                            value={test.code}
-                                        >
-                                            {test.type}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <CustomButton
-                            buttonText="Perform"
-                            disabled = {selectedExamination==""}
-                                onClick={() => {
-                                    handlePerformTest()
-                                }}
-                            />
-                        </div>
-                        {selectedExamination &&
-                            <TextField
-                                fullWidth
-                                multiline
-                                placeholder='note'
-                                onChange={(v) => setDoctorNoteOnExamination(v.target.value)
-                                }
-                            />
-                        }
-                    </div>
-
-                    <div className='flex flex-col' id='DIAGNOSIS'>
-                        <TextField
-                            fullWidth
-                            required
-                            label="Diagnosis"
-                            value={diagnosis}
-                            onChange={(v) => setDiagnosis(v.target.value)}
+                            onClick={() => {
+                                handleOrderTest()
+                            }}
                         />
                     </div>
+                    {selectedTest !== "" &&
+                        <TextField
+                            fullWidth
+                            multiline
+                            placeholder='Note to the lab assistant'
+                            value={doctorNoteOnTest}
+                            onChange={(v) => setDoctorNoteOnTest(v.target.value)
+                            }
+                        />
+                    }
+                </div>
+
+                <div className='flex flex-col gap-2' id='EXAMS'>
+                    <div className='flex flex-row gap-2 EXAMINATION'>
+                        <FormControl fullWidth className=''>
+                            <InputLabel id="exams">Physical Examinations</InputLabel>
+                            <Select
+                                labelId="exams"
+                                value={selectedExamination}
+                                autoWidth={true}
+                                input={<OutlinedInput label="Physical Examinations" />}
+                                onChange={(v) => {
+                                    setSelectedExamination(v.target.value)
+                                    setDoctorNoteOnExamination('')
+                                }}
+                            >
+                                {testsNames?.map((test) => (
+                                    <MenuItem
+                                        disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
+                                        key={test.code}
+                                        value={test.code}
+                                    >
+                                        {test.type}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <CustomButton
+                            buttonText="Perform"
+                            disabled={selectedExamination == ""}
+                            onClick={() => {
+                                handlePerformTest()
+                            }}
+                        />
+                    </div>
+                    {selectedExamination &&
+                        <TextField
+                            fullWidth
+                            multiline
+                            placeholder='note'
+                            onChange={(v) => setDoctorNoteOnExamination(v.target.value)
+                            }
+                        />
+                    }
+                </div>
+
+                <div className='flex flex-col' id='DIAGNOSIS'>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Diagnosis"
+                        value={diagnosis}
+                        onChange={(v) => setDiagnosis(v.target.value)}
+                    />
+                </div>
 
                 <div className='flex flex-row justify-between w-full gap-1' id='BUTTONS'>
                     <CustomButton
                         buttonText="Visit Completed"
                         width="threeFifths"
-                        disabled={diagnosis==""}
-                            onClick={() => {
-                                handleVisitCompleted()
-                            }
-                            }
-                        />
+                        disabled={diagnosis == ""}
+                        onClick={() => {
+                            handleVisitCompleted()
+                        }
+                        }
+                    />
 
-                        <CustomButton
+                    <CustomButton
                         buttonText="Cancel Visit"
                         width="twoFifths"
-                            onClick={() =>
-                                changeVisitDetails(visitInfo['visitId'], { "status": Status.CANCELLED })
-                            }
-                            color='red'
-                        />
+                        onClick={() => {
+                            changeVisitDetails(visitInfo['visitId'], { "status": Status.CANCELLED })
+                            router.push("/visits")
+                        }
+                        }
+                        color='red'
+                    />
 
-                    </div>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
+}

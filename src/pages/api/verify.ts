@@ -31,6 +31,7 @@ export default async function handler(req, res) {
                     providerAccountId: provAccountId,
                 }
             })
+
             await prisma.user.update({
                 where: {
                     id: account.userId,

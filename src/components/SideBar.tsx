@@ -7,20 +7,7 @@ import ProfilePicture from "@/components/ProfilePicture";
 export default function sideBar() {
     const { data: session } = useSession();
 
-    let menuItems = [
-        {
-            href: "/about",
-            title: "About",
-        },
-        {
-            href: "/contact",
-            title: "Contact",
-        },
-        {
-            href: "/locations",
-            title: "Find Us",
-        },
-    ];
+    let menuItems = []
 
     if (session?.user?.role === Role.PATIENT) {
         menuItems = menuItems
@@ -34,11 +21,10 @@ export default function sideBar() {
                     title: "Appointments",
                 },
                 {
-                    href: "/profile/messages",
+                    href: "/messages",
                     title: "Messages",
                 },
             ])
-            .reverse();
     } else if (session?.user?.role === Role.DOCTOR) {
         menuItems = menuItems
             .concat([
@@ -51,7 +37,6 @@ export default function sideBar() {
                     title: "Appointments",
                 },
             ])
-            .reverse();
     } else if (session?.user?.role === Role.LAB_ASSISTANT) {
         menuItems = menuItems
             .concat([
@@ -64,7 +49,6 @@ export default function sideBar() {
                     title: "Tests",
                 },
             ])
-            .reverse();
     } else if (session?.user?.role === Role.LAB_SUPERVISOR) {
         menuItems = menuItems
             .concat([
@@ -77,7 +61,6 @@ export default function sideBar() {
                     title: "Tests",
                 },
             ])
-            .reverse();
     } else if (session?.user?.role === Role.RECEPTIONIST) {
         menuItems = menuItems
             .concat([
@@ -108,6 +91,20 @@ export default function sideBar() {
 
             ])
     }
+    menuItems = menuItems.concat([
+        {
+            href: "/about",
+            title: "About",
+        },
+        {
+            href: "/contact",
+            title: "Contact",
+        },
+        {
+            href: "/locations",
+            title: "Find Us",
+        },
+    ])
 
     return (
         <aside className="bg-gray-100 w-full md:w-60">

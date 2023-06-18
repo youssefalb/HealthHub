@@ -45,13 +45,13 @@ export const authOptions: NextAuthOptions = {
                     body: JSON.stringify(credentials),
                     headers: { "Content-Type": "application/json" },
                 });
-                const user = await res.json();
-                const temp = user.user;
+                const result = await res.json();
+                const user = result.user;
 
                 // If no error and we have user data, return it
 
-                if (res.ok && temp && temp.emailVerified && temp.isActive) {
-                    return temp;
+                if (res.ok) {
+                    return user;
                 }
                 // Return null if user data could not be retrieved
                 return null;
@@ -94,21 +94,43 @@ export const authOptions: NextAuthOptions = {
         },
 
         async signIn({ user, account, profile }) {
+            const existingUser = await prisma.user.findUnique({
+                    where: { id: user.id }
+                })
             if (account.provider === "google") {
                 user.firstName = profile.given_name;
                 user.lastName = profile.family_name;
                 user.image = profile.picture;
-                const existingUser = await prisma.user.findUnique({
-                    where: { id: user.id }
-                })
                 if (!existingUser) {
                     await sendVerificationEmail(user)
                 }
                 else if (!existingUser.isActive) {
+                    console.log("BanHammer")
                     return false;
+                } else if(!existingUser.emailVerified){
+                    console.log("Verify email")
+                    return '/unauthorized';
                 }
 
                 delete user.name;
+            }else if (account.provider === "email"){
+                console.log("EmailProvider")
+                if (!existingUser) {
+                    user.firstName = "Guest";
+                }
+                else if (!existingUser.isActive) {
+                    console.log("BanHammer")
+                    return false;
+                }
+            }else if (account.provider === "credentials"){
+                console.log("CredentialsProvider")
+                if (!existingUser.isActive) {
+                    console.log("BanHammer")
+                    return false;
+                } else if(!existingUser.emailVerified){
+                    console.log("Verify email")
+                    return '/unauthorized';
+                }
             }
             return true;
         },
@@ -123,14 +145,14 @@ export const authOptions: NextAuthOptions = {
             if (account) {
                 token.accessToken = account.access_token;
                 token.id = user.id;
-                token.name = user.firstName + " " + user.lastName;
+                token.name = user.firstName + " " + (user.lastName ? user.lastName : "") ;
                 token.role = user.role;
             }
 
             if (trigger === "update") {
                 if (session?.firstName && session?.lastName)
                     token.name = session.firstName + " " + session.lastName;
-                else if(session?.image)
+                else if (session?.image)
                     token.picture = session.image
             }
 
