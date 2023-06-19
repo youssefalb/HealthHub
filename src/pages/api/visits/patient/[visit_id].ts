@@ -105,22 +105,14 @@ export default async function handler(
 
         if (session.user?.role == Role.RECEPTIONIST) {
             try {
-                console.log("body: ", req.body);
-                console.log("status: ", req.body.status);
-                console.log("date: ", req.body.date);
-                console.log("doctorId: ", req.body.doctorId);
                 let dataClause = {}
-                console.log("Here good 1")
                 if (req.body.status) {
-                    console.log("Here good 1")
                     dataClause = {
                         status: Status.CANCELLED,
                     }
                 }
                 else {
-                    console.log("Here good 2")
                     if (req.body.date) {
-                        console.log("Here good 2")
                         dataClause = {
                             date: req.body.date,
                         }
@@ -132,7 +124,6 @@ export default async function handler(
                         }
                     }
                 }
-                console.log("DataClause", dataClause)
                 const results = await prisma.visit.update({
                     where: {
                         visitId: visit_id.toString(),
