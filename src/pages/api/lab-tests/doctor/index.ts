@@ -33,6 +33,7 @@ export default async function handler(
                         where: {
                             visit: { doctorId: doctor.toString() }
                         },
+                        include:{examinationDictionary:true}
                     });
                     if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
@@ -59,6 +60,7 @@ export default async function handler(
                         where: {
                             visit: { doctorId: session.user?.id }
                         },
+                        include:{examinationDictionary:true}
                     });
                     if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });

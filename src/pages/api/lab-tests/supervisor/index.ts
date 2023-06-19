@@ -33,6 +33,7 @@ export default async function handler(
                         where: {
                             labSupervisor: { employeeId: supervisor.toString() }
                         },
+                        include:{examinationDictionary:true}
                     });
                     if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });
@@ -44,6 +45,7 @@ export default async function handler(
                         where: {
                             status: LaboratoryTestStatus.COMPLETED
                         },
+                        include:{examinationDictionary:true}
                     });
                     if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });

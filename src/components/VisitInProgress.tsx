@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 
@@ -14,15 +14,14 @@ import { OutlinedInput } from '@mui/material';
 import { createExamination } from '@/lib/examinations';
 import { changeVisitDetails } from '@/lib/visits';
 import { Status } from '@prisma/client';
-import Label from "@/components/Label";
-import CancellingButton from '@/components/CancellingButton';
 import ExaminationsToOrder from './ExaminationsToOrder';
+import { createMessage } from '@/lib/messages';
 
 
 
 export default function VisitInProgress({ visitInfo }) {
     const router = useRouter()
-    const [patientInfo, setPatientInfo] = useState({}) //1
+    const [patientInfo, setPatientInfo] = useState({user:{image:"",firstName:"", id: ""}}) //1
     const [doctorInfo, setDoctorInfo] = useState({}) //2
 
     const [testsNames, setTests] = useState([]) //3
@@ -41,6 +40,9 @@ export default function VisitInProgress({ visitInfo }) {
 
     const [doctorNoteOnTest, setDoctorNoteOnTest] = useState("")
     const [doctorNoteOnExamination, setDoctorNoteOnExamination] = useState("")
+
+    const [showMessageField, setShowMessageField] = useState(false)
+    const [messageContent, setMessageContent] = useState("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,12 +91,12 @@ export default function VisitInProgress({ visitInfo }) {
         setDisabledExaminationOptions(performedExaminations.filter((exam) => exam.code !== removedExamnation.code))
     }
 
-    function handleVisitCompleted() {
-        orderedTests.forEach((test) => {
-            orderTestAsDoctor(visitInfo['visitId'], test.code, test.note)
+    async function handleVisitCompleted() {
+        orderedTests.forEach(async (test) => {
+            await orderTestAsDoctor(visitInfo['visitId'], test.code, test.note)
         })
-        performedExaminations.forEach((exam) => {
-            createExamination(visitInfo['visitId'], exam.code, exam.note)
+        performedExaminations.forEach(async (exam) => {
+            await createExamination(visitInfo['visitId'], exam.code, exam.note)
         })
         const visitData = {
             "status": Status.COMPLETED,
@@ -140,18 +142,46 @@ export default function VisitInProgress({ visitInfo }) {
                     <CustomButton
                         buttonText="Show History"
                         onClick={() => {
-                            router.push("/tests");
+                            router.push({ pathname: `/tests-history`, query: { patientId: patientInfo["user"].id } });
                         }}
                     />
                     <CustomButton
                         buttonText="Message"
                         onClick={() => {
-                            router.push("/visits");
+                            if (showMessageField == false)
+                                setShowMessageField(true)
+                            else
+                                setShowMessageField(false)
                         }}
                     />
                 </div>
             </div>
+            {showMessageField && 
+                <div className='p-6 flex flex-col gap-4 FORM'>
+                    <div className='flex flex-col gap-2'>
+                        <div className='flex flex-row gap-2'>
+                            <TextField
+                                fullWidth
+                                multiline
+                                placeholder='Message'
+                                value={messageContent}
+                                onChange={(v) => setMessageContent(v.target.value)
+                                }
+                            />
 
+                            <CustomButton
+                                buttonText="Send"
+                                color='green'
+                                disabled={messageContent == ""}
+                                onClick={async () => {
+                                    await createMessage(patientInfo.user?.id, messageContent)
+                                    setMessageContent("")
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            }
             <div className='mt-2'>
                 <ExaminationsToOrder
                     title="Ordered Tests:"
@@ -193,15 +223,15 @@ export default function VisitInProgress({ visitInfo }) {
                                 }
                                 }
                             >
-                                {testsNames?.map((test) => (
+                                {testsNames?.map((test) => test.type == "lab" &&
                                     <MenuItem
                                         disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
                                         key={test.code}
                                         value={test.code}
                                     >
-                                        {test.type}
+                                        {test.name}
                                     </MenuItem>
-                                ))}
+                                )}
                             </Select>
                         </FormControl>
 
@@ -240,15 +270,15 @@ export default function VisitInProgress({ visitInfo }) {
                                     setDoctorNoteOnExamination('')
                                 }}
                             >
-                                {testsNames?.map((test) => (
+                                {testsNames?.map((test) => test.type == "physical" &&
                                     <MenuItem
                                         disabled={disabledExaminationOptions.concat(disabledTestOptions).includes(test)}
                                         key={test.code}
                                         value={test.code}
                                     >
-                                        {test.type}
+                                        {test.name}
                                     </MenuItem>
-                                ))}
+                                )}
                             </Select>
                         </FormControl>
 
@@ -286,8 +316,8 @@ export default function VisitInProgress({ visitInfo }) {
                         buttonText="Visit Completed"
                         width="threeFifths"
                         disabled={diagnosis == ""}
-                        onClick={() => {
-                            handleVisitCompleted()
+                        onClick={async () => {
+                            await handleVisitCompleted()
                         }
                         }
                     />
@@ -295,8 +325,8 @@ export default function VisitInProgress({ visitInfo }) {
                     <CustomButton
                         buttonText="Cancel Visit"
                         width="twoFifths"
-                        onClick={() => {
-                            changeVisitDetails(visitInfo['visitId'], { "status": Status.CANCELLED })
+                        onClick={async () => {
+                            await changeVisitDetails(visitInfo['visitId'], { "status": Status.CANCELLED })
                             router.push("/visits")
                         }
                         }

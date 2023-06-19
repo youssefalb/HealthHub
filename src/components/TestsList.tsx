@@ -1,13 +1,13 @@
 import { useSession } from "next-auth/react";
 import TestCard from "./TestCard";
 import { useEffect, useState } from "react";
-import { getOwnTests, getTechOrSupervisorTests } from "@/lib/tests";
+import { getOwnTests, getPatientTests, getTechOrSupervisorTests } from "@/lib/tests";
 import { Role } from "@prisma/client";
 import EmptyStateMessage from "./EmptyStateMessage";
 import Link from "next/link";
 
 //this page works for all 3 roles that need to view visits (patient, doctor, recept. )
-export default function TestsList({ techFetchAll = false }) {
+export default function TestsList({ patientId = null, techFetchAll = false }) {
     const { data: session } = useSession(); // it's not fired everytime, (only once), but I need to declare it to be able to access it
     const [isLoading, setIsLoading] = useState(true);
     const [tests, setTests] = useState([]);
@@ -17,11 +17,14 @@ export default function TestsList({ techFetchAll = false }) {
     const fetchData = async () => {
         try {
             let response;
-            if (techFetchAll || role == Role.PATIENT || role == Role.DOCTOR)
-                response = await getOwnTests(role);
-            else
-                response = await getTechOrSupervisorTests(role);
-
+            if (patientId != null)
+                response = await getPatientTests(patientId);
+            else {
+                if (techFetchAll || role == Role.PATIENT || role == Role.DOCTOR)
+                    response = await getOwnTests(role);
+                else
+                    response = await getTechOrSupervisorTests(role);
+            }
             setTests(response["data"]);
             setIsLoading(false);
         } catch (error) {

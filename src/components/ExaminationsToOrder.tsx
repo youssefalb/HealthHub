@@ -11,7 +11,7 @@ export default function ExaminationsToOrder({title, itemList, callBack}) {
                 itemList?.map((item) => (
                     <CancellingButton
                         key={item.code}
-                        buttonText={item.type}
+                        buttonText={item.name}
                         onClick={() => {
                             callBack(item)
                         }}

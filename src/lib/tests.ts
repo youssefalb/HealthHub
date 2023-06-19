@@ -121,22 +121,26 @@ export async function getTestDetails(role: Role, testId: String): Promise<Respon
  * @returns {Promise<Response>} A Promise that resolves to a Response object representing the list of tests assigned to the specified doctor.
  */
 export async function getDoctorTests(doctorId: String): Promise<Response>{
-    return await fetch(`${doctorTestsPath} + "?doctor=" +${doctorId}`, {
+    const data =  await fetch(`${doctorTestsPath}?doctor=${doctorId}`, {
         method: 'GET',
     });
+    const result = await data.json()
+    return result
 }
 
 /**
  * Retrieves the list of tests assigned to a specific patient.
  * consumed only by Doctor, admin and receptionist.
  * @async
- * @param {String} doctorId - ID of the doctor to retrieve tests for.
+ * @param {String} patientId - ID of the doctor to retrieve tests for.
  * @returns {Promise<Response>} A Promise that resolves to a Response object representing the list of tests belonging to the specified patient.
  */
 export async function getPatientTests(patientId: String): Promise<Response>{
-    return await fetch(`${patientTestsPath} + "?patient=" +${patientId}`, {
+    const data = await fetch(`${patientTestsPath}?patient=${patientId}`, {
         method: 'GET',
     });
+    const result = await data.json()
+    return result
 }
 
 /**
@@ -147,9 +151,11 @@ export async function getPatientTests(patientId: String): Promise<Response>{
  * @returns {Promise<Response>} A Promise that resolves to a Response object representing the list of tests assigned to the specified lab assistanr.
  */
 export async function getLabAssistantTests(assistantId: String): Promise<Response> {
-    return await fetch(`${technicianTestsPath} + "?technician=" +${assistantId}`, {
+    const data = await fetch(`${technicianTestsPath}?technician=${assistantId}`, {
         method: 'GET',
     });
+    const result = await data.json()
+    return result
 }
 
 /**
@@ -160,10 +166,12 @@ export async function getLabAssistantTests(assistantId: String): Promise<Respons
  * @returns {Promise<Response>} A Promise that resolves to a Response object representing the list of tests assigned to the specified lab supervisor.
  */
 export async function getSupervisorTests(supervisorId: String): Promise<Response> {
-    return await fetch(`${supervisorTestsPath} + "?supervisor=" +${supervisorId}`, {
+    const data = await fetch(`${supervisorTestsPath}?supervisor=${supervisorId}`, {
         method: 'GET',
     });
 
+    const result = await data.json()
+    return result
 }
 
 //===================== DOCTOR ======================

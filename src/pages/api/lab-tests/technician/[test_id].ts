@@ -23,6 +23,7 @@ export default async function handler(
                     where: {
                         testId: test_id.toString(),
                     },
+                    include: {examinationDictionary: true}
                 })
                 if(test == null) throw "no data";
                 if (test.labAssistantId == session.user.id || test.status == LaboratoryTestStatus.ORDERED)
