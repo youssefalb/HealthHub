@@ -88,6 +88,7 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date }) 
     }
 
     useEffect(() => {
+        console.log("doctor from time picker", doctor)
         getDoctorBusySlots(doctor.employeeId)
     }, [selectedDate])
 

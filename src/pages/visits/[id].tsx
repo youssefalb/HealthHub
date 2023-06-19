@@ -3,7 +3,7 @@ import DateAndTimePicker from "@/components/DateTimePicker";
 import Label from "@/components/Label";
 import VisitInProgress from '@/components/VisitInProgress';
 import { getOwnTests, getTestsOfAVisit } from "@/lib/tests";
-import { changeVisitDetails, getVisitDetails, changeVisitDate } from "@/lib/visits";
+import { changeVisitDetails, getVisitDetails, changeVisitDate, cancelVisit } from "@/lib/visits";
 import { Role, Status } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
@@ -45,19 +45,22 @@ export default function Visit() {
             setVisit(res['data'])
             setSelectedDate(dayjs(res['data']['date']).format('YYYY-MM-DD'))
             setSelectedTime(dayjs(res['data']['date']).format('HH:mm'))
-            setSelectedDoctor({ doctor: res['data']['doctor'] })
-            console.log(selectedDate)
-            console.log(selectedTime)
+            console.log("res", res['data'])
+            setSelectedDoctor(res['data'].doctor)
+            console.log("selected", selectedDoctor)
             res = await getTestsOfAVisit(session.user?.role, id)
             setTests(res['data'])
         }
     }
-    const handleDateSave = (e) => {
-        e.preventDefault();
-        const res = changeVisitDate(visit['visitId'], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
-        if (res) {
-            toast.success("Visit date changed successfully");
-            router.push("/receptionist/visits");
+    const handleDateSave = async () => {
+        console.log("selectedDate", selectedDate)
+        const res = await changeVisitDate(visit['visitId'], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+        console.log("res", res)
+        if (res.ok) {
+            toast.success('Visit date changed successfully', {
+                autoClose: 5000, // Set autoClose option to 5000 milliseconds (5 seconds)
+            });
+            // router.push("/receptionist/visits");
         }
         else
             toast.error("Something went wrong");
@@ -127,12 +130,12 @@ export default function Visit() {
                     {showDatePicker ? (
                         <div className="flex-col flex">
                             <DateAndTimePicker
-                                doctor={selectedDoctor?.doctor}
+                                doctor={selectedDoctor}
                                 date={selectedDate}
                                 saveDate={setSelectedDate}
                                 saveTime={setSelectedTime}
                             />
-                            <CustomButton onClick={() => handleDateSave} buttonText="Save the date" />
+                            <CustomButton onClick={handleDateSave} buttonText="Save the date" />
                         </div>
 
                     ) : (
@@ -148,8 +151,13 @@ export default function Visit() {
                         <CustomButton
                             buttonText={"Cancel visit"}
                             onClick={() => {
-                                changeVisitDetails(visit['visitId'], { "status": Status.CANCELLED })
-                                router.push("/visits"); //Ths works just for patient or doctor (To change later)
+
+                                cancelVisit(visit['visitId'])
+                                if (session.user?.role == Role.RECEPTIONIST) {
+                                    router.push("/receptionist/visits");
+                                }
+                                else
+                                    router.push("/visits"); //Ths works just for patient or doctor (To change later)
                             }}
                         />
                     </div>

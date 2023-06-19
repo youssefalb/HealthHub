@@ -26,6 +26,7 @@ export default async function handler(
                     include: {
                         doctor: {
                             select: {
+                                employeeId: true,
                                 user: {
                                     select: { firstName: true, lastName: true }
                                 }
@@ -33,7 +34,7 @@ export default async function handler(
                         }
                     }
                 })
-                if(visit == null) throw "no data"
+                if (visit == null) throw "no data"
                 if (visit.patientId == session.user?.id || session.user?.role == Role.RECEPTIONIST) {
                     return res.status(200).json({ success: true, data: visit });
                 }
@@ -78,7 +79,6 @@ export default async function handler(
                             date: req.body.date,
                         }
                     }
-
                     const results = await prisma.visit.update({
                         where: {
                             visitId: visit_id.toString(),
@@ -105,14 +105,22 @@ export default async function handler(
 
         if (session.user?.role == Role.RECEPTIONIST) {
             try {
+                console.log("body: ", req.body);
+                console.log("status: ", req.body.status);
+                console.log("date: ", req.body.date);
+                console.log("doctorId: ", req.body.doctorId);
                 let dataClause = {}
+                console.log("Here good 1")
                 if (req.body.status) {
+                    console.log("Here good 1")
                     dataClause = {
                         status: Status.CANCELLED,
                     }
                 }
                 else {
+                    console.log("Here good 2")
                     if (req.body.date) {
+                        console.log("Here good 2")
                         dataClause = {
                             date: req.body.date,
                         }
@@ -124,6 +132,7 @@ export default async function handler(
                         }
                     }
                 }
+                console.log("DataClause", dataClause)
                 const results = await prisma.visit.update({
                     where: {
                         visitId: visit_id.toString(),

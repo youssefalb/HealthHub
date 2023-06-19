@@ -53,7 +53,7 @@ export default async function handler(
 
     if (req.method == "PUT") {
         console.log("body: ", req.body)
-        if (session.user?.role == Role.DOCTOR) {
+        if (session.user?.role == Role.DOCTOR || session.user?.role == Role.RECEPTIONIST) {
             try {
                 const visit = await prisma.visit.findUnique({
                     where: {

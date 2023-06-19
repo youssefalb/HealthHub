@@ -141,6 +141,7 @@ export async function cancelVisit(visitId: string): Promise<Response> {
   //put request to change status of the visit
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
+    headers: jsonHeader,
     body: JSON.stringify({
       status: Status.CANCELLED
     })
@@ -159,6 +160,7 @@ export async function cancelVisit(visitId: string): Promise<Response> {
 export async function changeVisitDate(visitId: string, date: string): Promise<Response> {
   const result = await fetch(`${patientVisitsPath}/${visitId}`, {
     method: "PUT",
+    headers: jsonHeader,
     body: JSON.stringify({
       date: date
     })
