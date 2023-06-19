@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import AppointmentList from '@/components/AppointmentList';
 import { getPatients } from '@/lib/manageVisits';
-import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { TextField, Autocomplete } from '@mui/material';
 import EmptyStateMessage from '@/components/EmptyStateMessage';
 
 export default function VisitsPage() {
     const [patients, setPatients] = useState([]);
     const [filteredPatients, setFilteredPatients] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState(null);
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -28,9 +28,16 @@ export default function VisitsPage() {
     }, [patients]);
 
     useEffect(() => {
-        console
+        if (!searchValue) {
+            setFilteredPatients(patients);
+            return;
+        }
         const filtered = patients.filter((patient) => {
-            return patient.patientId === searchValue;
+            const fullName = `${patient.user?.firstName || ''} ${patient.user?.lastName || ''}`;
+            return (
+                patient.patientId === searchValue.patientId ||
+                fullName.toLowerCase().includes(String(searchValue).toLowerCase())
+            );
         });
         setFilteredPatients(filtered);
     }, [searchValue]);
@@ -38,21 +45,13 @@ export default function VisitsPage() {
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4">
             <h1 className="text-3xl font-bold mb-6">Appointments</h1>
-            <FormControl fullWidth margin="normal">
-                <InputLabel id="search-patient-label">Search patient</InputLabel>
-                <Select
-                    labelId="search-patient-label"
-                    value={searchValue}
-                    label="Search patient"
-                    onChange={(e) => setSearchValue(e.target.value)}
-                >
-                    {patients.map((patient) => (
-                        <MenuItem key={patient.patientId} value={patient.patientId}>
-                            {`${patient.user.firstName} ${patient.user.lastName}`}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            <Autocomplete
+                value={searchValue}
+                onChange={(event, newValue) => { setSearchValue(newValue) }}
+                options={patients}
+                getOptionLabel={(patient) => `${patient.user?.firstName || ''} ${patient.user?.lastName || ''}`}
+                renderInput={(params) => <TextField {...params} label="Search patient" />}
+            />
             {filteredPatients.length === 1 && filteredPatients[0].visits?.length === 0 ? (
                 <EmptyStateMessage
                     title="No Appointments"
@@ -65,7 +64,6 @@ export default function VisitsPage() {
                     </div>
                 ))
             )}
-
         </div>
     );
 }
