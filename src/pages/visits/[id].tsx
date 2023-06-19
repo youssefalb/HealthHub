@@ -3,12 +3,14 @@ import DateAndTimePicker from "@/components/DateTimePicker";
 import Label from "@/components/Label";
 import VisitInProgress from '@/components/VisitInProgress';
 import { getOwnTests, getTestsOfAVisit } from "@/lib/tests";
-import { changeVisitDetails, getVisitDetails } from "@/lib/visits";
+import { changeVisitDetails, getVisitDetails, changeVisitDate } from "@/lib/visits";
 import { Role, Status } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 export default function Visit() {
@@ -50,6 +52,17 @@ export default function Visit() {
             setTests(res['data'])
         }
     }
+    const handleDateSave = (e) => {
+        e.preventDefault();
+        const res = changeVisitDate(visit['visitId'], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
+        if (res) {
+            toast.success("Visit date changed successfully");
+            router.push("/receptionist/visits");
+        }
+        else
+            toast.error("Something went wrong");
+    }
+
 
     useEffect(() => {
         fetchData()
@@ -63,6 +76,7 @@ export default function Visit() {
             </div>
         )
     }
+
 
     return (
         <div className="mx-auto max-w-screen-lg my-8 px-4 flex flex-col items-center">
@@ -118,7 +132,7 @@ export default function Visit() {
                                 saveDate={setSelectedDate}
                                 saveTime={setSelectedTime}
                             />
-                            <CustomButton onClick={() => { }} buttonText="Save the date" />
+                            <CustomButton onClick={() => handleDateSave} buttonText="Save the date" />
                         </div>
 
                     ) : (
@@ -160,6 +174,7 @@ export default function Visit() {
                     />
                 }
             </div>
+            <ToastContainer />
         </div >
     );
 }
