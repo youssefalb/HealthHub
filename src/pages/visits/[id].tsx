@@ -58,7 +58,7 @@ export default function Visit() {
         console.log("res", res)
         if (res.ok) {
             toast.success('Visit date changed successfully', {
-                autoClose: 5000, // Set autoClose option to 5000 milliseconds (5 seconds)
+                autoClose: 3000,
             });
             // router.push("/receptionist/visits");
         }
@@ -66,6 +66,21 @@ export default function Visit() {
             toast.error("Something went wrong");
     }
 
+    const handleCancelVisit = async () => {
+        console.log("visitId", visit['visitId'])
+        const res = await cancelVisit(visit['visitId'])
+        if (res.ok) {
+            toast.success('Visit cancelled successfully', {
+                autoClose: 3000,
+            });
+            if (session.user?.role == Role.DOCTOR || session.user?.role == Role.PATIENT)
+                router.push("/visits");
+            else if (session.user?.role == Role.RECEPTIONIST)
+                router.push("/receptionist/visits");
+        }
+        else
+            toast.error("Something went wrong");
+    }
 
     useEffect(() => {
         fetchData()
@@ -150,15 +165,9 @@ export default function Visit() {
                     <div>
                         <CustomButton
                             buttonText={"Cancel visit"}
-                            onClick={() => {
-
-                                cancelVisit(visit['visitId'])
-                                if (session.user?.role == Role.RECEPTIONIST) {
-                                    router.push("/receptionist/visits");
-                                }
-                                else
-                                    router.push("/visits"); //Ths works just for patient or doctor (To change later)
-                            }}
+                            onClick={
+                                handleCancelVisit
+                            }
                         />
                     </div>
                 }
