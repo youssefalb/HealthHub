@@ -3,7 +3,7 @@ to protect a page use a protected layout that takes "role" as a prob and compare
 
   - [ ] front end for dynamic pages (asser)
   - [x] delete book appointmint button for a doctor 
-  - [ ] receptionist (everything)
+  - [x] receptionist (everything)
   - [ ] visit filter in doctor's page (sorted by date / time) 
   - [ ] middleware 
   - [ ] make changing role of a user changes the connecttion (db ?)
@@ -22,7 +22,7 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   3-[x](doctor) add 3 new tests and 2 examinations (with date/time)
   4-[x](tech) performs 2 tests (results) and cancel 1 (reasons) (with date/time of each step)
   5-[x](supervisor) accept 1, deny 1 --> with reason ofc
-  6-[ ](registrar) makes a new visit 
+  6-[x](registrar) makes a new visit 
   7-[x](doctor) accesses the results of all test + visit history (kinda)
 
 
