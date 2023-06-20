@@ -32,6 +32,7 @@ export default async function handler(
                         where: {
                             visit: { patientId: patient.toString() }
                         },
+                        include:{examinationDictionary:true}
                     });
                     if (!results.length) throw "no data";
                     return res.status(200).json({ success: true, data: results });

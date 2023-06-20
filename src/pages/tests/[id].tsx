@@ -40,6 +40,11 @@ export default function Test() {
         <div className='flex flex-col justify-center'>
 
             <h1 className="text-3xl font-bold mb-6">Test details</h1>
+            {test['examinationDictionary'] &&
+                <div className="w-full md:w-1/2 px-4 mb-4 ">
+                    <Label name="Name" value={test['examinationDictionary'].name} />
+                </div>
+            }
 
             {test['doctorNote'] &&
                 <div className="w-full md:w-1/2 px-4 mb-4 ">
@@ -109,7 +114,7 @@ export default function Test() {
                         }}
                     />
                 }
-                
+
                 {test['status'] == LaboratoryTestStatus.COMPLETED && session.user?.role == Role.LAB_SUPERVISOR &&
                     <CustomButton
                         buttonText={"Approve Test"}

@@ -135,9 +135,19 @@ export default function Visit() {
 
             {tests && (session?.user?.role == Role.PATIENT || session?.user?.role == Role.DOCTOR) &&
                 <div className="w-full md:w-1/2 px-4 mb-4">
-                    <Label name="Tests" value={
+                    <Label name="Tests in visit" value={
                         tests?.map((test => test.examinationDictionary.name)).join(", ") + "."
                     } />
+                </div>
+            }
+            {(session?.user?.role == Role.DOCTOR) &&
+                <div className="w-full md:w-1/2 px-4 mb-4">
+                    <CustomButton
+                        buttonText="Patient Test History"
+                        onClick={() => {
+                            router.push({ pathname: `/tests-history`, query: { patientId: visit["patient"]["user"].id } });
+                        }}
+                    />
                 </div>
             }
             {session?.user?.role === Role.RECEPTIONIST && visit['status'] === Status.REGISTERED && (

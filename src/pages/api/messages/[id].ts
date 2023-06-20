@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/apiAuth/[...nextauth]";
-import { Role } from "@prisma/client";
+import { Role, Status } from "@prisma/client";
 
 
 export default async function handler(
@@ -11,24 +11,35 @@ export default async function handler(
 ) {
     const session = await getServerSession(req, res, authOptions); //authenticate user on the server side
 
-
     if (!session)
         return res
             .status(401)
             .json({ success: false, message: "Unauthorized because not logged in" });
-    const { test_id } = req.query
+    const { id } = req.query
     if (req.method == "GET") {
-        if (session.user?.role == Role.DOCTOR) {
-
+        if (session.user?.role == Role.PATIENT) {
             try {
-                const test = await prisma.laboratoryExamination.findUnique({
+                const message = await prisma.message.findUnique({
                     where: {
-                        testId: test_id.toString(),
+                        messageId: id.toString(),
                     },
-                    include: {examinationDictionary:true}
+                    include: {
+                        doctor: {
+                            select: {
+                                user: {
+                                    select: { firstName: true, lastName: true }
+                                }
+                            }
+                        }
+                    }
                 })
-                if(test == null) throw "no data";
-                return res.status(200).json({ success: true, data: test });
+                if (message == null) throw "no data"
+                if (message.patientId == session.user?.id) {
+                    return res.status(200).json({ success: true, data: message });
+                }
+                else {
+                    return res.status(401).json({ success: false, message: "You can't see this patient's data" });
+                }
             }
             catch (error) {
                 if (error == "no data") {
@@ -44,7 +55,7 @@ export default async function handler(
         //return not authorized
         return res
             .status(401)
-            .json({ success: false, message: "you are not a Doctor" });
+            .json({ success: false, message: "you are not an authorized person" });
     }
 
     return res

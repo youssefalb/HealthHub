@@ -82,7 +82,7 @@ export default async function handler(
                 const results = await prisma.message.create({
                     data: {
                         content: content,
-                        doctor: { connect: { employeeId: session.user.doctorId } },
+                        doctor: { connect: { employeeId: session.user?.id } },
                         patient: { connect: { patientId: patientId } },
                     },
                 });
@@ -99,7 +99,7 @@ export default async function handler(
                 }
                 return res
                     .status(500)
-                    .json({ success: false, message: "Failed to create visit" });
+                    .json({ success: false, message: "Failed to create message" });
             }
         } else {
             return res.status(401).json({

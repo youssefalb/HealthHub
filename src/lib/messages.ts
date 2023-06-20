@@ -13,6 +13,14 @@ export async function getOwnMessages(): Promise<Response> { //working
     return result;
 }
 
+export async function getMessage(id: string): Promise<Response> { //working
+    let response = await fetch(`${messagesPath}/${id}`, {
+        method: "GET",
+    })
+    let result = await response.json()
+    return result;
+}
+
 export async function createMessage(patientId: string, content: string,): Promise<Response> {
     const response = await fetch(`${messagesPath}`, {
         method: "POST",
