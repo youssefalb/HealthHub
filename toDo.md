@@ -1,15 +1,15 @@
 to protect a page use a protected layout that takes "role" as a prob and compares role of current user and either continues or redirects 
 
 
-  - [ ] front end for dynamic pages (asser)
+  - [x] front end for dynamic pages (asser)
   - [x] delete book appointmint button for a doctor 
   - [x] receptionist (everything)
-  - [ ] visit filter in doctor's page (sorted by date / time) 
+  - [x] visit filter in doctor's page (sorted by date / time) 
   - [ ] middleware 
   - [ ] make changing role of a user changes the connecttion (db ?)
-  - [ ] loading conmponent
+  - [ ] loading component
   - [ ] search for auto-docs (swager, openApi)
-  - [ ] prompt user at home page if he has no password to set it. and then set verified to true 
+  - [x] prompt user at home page if he has no password to set it. and then set verified to true 
   - [x] (Receptionist) see all the visits and edit their data (for now he can edit date and status only)
   - [x] (Receptionist) cancel visit
   - [x] (Receptionist) functionality to add new visits (booking page + chossing patient)
