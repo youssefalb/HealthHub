@@ -277,7 +277,6 @@ const UserSettings = () => {
 
 
             </div>
-            <ToastContainer />
         </div>
     );
 };

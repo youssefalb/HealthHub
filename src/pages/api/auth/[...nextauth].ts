@@ -14,6 +14,7 @@ export default authHandler;
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
+        maxAge: 60*60*24 // 1 day
     },
 
     providers: [
@@ -21,6 +22,8 @@ export const authOptions: NextAuthOptions = {
             // The name to display on the sign in form (e.g. 'Sign in with...')
             name: "Credentials",
             type: "credentials",
+
+
             // The credentials is used to generate a suitable form on the sign in page.
             // You can specify whatever fields you are expecting to be submitted.
             // e.g. domain, username, password, 2FA token, etc.
@@ -50,7 +53,7 @@ export const authOptions: NextAuthOptions = {
 
                 // If no error and we have user data, return it
 
-                if (res.ok) {
+                if (res.ok && user) {
                     return user;
                 }
                 // Return null if user data could not be retrieved
@@ -87,7 +90,6 @@ export const authOptions: NextAuthOptions = {
         //signOut: "/api/signout"
     },
     adapter: PrismaAdapter(prisma),
-    secret: process.env.SECRET,
     callbacks: {
         async redirect({ url, baseUrl }) {
             return baseUrl;
@@ -95,8 +97,8 @@ export const authOptions: NextAuthOptions = {
 
         async signIn({ user, account, profile }) {
             const existingUser = await prisma.user.findUnique({
-                    where: { id: user.id }
-                })
+                where: { id: user.id }
+            })
             if (account.provider === "google") {
                 user.firstName = profile.given_name;
                 user.lastName = profile.family_name;
@@ -107,13 +109,13 @@ export const authOptions: NextAuthOptions = {
                 else if (!existingUser.isActive) {
                     console.log("BanHammer")
                     return false;
-                } else if(!existingUser.emailVerified){
+                } else if (!existingUser.emailVerified) {
                     console.log("Verify email")
                     return '/unauthorized';
                 }
 
                 delete user.name;
-            }else if (account.provider === "email"){
+            } else if (account.provider === "email") {
                 console.log("EmailProvider")
                 if (!existingUser) {
                     user.firstName = "Guest";
@@ -122,12 +124,12 @@ export const authOptions: NextAuthOptions = {
                     console.log("BanHammer")
                     return false;
                 }
-            }else if (account.provider === "credentials"){
+            } else if (account.provider === "credentials") {
                 console.log("CredentialsProvider")
                 if (!existingUser.isActive) {
                     console.log("BanHammer")
                     return false;
-                } else if(!existingUser.emailVerified){
+                } else if (!existingUser.emailVerified) {
                     console.log("Verify email")
                     return '/unauthorized';
                 }
@@ -139,14 +141,17 @@ export const authOptions: NextAuthOptions = {
             session.user.name = token.name;
             session.user.role = token.role;
             session.user.image = token.picture
+            session.user.isActive = token.isActive as boolean
+            // session.user = token
             return session;
         },
         jwt: async ({ profile, account, user, token, trigger, session }) => {
             if (account) {
                 token.accessToken = account.access_token;
                 token.id = user.id;
-                token.name = user.firstName + " " + (user.lastName ? user.lastName : "") ;
+                token.name = user.firstName + " " + (user.lastName ? user.lastName : "");
                 token.role = user.role;
+                token.isActive = user.isActive;
             }
 
             if (trigger === "update") {

@@ -1,4 +1,4 @@
-//here the patient sees a list of his past tests results and can view them or download them as pdf
+// tech and super see all tests 
 import TestsList from "@/components/TestsList";
 
 

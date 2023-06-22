@@ -7,7 +7,7 @@ const TestCard = ({ test, role }) => {
     const rawdate = new Date(test.dateOfExecutionXorCancelling);
     const date = rawdate.toDateString();
     let doctorNote = test.doctorNote;
-    let testName = test.examinationDictionary.name
+    let testName = test?.examinationDictionary?.name
     if (doctorNote.length + 3 >= 40)
         doctorNote = doctorNote.slice(0, 40) + "..."
 

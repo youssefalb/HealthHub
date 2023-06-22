@@ -156,7 +156,6 @@ const AddAccount = () => {
                 )}
                 <CustomButton buttonText={"Add account"} width="full" />
             </form>
-            <ToastContainer />
         </div>
     );
 };

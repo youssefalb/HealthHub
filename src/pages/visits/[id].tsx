@@ -70,13 +70,13 @@ export default function Visit() {
         console.log("visitId", visit['visitId'])
         const res = await cancelVisit(visit['visitId'])
         if (res.ok) {
+            if (session.user?.role == Role.DOCTOR || session.user?.role == Role.PATIENT)
+            router.push("/visits");
+            else if (session.user?.role == Role.RECEPTIONIST)
+            router.push("/receptionist/visits");
             toast.success('Visit cancelled successfully', {
                 autoClose: 3000,
             });
-            if (session.user?.role == Role.DOCTOR || session.user?.role == Role.PATIENT)
-                router.push("/visits");
-            else if (session.user?.role == Role.RECEPTIONIST)
-                router.push("/receptionist/visits");
         }
         else
             toast.error("Something went wrong");
@@ -201,7 +201,6 @@ export default function Visit() {
                     />
                 }
             </div>
-            <ToastContainer />
         </div >
     );
 }

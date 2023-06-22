@@ -27,6 +27,9 @@ export default async function handler(
                         status: LaboratoryTestStatus.IN_PROGRESS,
                         labAssistantId: session.user.id
                     },
+                    include: {
+                        examinationDictionary: true
+                    }
                 });
                 if (!results.length) throw "no data";
                 return res.status(200).json({ success: true, data: results });

@@ -14,6 +14,7 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
     const { verified } = router.query;
     const [notificationShown, setNotificationShown] = useState(false);
 
+
     const verificationSuccesNotification = () => {
         toast.success('Your account has been successfully verified!', {
             position: "top-right",
@@ -28,7 +29,6 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
     if (verified && !notificationShown) {
         verificationSuccesNotification();
         setNotificationShown(true);
-
     }
     return (
         <div className="bg-gray-50 min-h-screen">
@@ -62,7 +62,6 @@ export default function SignIn({ csrfToken }: InferGetServerSidePropsType<typeof
                         <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                         <button type="submit" className='p-2 m-2 text-white font-bold bg-blue-500 rounded-2xl'>Login with Google</button>
                     </form>
-                    <ToastContainer></ToastContainer>
                 </div >
             </div >
         </div >
@@ -73,6 +72,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await getServerSession(context.req, context.res, authOptions);
 
     if (session) {
+        
         return { redirect: { destination: "/" } }
     }
 

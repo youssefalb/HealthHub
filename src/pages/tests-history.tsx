@@ -1,4 +1,5 @@
-//here the patient sees a list of his past tests results and can view them or download them as pdf
+//used only by doctor & recep
+
 import TestsList from "@/components/TestsList";
 import { useRouter } from "next/router";
 

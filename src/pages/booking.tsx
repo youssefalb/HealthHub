@@ -333,7 +333,6 @@ const BookingForm = () => {
                     )}
                 </div>
             </form>
-            <ToastContainer />
         </div>
     );
 };

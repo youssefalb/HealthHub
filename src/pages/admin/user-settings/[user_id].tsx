@@ -299,7 +299,6 @@ const AdminUserSettings = () => {
                     </form>
                 )}
             </div>
-            <ToastContainer />
         </div>
     );
 };

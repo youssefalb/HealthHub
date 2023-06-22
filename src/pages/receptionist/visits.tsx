@@ -3,6 +3,7 @@ import AppointmentList from '@/components/AppointmentList';
 import { getPatients } from '@/lib/manageVisits';
 import { TextField, Autocomplete } from '@mui/material';
 import EmptyStateMessage from '@/components/EmptyStateMessage';
+import { ToastContainer } from 'react-toastify';
 
 export default function VisitsPage() {
     const [patients, setPatients] = useState([]);

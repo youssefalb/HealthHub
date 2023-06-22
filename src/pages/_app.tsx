@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import "../styles/globals.css";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { ToastContainer } from 'react-toastify';
 
 function App({ Component, pageProps }) {
   return (
@@ -11,7 +12,8 @@ function App({ Component, pageProps }) {
       session is valid it fetches */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Layout>
-        <Component {...pageProps} />
+          <Component {...pageProps} />
+          <ToastContainer/>
       </Layout>
         </LocalizationProvider>
     </SessionProvider>
