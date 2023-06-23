@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET);
         const userId = decoded.id;
         await prisma.user.update({
             where: {

@@ -7,7 +7,7 @@ const generateToken = (user: User) => {
     id: user.id,
     email: user.email,
   };
-  const secret = process.env.SECRET;
+  const secret = process.env.NEXTAUTH_SECRET;
   const options = {
     expiresIn: "1h",
   };
