@@ -129,19 +129,35 @@ const BookingForm = () => {
 
             const res = createVisitByPatient(note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
             if ((await res).ok) {
-                toast.success("Your appointment has been booked successfully!")
+                toast.success("Your appointment has been booked successfully!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                })
             }
             else {
-                toast.error("Could not book appointment, something went wrong")
+                toast.error("Could not book appointment, something went wrong", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                })
             }
             router.push('/visits')
         } else if (session?.user?.role === Role.RECEPTIONIST) {
             const res = createVisitByReceptionist(selectedPatient.patientId, note, selectedDoctor.doctor["employeeId"], dayjs(`${selectedDate} ${selectedTime}+2`).toISOString())
             if ((await res).ok) {
-                toast.success("The appointment has been booked successfully!")
+                toast.success("The appointment has been booked successfully!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                })
             }
             else {
-                toast.error("Could not book appointment, something went wrong")
+                toast.error("Could not book appointment, something went wrong", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                })
             }
             router.push('/receptionist/visits')
         }
