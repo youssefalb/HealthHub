@@ -132,14 +132,22 @@ const BookingForm = () => {
                 toast.success("Your appointment has been booked successfully!", {
                     position: "top-right",
                     autoClose: 3000,
+                    hideProgressBar: false,
                     closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 })
             }
             else {
                 toast.error("Could not book appointment, something went wrong", {
                     position: "top-right",
                     autoClose: 3000,
+                    hideProgressBar: false,
                     closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 })
             }
             router.push('/visits')
@@ -149,14 +157,22 @@ const BookingForm = () => {
                 toast.success("The appointment has been booked successfully!", {
                     position: "top-right",
                     autoClose: 3000,
+                    hideProgressBar: false,
                     closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 })
             }
             else {
                 toast.error("Could not book appointment, something went wrong", {
                     position: "top-right",
                     autoClose: 3000,
+                    hideProgressBar: false,
                     closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 })
             }
             router.push('/receptionist/visits')
