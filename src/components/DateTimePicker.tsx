@@ -21,14 +21,16 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date }) 
 
     const shouldDisableTime = (value) => {
         let disable = false
-        if (takenTimeSlots)
-            for (const [key, times] of Object.entries(takenTimeSlots)) {
-                Array(times).forEach((time) => {
+        if (takenTimeSlots) {
+            const takenTimeSlots2: { [key: string]: string[] } = { ...takenTimeSlots };
+            for (const [key, times] of Object.entries(takenTimeSlots2)) {
+                times.forEach((time) => {
                     if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')) {
                         disable = true
                     }
                 })
             }
+        }
         return disable;
     }
 
