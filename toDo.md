@@ -7,13 +7,17 @@ to protect a page use a protected layout that takes "role" as a prob and compare
   - [x] visit filter in doctor's page (sorted by date / time) 
   - [x] middleware 
   - [ ] make changing role of a user changes the connecttion (db ?)
-  - [ ] loading component
+  - [x] loading component
   - [x] search for auto-docs (swager, openApi)
   - [x] prompt user at home page if he has no password to set it. and then set verified to true 
   - [x] (Receptionist) see all the visits and edit their data (for now he can edit date and status only)
   - [x] (Receptionist) cancel visit
   - [x] (Receptionist) functionality to add new visits (booking page + chossing patient)
   - [ ] filter by date - doctor for recept
+  - [ ] css fixes (alot of them)
+  - [ ] pdf download 
+  - [ ] readme
+  - [ ] report
 
 
   scenario: 

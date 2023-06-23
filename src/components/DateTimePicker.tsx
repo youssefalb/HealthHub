@@ -23,7 +23,7 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date }) 
         let disable = false
         if (takenTimeSlots)
             for (const [key, times] of Object.entries(takenTimeSlots)) {
-                times.forEach((time) => {
+                Array(times).forEach((time) => {
                     if (key == dayjs(selectedDate).format('DD') && time == dayjs(value).format('HH-mm')) {
                         disable = true
                     }
@@ -57,7 +57,7 @@ export default function DateAndTimePicker({ doctor, saveTime, saveDate, date }) 
             if (appointmentsInEachDay)
                 for (const [key, value] of Object.entries(appointmentsInEachDay)) {
 
-                    if (value > 2)
+                    if (Number(value) > 17)
                         results.push(key)
 
                 }
