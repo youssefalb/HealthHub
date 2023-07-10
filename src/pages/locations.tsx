@@ -2,7 +2,7 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import hospitalLocations from './hospitalLocations.json';
 
-const HospitalMarker = () => (
+const HospitalMarker = (lat, lng) => (
   <div className="flex justify-center items-center w-4 h-4 rounded-full bg-red-600">
     <div className="w-2 h-2 rounded-full bg-white"></div>
   </div>
