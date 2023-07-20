@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   web:
+    build: .
     image: claudeperrin228/healthhub:latest
     ports:
       - "3000:3000"
